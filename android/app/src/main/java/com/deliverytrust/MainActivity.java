@@ -1,4 +1,4 @@
-package com.deliverytrust;
+package com.deliveryTrust;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

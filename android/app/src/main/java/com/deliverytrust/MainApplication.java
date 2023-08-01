@@ -1,4 +1,4 @@
-package com.deliverytrust;
+package com.deliveryTrust;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
