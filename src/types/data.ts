@@ -50,6 +50,11 @@ export interface IConfirmCode {
 export interface IRole {
   role: string;
 }
+export interface IChangePass {
+  oldPasword: string;
+  password: string;
+  passwordConfirmation: string;
+}
 
 export interface ClientRegistData {
   name?: string;

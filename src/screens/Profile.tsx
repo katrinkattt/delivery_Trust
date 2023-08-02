@@ -6,8 +6,8 @@ import Header from '../components/Header';
 import Body from '../components/common/Body';
 
 export default function Profile() {
-  // const [text, setText] = useState<string>('')
-  //   const [index, setIndex] = useState(1);
+  const [text, setText] = useState<string>('');
+  const [index, setIndex] = useState(0);
 
   const routes = [
     {key: 'Setting', title: 'Настройки'},
@@ -17,20 +17,19 @@ export default function Profile() {
 
   return (
     <>
-      <View style={styles.container}>
-        {/* {index === 1 ? ( */}
-        <Header title="Игорь Голованов" />
-        {/* ) : (
+      <View style={[styles.container, index !== 1 && {marginBottom: -30}]}>
+        {index === 1 ? (
+          <Header title="Игорь Голованов" />
+        ) : (
           <Header title={routes[index]?.title} />
-        )} */}
-        {/* {index === 1 ? (
+        )}
+        {index === 1 ? (
           <View style={styles.dataHeader}>
             <Body size={12}>Проверен</Body>
           </View>
-        ) : null} */}
+        ) : null}
       </View>
-
-      {/* <TabViewExample routes={routes} setIndex={setIndex} index={index} /> */}
+      <TabViewExample routes={routes} setIndex={setIndex} index={index} />
     </>
   );
 }
