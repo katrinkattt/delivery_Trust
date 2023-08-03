@@ -54,6 +54,7 @@
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-linear-gradient": "^2.8.0",
     "react-native-macos": "^0.71.0-0",
+    "react-native-maps": "^1.7.1",
     "react-native-pager-view": "^6.2.0",
     "react-native-reanimated": "^3.4.1",
     "react-native-root-siblings": "^4.1.1",

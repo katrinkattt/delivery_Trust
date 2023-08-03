@@ -1,4 +1,9 @@
 {
   "name": "deliveryTrust",
-  "displayName": "deliveryTrust"
+  "displayName": "deliveryTrust",
+  "ios": {
+    "config": {
+      "googleMapsApiKey": "AIzaSyD_vZO6djKvAPcZZpM51YKk68goeAmFgpo"
+    }
+  }
 }

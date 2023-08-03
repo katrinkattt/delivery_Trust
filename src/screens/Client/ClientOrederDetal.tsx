@@ -231,9 +231,9 @@ const styles = ScaledSheet.create({
     fontWeight: '400',
   },
   priceBox: {
-    width: 65,
+    width: 95,
     height: 27,
-    backgroundColor: '#D1EA7A',
+    backgroundColor: '#ff0',
     borderRadius: 3,
     alignItems: 'center',
     justifyContent: 'center',
