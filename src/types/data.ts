@@ -30,6 +30,17 @@ interface QuickReplies {
   keepIt?: boolean;
 }
 
+export interface ICotactDetailsOrder {
+  fio: string;
+  phone: string;
+  city: string;
+  street: string;
+  home: string;
+  apartment: string | undefined;
+  entrance: string | undefined;
+  doorCode: string | undefined;
+}
+
 export interface IRegistr {
   email?: string;
   phone?: string;

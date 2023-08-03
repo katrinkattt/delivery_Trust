@@ -22,7 +22,7 @@ const customtInputToolbar = props => {
       primaryStyle={{color: colors.black}}
       containerStyle={{
         padding: 4,
-        backgroundColor: colors.darkBlue,
+        backgroundColor: Platform.OS === 'ios' ? colors.white : colors.darkBlue,
       }}
     />
   );

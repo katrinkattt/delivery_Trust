@@ -39,7 +39,7 @@ const renderScene = SceneMap({
 
 interface IProps {
   routes?: any;
-  index?: number;
+  index: number;
   setIndex?: (value: number) => void;
 }
 

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Header from '../../components/Header';
 import Body from '../../components/common/Body';
@@ -9,6 +9,7 @@ import AuthSelect from '../../components/common/AuthSelect';
 import TextAreaInput from '../../components/common/TextAreaInput';
 import {useNavigation} from '@react-navigation/native';
 import {Space} from '../../components/common/Space';
+import R from '../../res';
 
 export default function OrderParametrs() {
   const navigate = useNavigation();
@@ -17,6 +18,20 @@ export default function OrderParametrs() {
     {id: 1, title: 'Документы', select: false},
     {id: 2, title: 'Груз', select: true},
   ]);
+  const [typeDoc, setTypeDoc] = useState('Выберите тип документа');
+  const [typePac, setTypePac] = useState('Выберите тип посылки');
+
+  const docTypeArr = [
+    {val: 'dogovor', label: 'Договор'},
+    {val: 'snils', label: 'СНИЛС'},
+    {val: 'vartiket', label: 'Военный билет'},
+  ];
+  const packetTypeArr = [
+    {val: 'packet', label: 'Пакет'},
+    {val: 'box', label: 'Коробка'},
+  ];
+  const [typeOrderNum, setTypeOrderNum] = useState(1);
+  const [currArr, setCurrArr] = useState(docTypeArr);
 
   const pressButton = (id: number) => {
     const newData = data.map(i => {
@@ -27,12 +42,26 @@ export default function OrderParametrs() {
       }
     });
     setData(newData);
+    setTypeOrderNum(id);
   };
+  useEffect(() => {
+    if (typeOrderNum == 1) {
+      setCurrArr(docTypeArr);
+    } else {
+      setCurrArr(packetTypeArr);
+    }
+  }, [typeOrderNum]);
 
   const goRate = () => {
     //@ts-ignore
-    // navigate.navigate('Rate')
-    console.log('download');
+    navigate.navigate(R.routes.CLIENT_ORDER_CONTACT);
+  };
+  const setDropdown = (item: (typeof docTypeArr)[0]) => {
+    if (typeOrderNum == 1) {
+      setTypeDoc(item.label);
+    } else {
+      setTypePac(item.label);
+    }
   };
 
   return (
@@ -78,12 +107,24 @@ export default function OrderParametrs() {
           <Body semiBold size={17} style={{marginBottom: 15}}>
             Параметры
           </Body>
-
           <AuthSelect
             label="Тип документа*"
-            placeholder="Введите фамилию имя отчество"
-            position="top"
-          />
+            placeholder={typeOrderNum === 1 ? typeDoc : typePac}
+            position="top">
+            <>
+              {currArr.map(item => (
+                <TouchableOpacity onPress={() => setDropdown(item)}>
+                  <Body
+                    color="rgba(0, 0, 0, 0.46)"
+                    size={15}
+                    style={{paddingHorizontal: 28, paddingBottom: 10}}>
+                    {item.label}
+                  </Body>
+                </TouchableOpacity>
+              ))}
+            </>
+          </AuthSelect>
+
           <TextAreaInput
             label="Комментарий"
             placeholder="Введите комментарий для заказа"
@@ -94,6 +135,10 @@ export default function OrderParametrs() {
 
           <View style={{alignItems: 'center'}}>
             <Button
+              buttonType={3}
+              text="Скачать договор"
+              onPress={goRate}
+              containerStyle={{width: 259, marginTop: 20}}
               renderContent={() => (
                 <>
                   <Body
@@ -103,14 +148,9 @@ export default function OrderParametrs() {
                     size={15}>
                     ДАЛЕЕ
                   </Body>
-
                   <ArrowRight />
                 </>
               )}
-              buttonType={3}
-              text="Скачать договор"
-              onPress={goRate}
-              containerStyle={{width: 259, marginTop: 20}}
             />
           </View>
         </View>

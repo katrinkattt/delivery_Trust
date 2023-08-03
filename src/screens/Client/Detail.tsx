@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, ScrollView, StyleSheet, View} from 'react-native';
+import {Image, ScrollView, StyleSheet, View, Platform} from 'react-native';
 import DropShadow from 'react-native-drop-shadow';
 
 import {s, vs} from 'react-native-size-matters';
@@ -52,7 +52,8 @@ export default function Detail({route}: IProps) {
           {item.price} ₽
         </Body>
 
-        <ScrollView style={{height: 150, marginTop: 20}}>
+        <ScrollView
+          style={{height: Platform.OS === 'ios' ? 150 : 130, marginTop: 20}}>
           <Body
             size={16}
             style={{fontSize: 16, lineHeight: 24, fontWeight: 400}}>
