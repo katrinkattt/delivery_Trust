@@ -10,6 +10,7 @@ import {
   MoreIcon,
   OrderIconActive,
   PhoneIcon,
+  Flag,
 } from '../components/common/Svgs';
 import FastImage from 'react-native-fast-image';
 import {colors} from '../theme/themes';
@@ -17,10 +18,15 @@ import DropShadow from 'react-native-drop-shadow';
 import Button from '../components/common/Button';
 const map = require('../assets/map.png');
 import {OrderMap} from '../components/OrderMap';
+import {Slider} from 'react-native-awesome-slider';
+import {useSharedValue} from 'react-native-reanimated';
 
 export default function OrderDetail() {
   const safeAreaInsets = useSafeAreaInsets();
   const [order, setOrder] = useState(false);
+  const progress = useSharedValue(60);
+  const min = useSharedValue(0);
+  const max = useSharedValue(100);
 
   return (
     <View style={[styles.container, {marginTop: safeAreaInsets.top + 23}]}>
@@ -63,30 +69,38 @@ export default function OrderDetail() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{paddingBottom: 130}}>
-        <View style={{marginTop: 21, width: 241, marginLeft: '14.4%'}}>
-          <View style={styles.timeBox}>
-            {/* <Body color="#243757" style={styles.timeText}>
-              Время доставки
-            </Body>
-
-            <Body color="#243757" style={styles.time}>
-              21:00
-            </Body>
+        <View style={{marginBottom: 20}}>
+          <Body center bold semiBold>
+            Еще 15-20 минут
+          </Body>
+          <View style={{position: 'absolute', right: 0, bottom: 15}}>
+            <Flag />
           </View>
-
-          <View style={[styles.timeBox, {marginTop: 5}]}>
-            <Body color="#243757" style={styles.timeText}>
-              Осталось времени
-            </Body>
-
-            <Body color="#243757" style={styles.time}>
-              11:30
-            </Body> */}
-          </View>
+          <Slider
+            style={styles.tabbar}
+            progress={progress}
+            minimumValue={min}
+            maximumValue={max}
+            bubbleMaxWidth={6}
+            bubbleWidth={0}
+            disableTrackFollow
+            bubbleTranslateY={3}
+            disable
+            sliderHeight={7}
+            renderThumb={() => (
+              <View style={styles.dotCard}>
+                <View style={styles.dot} />
+              </View>
+            )}
+            theme={{
+              disableMinTrackTintColor: 'rgba(147, 122, 234, 1)',
+              maximumTrackTintColor: 'white',
+              minimumTrackTintColor: 'red',
+              cacheTrackTintColor: 'red',
+              bubbleBackgroundColor: '#666',
+            }}
+          />
         </View>
-
-        {/* <FastImage source={map} style={styles.image} /> */}
-
         <OrderMap />
 
         <View style={styles.orderDetailBox}>
@@ -192,6 +206,21 @@ const styles = ScaledSheet.create({
   description: {
     fontSize: 12,
     fontWeight: '400',
+  },
+  tabbar: {
+    borderWidth: 1,
+    marginTop: 20,
+    borderRadius: 100,
+  },
+  dotCard: {
+    backgroundColor: 'rgba(100, 129, 220, 1)',
+    borderRadius: '100@s',
+  },
+  dot: {
+    backgroundColor: 'white',
+    borderRadius: '100@s',
+    margin: '4@s',
+    padding: '3@s',
   },
   priceBox: {
     maxWidth: 85,

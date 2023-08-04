@@ -4,7 +4,7 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 prepare_react_native_project!
 
 target 'deliveryTrust-macOS' do
-  platform :macos, '10.15'
+  platform :macos, '13.0'
 
 # React Native Maps dependencies
 # The following line is only needed if building on an Apple silicon Mac without rosetta.

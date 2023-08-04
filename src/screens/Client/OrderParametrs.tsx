@@ -108,7 +108,7 @@ export default function OrderParametrs() {
             Параметры
           </Body>
           <AuthSelect
-            label="Тип документа*"
+            label={typeOrderNum === 1 ? 'Тип документа' : 'Тип посылки'}
             placeholder={typeOrderNum === 1 ? typeDoc : typePac}
             position="top">
             <>
