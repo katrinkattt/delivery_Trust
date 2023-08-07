@@ -12,11 +12,9 @@ import {
   PhoneIcon,
   Flag,
 } from '../components/common/Svgs';
-import FastImage from 'react-native-fast-image';
 import {colors} from '../theme/themes';
 import DropShadow from 'react-native-drop-shadow';
 import Button from '../components/common/Button';
-const map = require('../assets/map.png');
 import {OrderMap} from '../components/OrderMap';
 import {Slider} from 'react-native-awesome-slider';
 import {useSharedValue} from 'react-native-reanimated';
@@ -27,6 +25,7 @@ export default function OrderDetail() {
   const progress = useSharedValue(60);
   const min = useSharedValue(0);
   const max = useSharedValue(100);
+  console.log('Order in OrderDetail');
 
   return (
     <View style={[styles.container, {marginTop: safeAreaInsets.top + 23}]}>

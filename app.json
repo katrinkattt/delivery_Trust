@@ -5,5 +5,10 @@
     "config": {
       "googleMapsApiKey": "AIzaSyD_vZO6djKvAPcZZpM51YKk68goeAmFgpo"
     }
+  },
+  "android": {
+    "config": {
+      "googleMapsApiKey": "AIzaSyCZ2O6nZcko2DyvFphsgfUXtIV6aCHWrxs"
+    }
   }
 }

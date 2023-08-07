@@ -10,14 +10,12 @@
 		00E356F31AD99517003FC87E /* deliveryTrustTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* deliveryTrustTests.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		6837DB8541B475FDD005975F /* libPods-deliveryTrust.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BD7D7F0F9E8AB3B4A24D2F4D /* libPods-deliveryTrust.a */; };
+		43013E9BB4BDF73E2AC7B55D /* libPods-deliveryTrust.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B7814EB10A76667146127473 /* libPods-deliveryTrust.a */; };
 		7258AB4F2A7D00F600CCA1EB /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
-		7258AB512A7D011500CCA1EB /* deliveryTrust.app in Resources */ = {isa = PBXBuildFile; fileRef = 13B07F961A680F5B00A75B9A /* deliveryTrust.app */; };
-		7258AB532A7D013B00CCA1EB /* deliveryTrustTests.xctest in Resources */ = {isa = PBXBuildFile; fileRef = 00E356EE1AD99517003FC87E /* deliveryTrustTests.xctest */; };
 		7258AB552A7D021C00CCA1EB /* libGoogle-Maps-iOS-Utils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7258AB542A7D021C00CCA1EB /* libGoogle-Maps-iOS-Utils.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		729D37862A7D3A2700F9051F /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7258AB562A7D02A000CCA1EB /* libRNGestureHandler.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		CB6968002ECBD3E3D9A0AEAE /* libPods-deliveryTrust-deliveryTrustTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A979E3C5CC213B3708EA97B /* libPods-deliveryTrust-deliveryTrustTests.a */; };
+		BC49CDFA829909267DCC6A97 /* libPods-deliveryTrust-deliveryTrustTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6D94A4D74466B3A2A9957C7 /* libPods-deliveryTrust-deliveryTrustTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,22 +32,22 @@
 		00E356EE1AD99517003FC87E /* deliveryTrustTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = deliveryTrustTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* deliveryTrustTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = deliveryTrustTests.m; sourceTree = "<group>"; };
-		0A74A76B542DB41585EE53DA /* Pods-deliveryTrust-deliveryTrustTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-deliveryTrust-deliveryTrustTests.release.xcconfig"; path = "Target Support Files/Pods-deliveryTrust-deliveryTrustTests/Pods-deliveryTrust-deliveryTrustTests.release.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* deliveryTrust.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = deliveryTrust.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = deliveryTrust/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = deliveryTrust/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = deliveryTrust/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = deliveryTrust/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = deliveryTrust/main.m; sourceTree = "<group>"; };
-		3CFF51D281878F225D449BE5 /* Pods-deliveryTrust.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-deliveryTrust.release.xcconfig"; path = "Target Support Files/Pods-deliveryTrust/Pods-deliveryTrust.release.xcconfig"; sourceTree = "<group>"; };
-		4C51ECFA4FFF20E8B933E425 /* Pods-deliveryTrust.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-deliveryTrust.debug.xcconfig"; path = "Target Support Files/Pods-deliveryTrust/Pods-deliveryTrust.debug.xcconfig"; sourceTree = "<group>"; };
-		5A979E3C5CC213B3708EA97B /* libPods-deliveryTrust-deliveryTrustTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-deliveryTrust-deliveryTrustTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7258AB542A7D021C00CCA1EB /* libGoogle-Maps-iOS-Utils.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libGoogle-Maps-iOS-Utils.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7258AB562A7D02A000CCA1EB /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = deliveryTrust/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		9E3FC66BE3B761F66C45A2D7 /* Pods-deliveryTrust-deliveryTrustTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-deliveryTrust-deliveryTrustTests.debug.xcconfig"; path = "Target Support Files/Pods-deliveryTrust-deliveryTrustTests/Pods-deliveryTrust-deliveryTrustTests.debug.xcconfig"; sourceTree = "<group>"; };
-		BD7D7F0F9E8AB3B4A24D2F4D /* libPods-deliveryTrust.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-deliveryTrust.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A76B4617C55EF1CC4694489C /* Pods-deliveryTrust-deliveryTrustTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-deliveryTrust-deliveryTrustTests.debug.xcconfig"; path = "Target Support Files/Pods-deliveryTrust-deliveryTrustTests/Pods-deliveryTrust-deliveryTrustTests.debug.xcconfig"; sourceTree = "<group>"; };
+		B7814EB10A76667146127473 /* libPods-deliveryTrust.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-deliveryTrust.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C21067A43D40D4954CC15E0D /* Pods-deliveryTrust.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-deliveryTrust.debug.xcconfig"; path = "Target Support Files/Pods-deliveryTrust/Pods-deliveryTrust.debug.xcconfig"; sourceTree = "<group>"; };
+		DAAC5EF586D6D7103AB586EE /* Pods-deliveryTrust.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-deliveryTrust.release.xcconfig"; path = "Target Support Files/Pods-deliveryTrust/Pods-deliveryTrust.release.xcconfig"; sourceTree = "<group>"; };
+		E56F0408EF850B31E895C4B3 /* Pods-deliveryTrust-deliveryTrustTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-deliveryTrust-deliveryTrustTests.release.xcconfig"; path = "Target Support Files/Pods-deliveryTrust-deliveryTrustTests/Pods-deliveryTrust-deliveryTrustTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		F6D94A4D74466B3A2A9957C7 /* libPods-deliveryTrust-deliveryTrustTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-deliveryTrust-deliveryTrustTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CB6968002ECBD3E3D9A0AEAE /* libPods-deliveryTrust-deliveryTrustTests.a in Frameworks */,
+				BC49CDFA829909267DCC6A97 /* libPods-deliveryTrust-deliveryTrustTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,7 +65,7 @@
 			files = (
 				7258AB552A7D021C00CCA1EB /* libGoogle-Maps-iOS-Utils.a in Frameworks */,
 				729D37862A7D3A2700F9051F /* libRNGestureHandler.a in Frameworks */,
-				6837DB8541B475FDD005975F /* libPods-deliveryTrust.a in Frameworks */,
+				43013E9BB4BDF73E2AC7B55D /* libPods-deliveryTrust.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -110,8 +108,8 @@
 				7258AB562A7D02A000CCA1EB /* libRNGestureHandler.a */,
 				7258AB542A7D021C00CCA1EB /* libGoogle-Maps-iOS-Utils.a */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				BD7D7F0F9E8AB3B4A24D2F4D /* libPods-deliveryTrust.a */,
-				5A979E3C5CC213B3708EA97B /* libPods-deliveryTrust-deliveryTrustTests.a */,
+				B7814EB10A76667146127473 /* libPods-deliveryTrust.a */,
+				F6D94A4D74466B3A2A9957C7 /* libPods-deliveryTrust-deliveryTrustTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -150,10 +148,10 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				4C51ECFA4FFF20E8B933E425 /* Pods-deliveryTrust.debug.xcconfig */,
-				3CFF51D281878F225D449BE5 /* Pods-deliveryTrust.release.xcconfig */,
-				9E3FC66BE3B761F66C45A2D7 /* Pods-deliveryTrust-deliveryTrustTests.debug.xcconfig */,
-				0A74A76B542DB41585EE53DA /* Pods-deliveryTrust-deliveryTrustTests.release.xcconfig */,
+				C21067A43D40D4954CC15E0D /* Pods-deliveryTrust.debug.xcconfig */,
+				DAAC5EF586D6D7103AB586EE /* Pods-deliveryTrust.release.xcconfig */,
+				A76B4617C55EF1CC4694489C /* Pods-deliveryTrust-deliveryTrustTests.debug.xcconfig */,
+				E56F0408EF850B31E895C4B3 /* Pods-deliveryTrust-deliveryTrustTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -165,12 +163,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "deliveryTrustTests" */;
 			buildPhases = (
-				E0A02A73757B7455C0E7BD83 /* [CP] Check Pods Manifest.lock */,
+				849F199C1A72DD812109BC32 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				7D3DD2B52036574A513EDC4C /* [CP] Embed Pods Frameworks */,
-				AC1947B4D4498DAB5D62344D /* [CP] Copy Pods Resources */,
+				B11135C7A66D283A76C0E9F7 /* [CP] Embed Pods Frameworks */,
+				007F9B6E3FCDAA7900FFAF2D /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -186,14 +184,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "deliveryTrust" */;
 			buildPhases = (
-				2DA6EBE304E7900B063489BC /* [CP] Check Pods Manifest.lock */,
+				CE707AFE5714A9569F014B3C /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				16E41EC1E3427039F39126B7 /* [CP] Embed Pods Frameworks */,
-				91B3D63BBE3708443509822C /* [CP] Copy Pods Resources */,
+				B5544E7D5586275B073600F7 /* [CP] Embed Pods Frameworks */,
+				E86CC74E16D9A2F97C61E77C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -211,7 +209,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1420;
-				ORGANIZATIONNAME = Ne;
+				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
@@ -246,7 +244,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7258AB532A7D013B00CCA1EB /* deliveryTrustTests.xctest in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,7 +252,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				7258AB512A7D011500CCA1EB /* deliveryTrust.app in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -263,6 +259,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		007F9B6E3FCDAA7900FFAF2D /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-deliveryTrust-deliveryTrustTests/Pods-deliveryTrust-deliveryTrustTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-deliveryTrust-deliveryTrustTests/Pods-deliveryTrust-deliveryTrustTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-deliveryTrust-deliveryTrustTests/Pods-deliveryTrust-deliveryTrustTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -279,7 +292,46 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		16E41EC1E3427039F39126B7 /* [CP] Embed Pods Frameworks */ = {
+		849F199C1A72DD812109BC32 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-deliveryTrust-deliveryTrustTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B11135C7A66D283A76C0E9F7 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-deliveryTrust-deliveryTrustTests/Pods-deliveryTrust-deliveryTrustTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-deliveryTrust-deliveryTrustTests/Pods-deliveryTrust-deliveryTrustTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-deliveryTrust-deliveryTrustTests/Pods-deliveryTrust-deliveryTrustTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B5544E7D5586275B073600F7 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -296,7 +348,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-deliveryTrust/Pods-deliveryTrust-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		2DA6EBE304E7900B063489BC /* [CP] Check Pods Manifest.lock */ = {
+		CE707AFE5714A9569F014B3C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -318,24 +370,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		7D3DD2B52036574A513EDC4C /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-deliveryTrust-deliveryTrustTests/Pods-deliveryTrust-deliveryTrustTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-deliveryTrust-deliveryTrustTests/Pods-deliveryTrust-deliveryTrustTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-deliveryTrust-deliveryTrustTests/Pods-deliveryTrust-deliveryTrustTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		91B3D63BBE3708443509822C /* [CP] Copy Pods Resources */ = {
+		E86CC74E16D9A2F97C61E77C /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -350,45 +385,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-deliveryTrust/Pods-deliveryTrust-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		AC1947B4D4498DAB5D62344D /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-deliveryTrust-deliveryTrustTests/Pods-deliveryTrust-deliveryTrustTests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-deliveryTrust-deliveryTrustTests/Pods-deliveryTrust-deliveryTrustTests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-deliveryTrust-deliveryTrustTests/Pods-deliveryTrust-deliveryTrustTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E0A02A73757B7455C0E7BD83 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-deliveryTrust-deliveryTrustTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -443,7 +439,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9E3FC66BE3B761F66C45A2D7 /* Pods-deliveryTrust-deliveryTrustTests.debug.xcconfig */;
+			baseConfigurationReference = A76B4617C55EF1CC4694489C /* Pods-deliveryTrust-deliveryTrustTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -470,7 +466,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0A74A76B542DB41585EE53DA /* Pods-deliveryTrust-deliveryTrustTests.release.xcconfig */;
+			baseConfigurationReference = E56F0408EF850B31E895C4B3 /* Pods-deliveryTrust-deliveryTrustTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -494,7 +490,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4C51ECFA4FFF20E8B933E425 /* Pods-deliveryTrust.debug.xcconfig */;
+			baseConfigurationReference = C21067A43D40D4954CC15E0D /* Pods-deliveryTrust.debug.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -502,12 +498,32 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = deliveryTrust/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/Google-Maps-iOS-Utils/GoogleMapsUtils.modulemap\"",
+					"-fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/YogaKit/YogaKit.modulemap\"",
+					"-fmodule-map-file=\"${PODS_ROOT}/Headers/Public/FlipperKit/FlipperKit.modulemap\"",
+					"-fmodule-map-file=\"${PODS_ROOT}/Headers/Public/RCTTypeSafety/RCTTypeSafety.modulemap\"",
+					"-fmodule-map-file=\"${PODS_ROOT}/Headers/Public/React/React-Core.modulemap\"",
+					"-fmodule-map-file=\"${PODS_ROOT}/Headers/Public/ReactCommon/ReactCommon.modulemap\"",
+					"-fmodule-map-file=\"${PODS_ROOT}/Headers/Public/React_Codegen/React-Codegen.modulemap\"",
+					"-fmodule-map-file=\"${PODS_ROOT}/Headers/Public/React_NativeModulesApple/React-NativeModulesApple.modulemap\"",
+					"-fmodule-map-file=\"${PODS_ROOT}/Headers/Public/folly/RCT-Folly.modulemap\"",
+					"-fmodule-map-file=\"${PODS_ROOT}/Headers/Public/yoga/Yoga.modulemap\"",
+					"-DFOLLY_NO_CONFIG",
+					"-DFOLLY_MOBILE=1",
+					"-DFOLLY_USE_LIBCPP=1",
+					"-Wno-comma",
+					"-Wno-shorten-64-to-32",
+					"-DREACT_NATIVE_MINOR_VERSION=72",
+					"-DREANIMATED_VERSION=3.4.1",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -523,39 +539,21 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3CFF51D281878F225D449BE5 /* Pods-deliveryTrust.release.xcconfig */;
+			baseConfigurationReference = DAAC5EF586D6D7103AB586EE /* Pods-deliveryTrust.release.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = deliveryTrust/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				OTHER_CFLAGS = (
-					"$(inherited)",
-					"-fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/Google-Maps-iOS-Utils/GoogleMapsUtils.modulemap\"",
-					"-fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/YogaKit/YogaKit.modulemap\"",
-					"-fmodule-map-file=\"${PODS_ROOT}/Headers/Public/RCTTypeSafety/RCTTypeSafety.modulemap\"",
-					"-fmodule-map-file=\"${PODS_ROOT}/Headers/Public/React/React-Core.modulemap\"",
-					"-fmodule-map-file=\"${PODS_ROOT}/Headers/Public/ReactCommon/ReactCommon.modulemap\"",
-					"-fmodule-map-file=\"${PODS_ROOT}/Headers/Public/React_Codegen/React-Codegen.modulemap\"",
-					"-fmodule-map-file=\"${PODS_ROOT}/Headers/Public/React_NativeModulesApple/React-NativeModulesApple.modulemap\"",
-					"-fmodule-map-file=\"${PODS_ROOT}/Headers/Public/folly/RCT-Folly.modulemap\"",
-					"$(inherited)",
-					"-fmodule-map-file=\"${PODS_ROOT}/Headers/Public/yoga/Yoga.modulemap\"",
-					"-DFOLLY_NO_CONFIG",
-					"-DFOLLY_MOBILE=1",
-					"-DFOLLY_USE_LIBCPP=1",
-					"-Wno-comma",
-					"-Wno-shorten-64-to-32",
-					"-DREACT_NATIVE_MINOR_VERSION=72",
-					"-DREANIMATED_VERSION=3.4.1",
-				);
+				OTHER_CFLAGS = "";
+				"OTHER_CFLAGS[arch=*]" = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
