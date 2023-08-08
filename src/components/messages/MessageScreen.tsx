@@ -1,12 +1,15 @@
 import React, {useState, useCallback} from 'react';
-import {StyleSheet, View, Platform} from 'react-native';
-// import {renderBubble, renderMessageText} from './feyk';
-import {GiftedChat, InputToolbar} from 'react-native-gifted-chat';
+import {StyleSheet, View, Platform, Image, Text} from 'react-native';
+import DocumentPicker from 'react-native-document-picker';
+import {GiftedChat, InputToolbar, Actions} from 'react-native-gifted-chat';
 import {IChatData} from '../../screens/Messages';
 import Body from '../common/Body';
 import Header from '../Header';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {colors} from '../../theme/themes';
+
+const addDocImg = '../../assets/addDoc.png';
+const microImg = '../../assets/microChat.png';
 
 interface IProps {
   route: {
@@ -29,6 +32,11 @@ const customtInputToolbar = props => {
 };
 
 export const MessageScreen = ({route}: IProps) => {
+  const user = {
+    _id: 1,
+    name: 'Jacky',
+    avatar: require('../../assets/use.png'),
+  };
   const {item} = route.params;
   const [messages, setMessages] = useState([]);
 
@@ -37,6 +45,140 @@ export const MessageScreen = ({route}: IProps) => {
       GiftedChat.append(previousMessages, messages),
     );
   }, []);
+
+  const handleDocumentSelection = useCallback(async () => {
+    const createdAt = new Date();
+    try {
+      const response = await DocumentPicker.pick({
+        presentationStyle: 'fullScreen',
+      });
+      let imgRegex = /image/g;
+      let sendObjDoc = {
+        _id: messages.length + 1,
+        text: '',
+        createdAt: new Date(),
+        user,
+        name: response[0].name,
+        file: response[0]?.uri,
+        file_type: 'pdf' || 'docx',
+        attachment: {
+          url: response[0].fileCopyUri,
+          type: 'pdf' || 'docx',
+        },
+      };
+      let sendObjPict = {
+        createdAt,
+        _id: messages.length + 1,
+        text: response[0]?.name,
+        user,
+        file: response[0]?.uri,
+        image: response[0]?.uri,
+      };
+      let str = response[0]?.type;
+      if (str?.match(imgRegex)) {
+        // @ts-ignore
+        onSend([sendObjPict]);
+      } else {
+        // @ts-ignore
+        onSend([sendObjDoc]);
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  }, []);
+
+  const renderActions = props => {
+    return (
+      <View style={{flexDirection: 'row'}}>
+        <Actions
+          {...props}
+          icon={() => (
+            <Image
+              source={require(addDocImg)}
+              style={{width: 18, resizeMode: 'contain', marginTop: -10}}
+            />
+          )}
+          options={{
+            ['Document']: async () => {
+              try {
+                handleDocumentSelection();
+              } catch (e) {
+                if (DocumentPicker.isCancel(e)) {
+                  console.log('User cancelled!');
+                } else {
+                  throw e;
+                }
+              }
+            },
+            Cancel: () => {
+              console.log('Cancel');
+            },
+          }}
+        />
+        <Actions
+          {...props}
+          icon={() => (
+            <Image
+              source={require(microImg)}
+              style={{width: 22, resizeMode: 'contain', marginTop: -10}}
+            />
+          )}
+        />
+      </View>
+    );
+  };
+  const renderCustomView = props => {
+    if (props?.currentMessage?.file_type) {
+      return (
+        <TouchableOpacity
+          onPress={() => {}}
+          style={{
+            backgroundColor: colors.lavender,
+            height: 40,
+            borderRadius: 10,
+          }}>
+          <Text style={{color: '#fff', padding: 10}}>
+            {props?.currentMessage.name}
+          </Text>
+        </TouchableOpacity>
+      );
+    } else {
+      return <View />;
+    }
+  };
+
+  // const getSource = message => {
+  //   if (message && message.currentMessage) {
+  //     return message.currentMessage.audio
+  //       ? message.currentMessage.audio
+  //       : message.currentMessage.video
+  //       ? message.currentMessage.video
+  //       : null;
+  //   }
+  //   return null;
+  // };
+  // const renderAudio = message => {
+  //   const source = getSource(message);
+  //   if (source) {
+  //     return (
+  //       <View style={{height: 30}} key={message.currentMessage._id}>
+  //         {Platform.OS === 'ios' ? (
+  //           <Video
+  //             style={styles.videoElement}
+  //             shouldPlay
+  //             height={156}
+  //             width={242}
+  //             muted={true}
+  //             source={{uri: source}}
+  //             allowsExternalPlayback={false}></Video>
+  //         ) : (
+  //           <VideoPlayer style={styles.videoElement} source={{uri: source}} />
+  //         )}
+  //       </View>
+  //     );
+  //   }
+  //   return <></>;
+  // };
 
   return (
     <View style={styles.content}>
@@ -57,17 +199,10 @@ export const MessageScreen = ({route}: IProps) => {
         </TouchableOpacity>
       </View>
       <GiftedChat
-        // renderMessage={() => (
-        //     <View style={{ backgroundColor: 'red', height: 30 }}>
-        //         <Body>dadada</Body>
-        //     </View>
-        // )}
-        // renderCustomView={BubbleChat}
-
-        // renderChatEmpty={BubbleChat}
-        // renderMessageText={renderMessageText}
-        // renderSystemMessage={customSystemMessage}
-        // renderBubble={renderBubble}
+        scrollToBottom
+        renderActions={props => renderActions(props)}
+        renderCustomView={props => renderCustomView(props)}
+        // renderMessageAudio={renderAudio}
         minInputToolbarHeight={33}
         maxInputLength={32}
         renderInputToolbar={props => customtInputToolbar(props)}
@@ -76,16 +211,14 @@ export const MessageScreen = ({route}: IProps) => {
         isKeyboardInternallyHandled={true}
         showUserAvatar={true}
         showAvatarForEveryMessage={true}
-        // messagesContainerStyle={styles.messeg}
-        // quickReplyStyle={styles.quik}
-        // scrollToBottomStyle={styles.quik}
+        messagesContainerStyle={styles.messeg}
         renderAvatarOnTop={true}
         messages={messages}
         onSend={messages => onSend(messages)}
         user={{
-          _id: 1,
-          name: 'dada',
-          avatar: require('../../assets/use.png'),
+          _id: user._id,
+          name: user.name,
+          avatar: user.avatar,
         }}
       />
     </View>
@@ -102,7 +235,7 @@ const styles = StyleSheet.create({
   },
   messeg: {
     backgroundColor: 'white',
-    paddingHorizontal: 15,
+    paddingBottom: 30,
   },
   quik: {
     height: 30,
