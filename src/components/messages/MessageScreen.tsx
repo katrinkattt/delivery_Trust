@@ -1,7 +1,14 @@
 import React, {useState, useCallback} from 'react';
 import {StyleSheet, View, Platform, Image, Text} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
-import {GiftedChat, InputToolbar, Actions} from 'react-native-gifted-chat';
+import {
+  GiftedChat,
+  InputToolbar,
+  Actions,
+  Send,
+} from 'react-native-gifted-chat';
+import Sound from 'react-native-sound';
+import AudioRecord from 'react-native-audio-record';
 import {IChatData} from '../../screens/Messages';
 import Body from '../common/Body';
 import Header from '../Header';
@@ -46,6 +53,11 @@ export const MessageScreen = ({route}: IProps) => {
     );
   }, []);
 
+  const renderSend = props => (
+    <Send {...props}>
+      <Text style={{fontSize: 26, color: '#aaa'}}>➤</Text>
+    </Send>
+  );
   const handleDocumentSelection = useCallback(async () => {
     const createdAt = new Date();
     try {
@@ -53,32 +65,33 @@ export const MessageScreen = ({route}: IProps) => {
         presentationStyle: 'fullScreen',
       });
       let imgRegex = /image/g;
-      let sendObjDoc = {
-        _id: messages.length + 1,
-        text: '',
-        createdAt: new Date(),
-        user,
-        name: response[0].name,
-        file: response[0]?.uri,
-        file_type: 'pdf' || 'docx',
-        attachment: {
-          url: response[0].fileCopyUri,
-          type: 'pdf' || 'docx',
-        },
-      };
-      let sendObjPict = {
-        createdAt,
-        _id: messages.length + 1,
-        text: response[0]?.name,
-        user,
-        file: response[0]?.uri,
-        image: response[0]?.uri,
-      };
       let str = response[0]?.type;
       if (str?.match(imgRegex)) {
+        let sendObjPict = {
+          createdAt,
+          _id: messages.length + 1,
+          text: '',
+          user,
+          file: response[0]?.uri,
+          image: response[0]?.uri,
+        };
         // @ts-ignore
         onSend([sendObjPict]);
       } else {
+        let sendObjDoc = {
+          _id: messages.length + 1,
+          text: '',
+          createdAt: new Date(),
+          user,
+          name: response[0].name,
+          file: response[0]?.uri,
+          file_id: response[0]?.size,
+          file_type: 'pdf' || 'docx',
+          attachment: {
+            url: response[0].uri,
+            type: 'pdf' || 'docx',
+          },
+        };
         // @ts-ignore
         onSend([sendObjDoc]);
       }
@@ -99,7 +112,7 @@ export const MessageScreen = ({route}: IProps) => {
             />
           )}
           options={{
-            ['Document']: async () => {
+            ['File']: async () => {
               try {
                 handleDocumentSelection();
               } catch (e) {
@@ -123,10 +136,71 @@ export const MessageScreen = ({route}: IProps) => {
               style={{width: 22, resizeMode: 'contain', marginTop: -10}}
             />
           )}
+          onPressActionButton={handleVoiceSend}
         />
       </View>
     );
   };
+  const handleVoiceSend = (voiceUri, voiceDuration) => {
+    // const [isRecording, setIsRecording] = useState(false);
+
+    // const handleRecordPress = () => {
+    //   if (!isRecording) {
+    //     startRecording();
+    //   } else {
+    //     stopRecording();
+    //   }
+    // };
+
+    // const startRecording = () => {
+    //   setIsRecording(true);
+    //   // AudioRecord.start();
+    // };
+
+    // const stopRecording = () => {
+    //   setIsRecording(false);
+    //   // AudioRecord.stop();
+    // };
+
+    const audioMessage = {
+      _id: messages.length + 1,
+      audio: voiceUri,
+      duration: voiceDuration,
+      createdAt: new Date(),
+      user,
+    };
+    //@ts-ignore
+    onSend([audioMessage]);
+  };
+
+  const CustomAudioComponent = props => {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          const sound = new Sound(props?.currentMessage?.audio, error => {
+            if (error) {
+              console.log('Failed to load the sound', error);
+              return;
+            }
+            // if Звук успешно загружен, можно воспроизводить
+            sound.play();
+          });
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            paddingHorizontal: 6,
+          }}>
+          <Text style={{color: '#fff', fontSize: 26}}>ᐉ</Text>
+          <Text style={{marginVertical: 8}}>
+            {props?.currentMessage?.duration} sec
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
   const renderCustomView = props => {
     if (props?.currentMessage?.file_type) {
       return (
@@ -137,6 +211,7 @@ export const MessageScreen = ({route}: IProps) => {
             height: 40,
             borderRadius: 10,
           }}>
+          <Image source={{uri: props.currentMessage.attachment.url}} />
           <Text style={{color: '#fff', padding: 10}}>
             {props?.currentMessage.name}
           </Text>
@@ -146,39 +221,6 @@ export const MessageScreen = ({route}: IProps) => {
       return <View />;
     }
   };
-
-  // const getSource = message => {
-  //   if (message && message.currentMessage) {
-  //     return message.currentMessage.audio
-  //       ? message.currentMessage.audio
-  //       : message.currentMessage.video
-  //       ? message.currentMessage.video
-  //       : null;
-  //   }
-  //   return null;
-  // };
-  // const renderAudio = message => {
-  //   const source = getSource(message);
-  //   if (source) {
-  //     return (
-  //       <View style={{height: 30}} key={message.currentMessage._id}>
-  //         {Platform.OS === 'ios' ? (
-  //           <Video
-  //             style={styles.videoElement}
-  //             shouldPlay
-  //             height={156}
-  //             width={242}
-  //             muted={true}
-  //             source={{uri: source}}
-  //             allowsExternalPlayback={false}></Video>
-  //         ) : (
-  //           <VideoPlayer style={styles.videoElement} source={{uri: source}} />
-  //         )}
-  //       </View>
-  //     );
-  //   }
-  //   return <></>;
-  // };
 
   return (
     <View style={styles.content}>
@@ -202,10 +244,12 @@ export const MessageScreen = ({route}: IProps) => {
         scrollToBottom
         renderActions={props => renderActions(props)}
         renderCustomView={props => renderCustomView(props)}
+        renderMessageAudio={props => <CustomAudioComponent {...props} />}
         // renderMessageAudio={renderAudio}
+        renderSend={renderSend}
         minInputToolbarHeight={33}
         maxInputLength={32}
-        renderInputToolbar={props => customtInputToolbar(props)}
+        renderInputToolbar={customtInputToolbar}
         placeholder="Сообщение"
         alwaysShowSend={true}
         isKeyboardInternallyHandled={true}
@@ -251,5 +295,17 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     borderWidth: 1,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  webView: {
+    flex: 1,
+    ...Platform.select({
+      android: {
+        marginTop: 20, // Добавьте это значение для обработки проблемы с WebView на Android
+      },
+    }),
   },
 });

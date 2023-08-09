@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {ScrollView, TouchableOpacity, View} from 'react-native';
+import {ScrollView, TouchableOpacity, View, Text} from 'react-native';
 import {ScaledSheet} from 'react-native-size-matters/extend';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Body from '../components/common/Body';
@@ -13,37 +13,75 @@ import {
   Flag,
 } from '../components/common/Svgs';
 import {colors} from '../theme/themes';
-import DropShadow from 'react-native-drop-shadow';
 import Button from '../components/common/Button';
 import {OrderMap} from '../components/OrderMap';
 import {Slider} from 'react-native-awesome-slider';
 import {useSharedValue} from 'react-native-reanimated';
+import {ICategoryDataType} from '../api/OrdersData';
+import {ModalCustom} from '../components/ModalCustom';
 
-export default function OrderDetail() {
+interface IProps {
+  route: {
+    params: {
+      item: ICategoryDataType;
+    };
+  };
+}
+export default function OrderDetail({route}: IProps) {
+  const {item} = route.params;
   const safeAreaInsets = useSafeAreaInsets();
   const [order, setOrder] = useState(false);
-  const progress = useSharedValue(60);
+  const time = (item?.typeTarif * 60) | 60;
+  let curTime = (time - item?.activeMinute) | 1;
+  const progress = useSharedValue(curTime);
   const min = useSharedValue(0);
-  const max = useSharedValue(100);
-  console.log('Order in OrderDetail');
+  const max = useSharedValue(time);
+  const [isOpenDot, setIsOpenDot] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <View style={[styles.container, {marginTop: safeAreaInsets.top + 23}]}>
+      <ModalCustom modalVisible={modalVisible}>
+        <View style={{width: 250}}>
+          <TouchableOpacity
+            onPress={() => setModalVisible(!modalVisible)}
+            style={{alignItems: 'flex-end'}}>
+            <Text
+              style={{
+                marginTop: -20,
+                color: colors.lavender,
+                fontSize: 26,
+              }}>
+              ×
+            </Text>
+          </TouchableOpacity>
+
+          <Body color="#243757" bold style={{marginBottom: 20}}>
+            Вы уверены, что хотите отменить доставку?
+          </Body>
+          <Button
+            onPress={() => {}} //link to next
+            buttonType={1}
+            text="ОТМЕНИТЬ"
+          />
+        </View>
+      </ModalCustom>
+
       <View style={styles.header}>
         <BackButton />
 
-        <View style={{marginLeft: 17}}>
+        <View style={{marginLeft: 17, width: 210}}>
           <Body color="#243757" style={styles.title}>
-            Налоговые отчеты
+            {item?.category}
           </Body>
 
           <Body color="#243757" style={styles.description}>
-            Заказ SEAD: 031285438312
+            Заказ SEAD: {item?.id}
           </Body>
 
           <View style={styles.priceBox}>
             <Body color="#243757" style={styles.priceText}>
-              315.00 ₽
+              {item?.price} ₽
             </Body>
           </View>
         </View>
@@ -60,47 +98,81 @@ export default function OrderDetail() {
 
         <TouchableOpacity
           style={{marginLeft: 14, marginTop: 7}}
+          onPress={() => setIsOpenDot(!isOpenDot)}
           activeOpacity={0.7}>
           <MoreIcon width={25} height={25} />
         </TouchableOpacity>
       </View>
+      {isOpenDot && (
+        <View style={styles.dotMenu}>
+          <TouchableOpacity
+            style={[
+              styles.dotMenuItem,
+              {backgroundColor: colors.white, borderColor: colors.ligthBorder},
+            ]}>
+            <Body center>Изменить адрес</Body>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setModalVisible(true)}
+            style={[
+              styles.dotMenuItem,
+              {
+                backgroundColor: 'rgba(255, 239, 238, 1)',
+                borderColor: 'rgba(255, 177, 170, 1)',
+                marginTop: 0,
+              },
+            ]}>
+            <Body center>Отменить доставку</Body>
+          </TouchableOpacity>
+        </View>
+      )}
 
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{paddingBottom: 130}}>
-        <View style={{marginBottom: 20}}>
-          <Body center bold semiBold>
-            Еще 15-20 минут
-          </Body>
-          <View style={{position: 'absolute', right: 0, bottom: 15}}>
-            <Flag />
+        {item?.completle || item.active ? (
+          <View style={{marginBottom: 20}}>
+            <Body center bold semiBold>
+              {item?.activeMinute
+                ? 'Еще ' + item?.activeMinute + ' минут'
+                : 'Заказ доставлен'}
+            </Body>
+            <View style={{position: 'absolute', right: 0, bottom: 15}}>
+              <Flag />
+            </View>
+            <Slider
+              style={styles.tabbar}
+              progress={progress}
+              minimumValue={min}
+              maximumValue={max}
+              bubbleMaxWidth={6}
+              bubbleWidth={0}
+              disableTrackFollow
+              bubbleTranslateY={3}
+              disable
+              sliderHeight={7}
+              renderThumb={() => (
+                <View style={styles.dotCard}>
+                  <View style={styles.dot} />
+                </View>
+              )}
+              theme={{
+                disableMinTrackTintColor: 'rgba(147, 122, 234, 1)',
+                maximumTrackTintColor: 'white',
+                minimumTrackTintColor: 'red',
+                cacheTrackTintColor: 'red',
+                bubbleBackgroundColor: '#666',
+              }}
+            />
           </View>
-          <Slider
-            style={styles.tabbar}
-            progress={progress}
-            minimumValue={min}
-            maximumValue={max}
-            bubbleMaxWidth={6}
-            bubbleWidth={0}
-            disableTrackFollow
-            bubbleTranslateY={3}
-            disable
-            sliderHeight={7}
-            renderThumb={() => (
-              <View style={styles.dotCard}>
-                <View style={styles.dot} />
-              </View>
-            )}
-            theme={{
-              disableMinTrackTintColor: 'rgba(147, 122, 234, 1)',
-              maximumTrackTintColor: 'white',
-              minimumTrackTintColor: 'red',
-              cacheTrackTintColor: 'red',
-              bubbleBackgroundColor: '#666',
-            }}
-          />
-        </View>
-        <OrderMap />
+        ) : (
+          <View style={{marginBottom: 20}}>
+            <Body center bold semiBold>
+              Заказ отменен
+            </Body>
+          </View>
+        )}
+        <OrderMap item={item} />
 
         <View style={styles.orderDetailBox}>
           {!order && (
@@ -128,12 +200,10 @@ export default function OrderDetail() {
               </Body>
             </View>
           )}
-
           <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
             <View style={!order ? {marginTop: 30} : {marginTop: 9}}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <OrderIconActive width={25} height={25} />
-
                 <Body
                   color="#243757"
                   style={[styles.orderDetailText, {marginLeft: 14}]}>
@@ -162,26 +232,19 @@ export default function OrderDetail() {
           </View>
         </View>
 
-        {order ? (
-          <View style={{marginTop: 16}}>
-            <Button
-              onPress={() => setOrder(false)}
-              buttonType={1}
-              text="ПОДТВЕРДИТЬ ДОСТАВКУ"
-            />
-          </View>
-        ) : (
-          <DropShadow style={styles.buttonShadow}>
-            <TouchableOpacity
-              onPress={() => setOrder(true)}
-              activeOpacity={0.7}
-              style={styles.button}>
-              <Body style={styles.buttonText} color={colors.white}>
-                ЗАБРАЛ ПОСЫЛКУ
-              </Body>
-            </TouchableOpacity>
-          </DropShadow>
-        )}
+        <View style={{marginTop: 16}}>
+          <Button
+            onPress={() => setOrder(false)}
+            buttonType={1}
+            text={
+              item.active
+                ? 'ПОДТВЕРДИТЬ ДОСТАВКУ'
+                : item?.completle
+                ? 'ЗАБРАЛ ПОСЫЛКУ'
+                : 'ЗАКАЗ ОТМЕНЕН'
+            }
+          />
+        </View>
       </ScrollView>
     </View>
   );
@@ -220,6 +283,24 @@ const styles = ScaledSheet.create({
     borderRadius: '100@s',
     margin: '4@s',
     padding: '3@s',
+  },
+  dotMenu: {
+    height: 130,
+    width: 200,
+    backgroundColor: colors.ligther,
+    borderColor: colors.ligthBorder,
+    borderRadius: 5,
+    borderWidth: 1,
+    position: 'absolute',
+    alignSelf: 'flex-end',
+    marginTop: 35,
+    zIndex: 3,
+  },
+  dotMenuItem: {
+    paddingVertical: 12,
+    margin: 10,
+    borderRadius: 10,
+    borderWidth: 1,
   },
   priceBox: {
     maxWidth: 85,

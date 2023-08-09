@@ -1,22 +1,21 @@
 import React from 'react';
 import {Image} from 'react-native';
-const inProcces = '../FrameInProcess.png';
+const cnacelIcon = '../cancelIcon.png';
 
 interface IProps {
   width?: number;
-  height?: number;
 }
 
-const SoatIcon = (props: IProps) => {
-  const {width = 18, height = 15} = props;
+const CanceledIcon = (props: IProps) => {
+  const {width = 15} = props;
 
   return (
     <Image
-      source={require(inProcces)}
+      source={require(cnacelIcon)}
       style={{width: width, resizeMode: 'contain'}}
     />
   );
 };
 
-export default SoatIcon;
+export default CanceledIcon;
 //in procces order

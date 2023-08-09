@@ -20,6 +20,7 @@ export default function Rate() {
   const [data, setData] = useState([
     {
       id: 1,
+      tarifId: 24,
       title: 'Суточный',
       text: 'Срок доставки: до 24 часов',
       txtOutput: 'До 24 часов',
@@ -28,6 +29,7 @@ export default function Rate() {
     },
     {
       id: 2,
+      tarifId: 6,
       title: 'Срочный',
       text: 'Срок доставки: до 6 часов',
       txtOutput: 'До 6 часов',
@@ -36,6 +38,7 @@ export default function Rate() {
     },
     {
       id: 3,
+      tarifId: 1,
       title: 'Сверхсрочный',
       text: 'Срок доставки: до 1 часа',
       txtOutput: 'До 1 часа',

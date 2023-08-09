@@ -12,20 +12,23 @@ import {Space} from '../common/Space';
 import {Slider} from 'react-native-awesome-slider';
 import {useSharedValue} from 'react-native-reanimated';
 import ApplyIcon from '../../assets/icons/ApplyIcon';
+import CanceledIcon from '../../assets/icons/CanceledIcon';
 
 interface IProps {
   item: ICategoryDataType;
 }
 
 export default function OrdersITEM({item}: IProps) {
-  const progress = useSharedValue(40);
+  const time = (item?.typeTarif * 60) | 60;
+  let curTime = (time - item?.activeMinute) | 1;
+  const progress = useSharedValue(curTime);
   const min = useSharedValue(0);
-  const max = useSharedValue(100);
+  const max = useSharedValue(time);
   const navigation = useNavigation();
 
   const goToDetailOrder = () => {
     //@ts-ignore
-    navigation.navigate(R.routes.ORDER_DETAIL_MAP);
+    navigation.navigate(R.routes.ORDER_DETAIL_MAP, {item: item});
   };
   return (
     <TouchableOpacity
@@ -34,7 +37,13 @@ export default function OrdersITEM({item}: IProps) {
       onPress={goToDetailOrder}>
       <View style={styles.header}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          {item.active ? <SoatIcon /> : <ApplyIcon />}
+          {item.active ? (
+            <SoatIcon />
+          ) : item.completle ? (
+            <ApplyIcon />
+          ) : (
+            <CanceledIcon />
+          )}
 
           <Space width={10} />
           <Body semiBold size={20}>
@@ -48,7 +57,7 @@ export default function OrdersITEM({item}: IProps) {
       </View>
       <Space height={5} />
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <Body>01 апреля 10:01</Body>
+        <Body>{item.date}</Body>
         <Body>В доставке</Body>
       </View>
 
