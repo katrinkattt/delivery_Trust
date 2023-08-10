@@ -59,9 +59,9 @@ export default function CourierRating() {
       <View style={{paddingHorizontal: 15, width: '100%'}}>
         <View style={styles.ratingBox}>
           <View style={[styles.tableBox, {borderRadius: 5}]}>
-            {ratingArr.map((courier: IRatingCourier) => (
-                
-            ))}
+            {/* {ratingArr.map((courier: IRatingCourier) => (
+
+            ))} */}
             <View style={{flexDirection: 'row'}}>
               <Body color="#243757" style={styles.tableNumber}>
                 566
