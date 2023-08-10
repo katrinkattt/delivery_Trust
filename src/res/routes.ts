@@ -19,10 +19,12 @@ export const CLIENT_ORDER_DETAIL = 'ClientOrderDetail';
 export const CLIENT_ORDER_CONTACT = 'ContactDetails';
 export const CLIENT_ORDER_RATE = 'Rate';
 export const CLIENT_ORDER_PAY = 'PayClient';
+export const PAYMENT_ORDER = 'Payment';
 export const CLIENT_HOME = 'HomeClient';
 export const CLIENT_REGISTER_ARG = 'ClientRegistrArgumet';
 export const CLIENT_ORDER_PARAM = 'OrderParametrs';
 
+export const CARD_EDITOR = 'CardEditor';
 //SCREEN_COURIER
 export const AUTH_NAVIGATION = 'AuthNavigator';
 export const CONFIRM_EMAIL = 'ConfirmEmail';
@@ -31,6 +33,7 @@ export const HOME = 'Home';
 export const LOGIN = 'Login';
 export const MESSAGES = 'Messages';
 export const ORDER_DETAIL_MAP = 'OrderDetail';
+export const ORDER_REVIEW = 'OrderReview';
 export const OREDERS = 'Orders';
 export const PROFILE = 'Profile';
 export const PROFILE_TYPE = 'ProfileType';

@@ -44,16 +44,16 @@ export default function Detail({route}: IProps) {
           {item.title}
         </Body>
 
-        <Space height={25} />
+        <Space height={20} />
         <View style={styles.hr} />
-        <Space height={22} />
+        <Space height={20} />
 
         <Body center size={25} bold>
           {item.price} ₽
         </Body>
 
         <ScrollView
-          style={{height: Platform.OS === 'ios' ? 150 : 130, marginTop: 20}}>
+          style={{height: Platform.OS === 'ios' ? 150 : '22%', marginTop: 8}}>
           <Body
             size={16}
             style={{fontSize: 16, lineHeight: 24, fontWeight: 400}}>
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     borderColor: '#E8E8F0',
     paddingVertical: vs(10),
   },
-  image: {},
+  image: {height: '25%'},
   imageCard: {
     alignItems: 'center',
     paddingHorizontal: 16,
@@ -112,6 +112,5 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 5,
     shadowRadius: 20,
-    marginTop: 20,
   },
 });

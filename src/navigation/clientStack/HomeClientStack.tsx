@@ -6,7 +6,10 @@ import Detail from '../../screens/Client/Detail';
 import HomeClient from '../../screens/Client/HomeClient';
 import OrderParametrs from '../../screens/Client/OrderParametrs';
 import PayClient from '../../screens/Client/PayClien';
+import Payment from '../../screens/Client/Payment';
 import Rate from '../../screens/Client/Rate';
+import OrderReview from '../../screens/OrderReview';
+import CardEditor from '../../screens/CardEditor';
 
 const HomeClientStack = () => {
   const Stack = createStackNavigator();
@@ -56,6 +59,27 @@ const HomeClientStack = () => {
       <Stack.Screen
         component={PayClient}
         name={'PayClient'}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        component={OrderReview}
+        name={'OrderReview'}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        component={Payment}
+        name={'Payment'}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        component={CardEditor}
+        name="CardEditor"
         options={{
           headerShown: false,
         }}

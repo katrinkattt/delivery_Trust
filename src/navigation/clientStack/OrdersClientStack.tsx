@@ -1,31 +1,40 @@
-import { createStackNavigator } from '@react-navigation/stack'
+import {createStackNavigator} from '@react-navigation/stack';
 
-import React from 'react'
-import ClientOrder from '../../screens/Client/ClientOrders'
-import ClientOrderDetail from '../../screens/Client/ClientOrederDetal'
+import React from 'react';
+import ClientOrder from '../../screens/Client/ClientOrders';
+import OrderDetail from '../../screens/OrderDetail';
+import OrderReview from '../../screens/OrderReview';
 
 const OrdersClientStack = () => {
-    const Stack = createStackNavigator()
+  const Stack = createStackNavigator();
 
-    return (
-        <Stack.Navigator>
-            <Stack.Screen
-                component={ClientOrder}
-                name={'ClientOrder'}
-                options={{
-                    headerShown: false,
-                }}
-            />
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        component={ClientOrder}
+        name={'ClientOrder'}
+        options={{
+          headerShown: false,
+        }}
+      />
 
-            <Stack.Screen
-                component={ClientOrderDetail}
-                name={'ClientOrderDetail'}
-                options={{
-                    headerShown: false,
-                }}
-            />
-        </Stack.Navigator>
-    )
-}
+      <Stack.Screen
+        component={OrderDetail}
+        name={'OrderDetail'}
+        options={{
+          headerShown: false,
+        }}
+      />
 
-export default OrdersClientStack
+      <Stack.Screen
+        component={OrderReview}
+        name={'OrderReview'}
+        options={{
+          headerShown: false,
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+export default OrdersClientStack;

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {ScrollView, TouchableOpacity, View, Text} from 'react-native';
+import {ScrollView, TouchableOpacity, View, Text, Image} from 'react-native';
 import {ScaledSheet} from 'react-native-size-matters/extend';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Body from '../components/common/Body';
@@ -19,6 +19,8 @@ import {Slider} from 'react-native-awesome-slider';
 import {useSharedValue} from 'react-native-reanimated';
 import {ICategoryDataType} from '../api/OrdersData';
 import {ModalCustom} from '../components/ModalCustom';
+import {useNavigation} from '@react-navigation/native';
+import R from '../res';
 
 interface IProps {
   route: {
@@ -30,6 +32,7 @@ interface IProps {
 export default function OrderDetail({route}: IProps) {
   const {item} = route.params;
   const safeAreaInsets = useSafeAreaInsets();
+  const navigation = useNavigation();
   const [order, setOrder] = useState(false);
   const time = (item?.typeTarif * 60) | 60;
   let curTime = (time - item?.activeMinute) | 1;
@@ -38,10 +41,22 @@ export default function OrderDetail({route}: IProps) {
   const max = useSharedValue(time);
   const [isOpenDot, setIsOpenDot] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [delOrder, setDelOrder] = useState(false);
+
+  const confirmDelivery = () => {
+    if (item.active) {
+      setOrder(false);
+      //@ts-ignore
+      navigation.navigate(R.routes.ORDER_REVIEW);
+    }
+  };
 
   return (
     <View style={[styles.container, {marginTop: safeAreaInsets.top + 23}]}>
-      <ModalCustom modalVisible={modalVisible}>
+      <ModalCustom
+        modalVisible={modalVisible}
+        err={delOrder}
+        text="Доставка отменена">
         <View style={{width: 250}}>
           <TouchableOpacity
             onPress={() => setModalVisible(!modalVisible)}
@@ -56,14 +71,18 @@ export default function OrderDetail({route}: IProps) {
             </Text>
           </TouchableOpacity>
 
-          <Body color="#243757" bold style={{marginBottom: 20}}>
-            Вы уверены, что хотите отменить доставку?
-          </Body>
-          <Button
-            onPress={() => {}} //link to next
-            buttonType={1}
-            text="ОТМЕНИТЬ"
-          />
+          {!delOrder && (
+            <>
+              <Body color="#243757" bold style={{marginBottom: 20}}>
+                Вы уверены, что хотите отменить доставку?
+              </Body>
+              <Button
+                onPress={() => setDelOrder(true)} //link to next
+                buttonType={1}
+                text="ОТМЕНИТЬ"
+              />
+            </>
+          )}
         </View>
       </ModalCustom>
 
@@ -110,20 +129,24 @@ export default function OrderDetail({route}: IProps) {
               styles.dotMenuItem,
               {backgroundColor: colors.white, borderColor: colors.ligthBorder},
             ]}>
-            <Body center>Изменить адрес</Body>
+            <Body center>
+              {item?.active ? 'Изменить адрес' : 'Заказ завершен'}
+            </Body>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setModalVisible(true)}
-            style={[
-              styles.dotMenuItem,
-              {
-                backgroundColor: 'rgba(255, 239, 238, 1)',
-                borderColor: 'rgba(255, 177, 170, 1)',
-                marginTop: 0,
-              },
-            ]}>
-            <Body center>Отменить доставку</Body>
-          </TouchableOpacity>
+          {item?.active && (
+            <TouchableOpacity
+              onPress={() => setModalVisible(true)}
+              style={[
+                styles.dotMenuItem,
+                {
+                  backgroundColor: 'rgba(255, 239, 238, 1)',
+                  borderColor: 'rgba(255, 177, 170, 1)',
+                  marginTop: 0,
+                },
+              ]}>
+              <Body center>Отменить доставку</Body>
+            </TouchableOpacity>
+          )}
         </View>
       )}
 
@@ -234,7 +257,7 @@ export default function OrderDetail({route}: IProps) {
 
         <View style={{marginTop: 16}}>
           <Button
-            onPress={() => setOrder(false)}
+            onPress={confirmDelivery}
             buttonType={1}
             text={
               item.active
@@ -285,7 +308,7 @@ const styles = ScaledSheet.create({
     padding: '3@s',
   },
   dotMenu: {
-    height: 130,
+    paddingVertical: 6,
     width: 200,
     backgroundColor: colors.ligther,
     borderColor: colors.ligthBorder,

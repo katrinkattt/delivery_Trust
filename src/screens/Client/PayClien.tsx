@@ -12,6 +12,8 @@ import {Ellipses} from '../../components/common/Svgs';
 
 import {Space} from '../../components/common/Space';
 import Button from '../../components/common/Button';
+import {useNavigation} from '@react-navigation/native';
+import R from '../../res';
 
 export default function PayClient() {
   const [data, setData] = useState([
@@ -19,6 +21,8 @@ export default function PayClient() {
     {id: 2, title: '**** **** **** 5670', select: true},
     {id: 3, title: 'Криптовалюты', select: true},
   ]);
+  const [currMethod, setCurrMethod] = useState(1);
+  const navigation = useNavigation();
 
   const pressButton = (id: number) => {
     const newData = data.map(i => {
@@ -29,6 +33,7 @@ export default function PayClient() {
       }
     });
     setData(newData);
+    setCurrMethod(id);
     // setCheck(!check)
   };
 
@@ -73,7 +78,17 @@ export default function PayClient() {
 
           <Space height={20} />
 
-          <Button text="Оплатить" buttonType={2} />
+          <Button
+            text="ОПЛАТИТЬ"
+            onPress={() =>
+              //@ts-ignore
+              navigation.navigate(R.routes.PAYMENT_ORDER, {
+                id_method: currMethod,
+                price: 23,
+              })
+            }
+            buttonType={2}
+          />
 
           <Space height={10} />
         </View>

@@ -4,7 +4,10 @@ import {s, vs} from 'react-native-size-matters';
 import AuthSelect from './common/AuthSelect';
 import Body from './common/Body';
 import ToggleSwitch from 'toggle-switch-react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {useNavigation} from '@react-navigation/native';
 const backImage = require('../assets/bank.png');
+import R from '../res';
 
 // interface IData {
 //     id: number
@@ -17,6 +20,7 @@ const backImage = require('../assets/bank.png');
 // }
 
 export default function SettingProfile() {
+  const navigation = useNavigation();
   const [data, setData] = useState([
     {id: 1, title: 'Курьер подходит к дому', chosen: false},
     {id: 2, title: 'Курьер опаздывает', chosen: false},
@@ -44,22 +48,27 @@ export default function SettingProfile() {
   //     })
   //     setTeleg(newItem)
 
+  const editCard = () => {
+    //@ts-ignore
+    navigation.navigate(R.routes.CARD_EDITOR);
+  };
   return (
     <View style={styles.card}>
       <Text style={styles.courierRatingText}>Банковская карта</Text>
+      <TouchableOpacity onPress={editCard}>
+        <ImageBackground
+          source={backImage}
+          style={styles.back}
+          resizeMode="stretch">
+          <Body size={11} color="white">
+            Master Card
+          </Body>
 
-      <ImageBackground
-        source={backImage}
-        style={styles.back}
-        resizeMode="stretch">
-        <Body size={11} color="white">
-          Master Card
-        </Body>
-
-        <Body size={24} bold color="white">
-          **** **** **** 0329
-        </Body>
-      </ImageBackground>
+          <Body size={24} bold color="white">
+            **** **** **** 0321
+          </Body>
+        </ImageBackground>
+      </TouchableOpacity>
 
       <AuthSelect
         label="Часовой пояс"
