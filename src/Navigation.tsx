@@ -28,6 +28,7 @@ import ConfirmEmail from './screens/ConfirmEmail';
 import ProfileType from './screens/ProfileType';
 import CourierProfileData from './screens/CourierProfileData';
 import SigningAnAgreement from './screens/SigningAnAgreement';
+import Agreement from './screens/Agrement';
 import ClientRegistrArgumet from './screens/Client/RegistrArgument';
 import Detail from './screens/Client/Detail';
 import CardEditor from './screens/CardEditor';
@@ -78,6 +79,7 @@ export const Navigation = () => {
             name="SigningAnAgreement"
             component={SigningAnAgreement}
           />
+          <Stack.Screen name="Agreement" component={Agreement} />
           {/*/@ts-ignore/*/}
           <Stack.Screen name="Detail" component={Detail} />
 
@@ -90,7 +92,7 @@ export const Navigation = () => {
           <Stack.Screen name="TabScreen" component={TabScreen} />
           <Stack.Screen name="ClientTabScreen" component={ClientTabScreen} />
           <Stack.Screen name="OrderDetail" component={OrderDetail} />
-          {/* <Stack.Screen name="CardEditor" component={CardEditor} /> */}
+          <Stack.Screen name="CardEditor" component={CardEditor} />
         </Stack.Navigator>
       </NavigationContainer>
     </>

@@ -7,4 +7,5 @@ export const colors = {
   darkBlue: '#243757',
   blue: '#2F80ED',
   lavender: '#AD86F0',
+  green: 'rgba(209, 234, 122, 1)',
 };

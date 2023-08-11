@@ -15,9 +15,11 @@ import ConfirmEmail from '.././screens/ConfirmEmail';
 import ProfileType from '.././screens/ProfileType';
 import CourierProfileData from '.././screens/CourierProfileData';
 import SigningAnAgreement from '.././screens/SigningAnAgreement';
+import Agreement from '../screens/Agrement';
 import ClientRegistrArgumet from '.././screens/Client/RegistrArgument';
 import Detail from '.././screens/Client/Detail';
-
+import RatingCourier from '../screens/RatingCourier';
+import CardEditor from '../screens/CardEditor';
 import {MessageScreen} from '../components/messages/MessageScreen';
 import R from '../res';
 import {TabScreen} from './Tabs';
@@ -64,6 +66,7 @@ export const Navigation = () => {
               name="SigningAnAgreement"
               component={SigningAnAgreement}
             />
+            <Stack.Screen name="Agreement" component={Agreement} />
             {/*/@ts-ignore/*/}
             <Stack.Screen name="Detail" component={Detail} />
             {/* <Stack.Screen name="ClientOrderDetail" component={ClientOrderDetail} /> */}
@@ -76,6 +79,11 @@ export const Navigation = () => {
               name={R.routes.MESSAGE_SCREEN}
               component={MessageScreen}
             />
+            <Stack.Screen
+              name={R.routes.RATING_COURIER}
+              component={RatingCourier}
+            />
+            <Stack.Screen name="CardEditor" component={CardEditor} />
 
             <Stack.Screen name="TabScreen" component={TabScreen} />
             <Stack.Screen name="OrderDetail" component={OrderDetail} />

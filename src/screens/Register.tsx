@@ -30,18 +30,27 @@ export default function Register() {
   };
 
   const submit = (data: IRegistr) => {
-    dispatch(
-      registerAction({
-        data,
-        onSuccess: () => {
-          //@ts-ignore
-          navigation.navigate(R.routes.CONFIRM_EMAIL);
-        },
-        onError: async () => {
-          setError('Предоставленный код не совпадает или истек срок действия');
-        },
-      }),
-    );
+    //@ts-ignore
+    navigation.navigate(R.routes.CONFIRM_EMAIL);
+    // REGISTER!!!!
+    if (data.password !== data.passwordConfirmation) {
+      setError('Пароли не совпадают');
+    } else {
+      dispatch(
+        registerAction({
+          data,
+          onSuccess: () => {
+            //@ts-ignore
+            navigation.navigate(R.routes.CONFIRM_EMAIL);
+          },
+          onError: async () => {
+            setError(
+              'Предоставленный код не совпадает или истек срок действия',
+            );
+          },
+        }),
+      );
+    }
   };
 
   return (

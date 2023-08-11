@@ -20,6 +20,7 @@ export default function OrderParametrs() {
   ]);
   const [typeDoc, setTypeDoc] = useState('Выберите тип документа');
   const [typePac, setTypePac] = useState('Выберите тип посылки');
+  const [isDoor, setIsDoor] = useState(false);
 
   const docTypeArr = [
     {val: 'dogovor', label: 'Договор'},
@@ -95,7 +96,7 @@ export default function OrderParametrs() {
                 </View>
                 <View style={{marginTop: 3}}>
                   <Ellipses
-                    color={item.select ? 'rgba(160, 172, 190, 1)' : 'white'}
+                    color={item.select ? 'rgba(160, 172, 190, 1)' : '#333'}
                   />
                 </View>
               </TouchableOpacity>
@@ -131,7 +132,12 @@ export default function OrderParametrs() {
             position="center"
           />
 
-          <CustomCheckbox label="От двери до двери" style={{marginTop: 16}} />
+          <CustomCheckbox
+            label="От двери до двери"
+            style={{marginTop: 16}}
+            onChange={() => setIsDoor(!isDoor)}
+            val={isDoor}
+          />
 
           <View style={{alignItems: 'center'}}>
             <Button

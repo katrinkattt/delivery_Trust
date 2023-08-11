@@ -319,68 +319,77 @@
 
 // export const userReducer = persistReducer(persistConfig, userSlice.reducer)
 
-import AsyncStorage from '@react-native-community/async-storage'
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { PersistConfig, persistReducer } from 'redux-persist'
-import { IRegistr, IRole } from '../../types/data'
-import { userTypeEnum } from '../../enums'
+import AsyncStorage from '@react-native-community/async-storage';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {PersistConfig, persistReducer} from 'redux-persist';
+import {IRegistr, IRole} from '../../types/data';
+import {userTypeEnum} from '../../enums';
 
-import { postRole, registerAction, setInputDisable, signOutUser, userType } from './action'
-import { UserState } from './types'
+import {
+  postRole,
+  registerAction,
+  setInputDisable,
+  signOutUser,
+  userType,
+} from './action';
+import {UserState} from './types';
 
 export const initialStateUser: UserState = {
-    typeInUser: false,
-    searchInput: false,
-    loading: false,
-    accessToken: null,
-    role: userTypeEnum.CLIENT,
-}
+  typeInUser: false,
+  searchInput: false,
+  loading: false,
+  accessToken: null,
+  role: userTypeEnum.CLIENT,
+};
 
 const userSlice = createSlice({
-    name: 'user',
-    initialState: initialStateUser,
-    reducers: {},
-    extraReducers: {
-        [signOutUser.type]: state => {
-            state.accessToken = null
-        },
-
-        [userType.type]: (state, action: PayloadAction<boolean>) => {
-            state.typeInUser = action.payload
-        },
-        [setInputDisable.type]: (state, action: PayloadAction<boolean>) => {
-            state.searchInput = action.payload
-        },
-
-        [registerAction.fulfilled.type]: (state, action: PayloadAction<IRegistr>) => {
-            // state.token = action.payload
-            state.loading = false
-            state.accessToken = action.payload.accessToken
-        },
-        [registerAction.pending.type]: state => {
-            state.loading = true
-        },
-        [registerAction.rejected.type]: state => {
-            state.loading = false
-        },
-
-        [postRole.fulfilled.type]: (state, action: PayloadAction<IRole>) => {
-            state.loading = false
-            state.role = action.payload.role
-        },
-        [postRole.pending.type]: state => {
-            state.loading = true
-        },
-        [postRole.rejected.type]: state => {
-            state.loading = false
-        },
+  name: 'user',
+  initialState: initialStateUser,
+  reducers: {},
+  extraReducers: {
+    [signOutUser.type]: state => {
+      state.accessToken = null;
     },
-})
+
+    [userType.type]: (state, action: PayloadAction<boolean>) => {
+      state.typeInUser = action.payload;
+    },
+    [setInputDisable.type]: (state, action: PayloadAction<boolean>) => {
+      state.searchInput = action.payload;
+    },
+
+    [registerAction.fulfilled.type]: (
+      state,
+      action: PayloadAction<IRegistr>,
+    ) => {
+      // state.token = action.payload
+      state.loading = false;
+      state.accessToken = action.payload.accessToken;
+    },
+    [registerAction.pending.type]: state => {
+      state.loading = true;
+    },
+    [registerAction.rejected.type]: state => {
+      state.loading = false;
+    },
+
+    [postRole.fulfilled.type]: (state, action: PayloadAction<IRole>) => {
+      state.loading = false;
+      state.role = action.payload.role;
+    },
+    [postRole.pending.type]: state => {
+      state.loading = true;
+    },
+    [postRole.rejected.type]: state => {
+      state.loading = false;
+    },
+  },
+});
 
 const persistConfig: PersistConfig<UserState> = {
-    key: 'auth',
-    storage: AsyncStorage,
-    whitelist: ['user', 'accessToken', 'refreshToken', 'registerClient'],
-}
+  key: 'auth',
+  storage: AsyncStorage,
+  whitelist: ['user', 'accessToken', 'refreshToken', 'registerClient'],
+};
 
-export const userReducer = persistReducer(persistConfig, userSlice.reducer)
+export const userReducer = persistReducer(persistConfig, userSlice.reducer);

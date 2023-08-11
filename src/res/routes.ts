@@ -30,6 +30,7 @@ export const AUTH_NAVIGATION = 'AuthNavigator';
 export const CONFIRM_EMAIL = 'ConfirmEmail';
 export const COURIER_PROFILE_DATA = 'CourierProfileData';
 export const HOME = 'Home';
+export const RATING_COURIER = 'RatingCourier';
 export const LOGIN = 'Login';
 export const MESSAGES = 'Messages';
 export const ORDER_DETAIL_MAP = 'OrderDetail';
@@ -40,6 +41,7 @@ export const PROFILE_TYPE = 'ProfileType';
 export const RESET_PASSWORD_EMAIL = 'ResetPasswordEmail';
 export const RESED_PASSWORD_SAVE = 'ResetPasswordSave';
 export const SIGNING_AN_AGREEMENT = 'SigningAnAgreement';
+export const AGREEMENT = 'Agreement';
 export const REGISTER = 'Register';
 export const MESSAGE_SCREEN = 'MessageScreen';
 

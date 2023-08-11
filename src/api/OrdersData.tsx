@@ -9,6 +9,11 @@ export interface ICategoryDataType {
   price?: number;
   date: string;
   typeTarif: number;
+  address: string;
+  orderTime: string;
+  addressTo: string;
+  recipient: string;
+  sender: string;
 }
 
 const OrdersData = [
@@ -23,6 +28,11 @@ const OrdersData = [
     price: 190,
     date: '01 августа 10:01',
     typeTarif: 1,
+    address: 'Москва,Красная площадь, 3, к2 ',
+    addressTo: 'Москва,Красная площадь, 3, к2 ',
+    orderTime: '12:45',
+    recipient: 'Антонов Власий Борисович',
+    sender: 'Орехов Вадим Агафонович',
   },
   {
     id: 2394619,
@@ -35,6 +45,11 @@ const OrdersData = [
     price: 200,
     date: '30 мая 20:11',
     typeTarif: 24,
+    address: 'Москва, Ленинские горы, д. 1, стр. 52',
+    addressTo: 'Москва,Красная площадь, 3, к2 ',
+    orderTime: '13:52',
+    recipient: 'Орехов Власий Борисович',
+    sender: 'Антонов Вадим Агафонович',
   },
   {
     id: 3321073,
@@ -47,6 +62,11 @@ const OrdersData = [
     price: 290,
     date: '3 мая 10:31',
     typeTarif: 6,
+    address: 'Москва, Ленинградский проспект, 39',
+    addressTo: 'Москва,Красная площадь, 3, к2 ',
+    orderTime: '16:12',
+    recipient: 'Антонов Вадим Агафонович',
+    sender: 'Орехов Власий Борисович',
   },
   {
     id: 4329402,
@@ -59,6 +79,11 @@ const OrdersData = [
     price: 290,
     date: '30 апреля 10:31',
     typeTarif: 24,
+    address: 'Москва г, Чапаевский пер, дом 14,',
+    addressTo: 'Москва,Красная площадь, 3, к2 ',
+    orderTime: '15:34',
+    recipient: 'Антонов Вадим Агафонович',
+    sender: 'Орехов Власий Борисович',
   },
   {
     id: 5343924,
@@ -71,6 +96,11 @@ const OrdersData = [
     price: 390,
     date: '3 апреля 10:31',
     typeTarif: 6,
+    address: 'Ленинградский проспект 39, стр. 79',
+    addressTo: 'Москва,Красная площадь, 3, к2 ',
+    orderTime: '13:23',
+    recipient: 'Антонов Вадим Агафонович',
+    sender: 'Орехов Власий Борисович',
   },
 ];
 

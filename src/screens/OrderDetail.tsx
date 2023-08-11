@@ -26,11 +26,14 @@ interface IProps {
   route: {
     params: {
       item: ICategoryDataType;
+      user?: boolean;
     };
   };
 }
 export default function OrderDetail({route}: IProps) {
+  // const user = useSelector(getUser);
   const {item} = route.params;
+  const {user} = route.params;
   const safeAreaInsets = useSafeAreaInsets();
   const navigation = useNavigation();
   const [order, setOrder] = useState(false);
@@ -44,10 +47,12 @@ export default function OrderDetail({route}: IProps) {
   const [delOrder, setDelOrder] = useState(false);
 
   const confirmDelivery = () => {
-    if (item.active) {
-      setOrder(false);
-      //@ts-ignore
-      navigation.navigate(R.routes.ORDER_REVIEW);
+    if (user) {
+      if (item.active) {
+        setOrder(false);
+        //@ts-ignore
+        navigation.navigate(R.routes.ORDER_REVIEW);
+      }
     }
   };
 
@@ -85,7 +90,6 @@ export default function OrderDetail({route}: IProps) {
           )}
         </View>
       </ModalCustom>
-
       <View style={styles.header}>
         <BackButton />
 
@@ -122,38 +126,42 @@ export default function OrderDetail({route}: IProps) {
           <MoreIcon width={25} height={25} />
         </TouchableOpacity>
       </View>
-      {isOpenDot && (
-        <View style={styles.dotMenu}>
-          <TouchableOpacity
-            style={[
-              styles.dotMenuItem,
-              {backgroundColor: colors.white, borderColor: colors.ligthBorder},
-            ]}>
-            <Body center>
-              {item?.active ? 'Изменить адрес' : 'Заказ завершен'}
-            </Body>
-          </TouchableOpacity>
-          {item?.active && (
+      {isOpenDot &&
+        user && ( //пока кнопка не для курьеров
+          <View style={styles.dotMenu}>
             <TouchableOpacity
-              onPress={() => setModalVisible(true)}
               style={[
                 styles.dotMenuItem,
                 {
-                  backgroundColor: 'rgba(255, 239, 238, 1)',
-                  borderColor: 'rgba(255, 177, 170, 1)',
-                  marginTop: 0,
+                  backgroundColor: colors.white,
+                  borderColor: colors.ligthBorder,
                 },
               ]}>
-              <Body center>Отменить доставку</Body>
+              <Body center>
+                {item?.active ? 'Изменить адрес' : 'Заказ завершен'}
+              </Body>
             </TouchableOpacity>
-          )}
-        </View>
-      )}
+            {item?.active && (
+              <TouchableOpacity
+                onPress={() => setModalVisible(true)}
+                style={[
+                  styles.dotMenuItem,
+                  {
+                    backgroundColor: 'rgba(255, 239, 238, 1)',
+                    borderColor: 'rgba(255, 177, 170, 1)',
+                    marginTop: 0,
+                  },
+                ]}>
+                <Body center>Отменить доставку</Body>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
 
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{paddingBottom: 130}}>
-        {item?.completle || item.active ? (
+        {(item?.completle || item.active) && user ? (
           <View style={{marginBottom: 20}}>
             <Body center bold semiBold>
               {item?.activeMinute
@@ -188,11 +196,26 @@ export default function OrderDetail({route}: IProps) {
               }}
             />
           </View>
-        ) : (
+        ) : user ? (
           <View style={{marginBottom: 20}}>
             <Body center bold semiBold>
               Заказ отменен
             </Body>
+          </View>
+        ) : (
+          <View style={{marginBottom: 20, paddingLeft: 40}}>
+            <View style={{flexDirection: 'row'}}>
+              <Body>Время доставки</Body>
+              <Body bold style={{fontWeight: 'bold', paddingLeft: 40}}>
+                {item?.orderTime}
+              </Body>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              <Body>Осталось времени</Body>
+              <Body bold style={{fontWeight: 'bold', paddingLeft: 26}}>
+                {item?.activeMinute}
+              </Body>
+            </View>
           </View>
         )}
         <OrderMap item={item} />
@@ -213,13 +236,13 @@ export default function OrderDetail({route}: IProps) {
               <Body
                 color="rgba(0, 0, 0, 0.36)"
                 style={styles.orderDetailDescription}>
-                Антонов Власий Борисович
+                {item?.sender}
               </Body>
 
               <Body
                 color="#243757"
                 style={[styles.orderDetailText, {marginTop: 3}]}>
-                Москва, Малая Юшуньская улица, 1к1
+                {item?.address}
               </Body>
             </View>
           )}
@@ -237,13 +260,13 @@ export default function OrderDetail({route}: IProps) {
               <Body
                 color="rgba(0, 0, 0, 0.36)"
                 style={styles.orderDetailDescription}>
-                Орехов Вадим Агафонович
+                {item?.recipient}
               </Body>
 
               <Body
                 color="#243757"
                 style={[styles.orderDetailText, {marginTop: 3}]}>
-                Москва, Малая Юшуньская улица, 15к1
+                {item?.addressTo}
               </Body>
             </View>
 
@@ -258,7 +281,7 @@ export default function OrderDetail({route}: IProps) {
         <View style={{marginTop: 16}}>
           <Button
             onPress={confirmDelivery}
-            buttonType={1}
+            buttonType={user ? 1 : 3}
             text={
               item.active
                 ? 'ПОДТВЕРДИТЬ ДОСТАВКУ'

@@ -1,12 +1,14 @@
 import React, {useState} from 'react';
 import {ScaledSheet} from 'react-native-size-matters/extend';
-import {TouchableOpacity, View, Text} from 'react-native';
-import {Formik} from 'formik';
-import AuthInput from '../components/common/AuthInput';
+import {TouchableOpacity, View, ImageBackground, Text} from 'react-native';
+import {s, vs} from 'react-native-size-matters';
 import Header from '../components/Header';
 import Body from '../components/common/Body';
 import Button from '../components/common/Button';
+import {Ellipses} from '../components/common/Svgs';
 import {colors} from '../theme/themes';
+
+const masterCardImg = require('../assets/bank.png');
 
 export default function CardEditor() {
   const [isOpenDonut, setIsOpenDonut] = useState(false);
@@ -16,7 +18,41 @@ export default function CardEditor() {
       //fd
     } else setIsOpenDonut(true);
   };
-
+  const [cardArr, setCardArr] = useState([
+    {
+      id: 1,
+      select: true,
+      system: 'MIR',
+      number: '**** **** **** 4256',
+      recToken: 'jsdgdb',
+    },
+    {
+      id: 2,
+      select: false,
+      system: 'Master Card',
+      number: '**** **** **** 0321',
+      recToken: 'lvabe',
+    },
+    {
+      id: 3,
+      select: false,
+      system: 'Visa',
+      number: '**** **** **** 4256',
+      recToken: '',
+    },
+  ]);
+  const [idCard, setIdCard] = useState(0);
+  const pressButton = (id: number) => {
+    const newData = cardArr.map(i => {
+      if (i.id === id) {
+        return {...i, select: (i.select = true)};
+      } else {
+        return {...i, select: (i.select = false)};
+      }
+    });
+    setCardArr(newData);
+    setIdCard(id);
+  };
   return (
     <View style={{flex: 1}}>
       <Header title="Банковская карта" />
@@ -28,24 +64,46 @@ export default function CardEditor() {
           style={{marginTop: 20, fontWeight: 'bold'}}>
           Мои карты
         </Body>
-
-        {/* <Button text="ДОБАВИТЬ КАРТУ" onPress={donutSend} buttonType={2} /> */}
-        {/* {isOpenDonut && (
-          <Formik initialValues={initialValue} onSubmit={() => {}}>
-            <AuthInput
-              label="Сумма чаевых, ₽"
-              placeholder="Введите сумму чаевых"
-              position="top"
-              name="donut"
-              keyboardType="number-pad"
-            />
-          </Formik>
-        )} */}
+        {cardArr.map(card => (
+          <View style={{flexDirection: 'row'}}>
+            <TouchableOpacity
+              key={card.id}
+              style={{flexDirection: 'row'}}
+              onPress={() => {
+                card?.recToken && pressButton(card.id);
+              }}>
+              <View style={{marginTop: 40, marginRight: 14}}>
+                <Ellipses color={card?.select ? colors.lavender : '#ccc'} />
+              </View>
+              <ImageBackground
+                source={masterCardImg}
+                style={styles.back}
+                resizeMode="stretch">
+                <Body size={11} color="white">
+                  {card?.system}
+                </Body>
+                <Body size={18} bold color="white">
+                  {card?.number}
+                </Body>
+                {!card?.recToken && (
+                  <Body size={12} bold color="white">
+                    Карта недействительна
+                  </Body>
+                )}
+              </ImageBackground>
+            </TouchableOpacity>
+            <TouchableOpacity style={{marginTop: 24, marginLeft: 10}}>
+              <Body size={40} color={colors.ligthBorder}>
+                ×
+              </Body>
+            </TouchableOpacity>
+          </View>
+        ))}
       </View>
       <TouchableOpacity
         style={styles.bottom}
         onPress={() => setIsOpenDonut(false)}>
-        <Button text="ДОБАВИТЬ КАРТУ" onPress={donutSend} buttonType={2} />
+        <Button text="ДОБАВИТЬ КАРТУ" onPress={donutSend} buttonType={1} />
       </TouchableOpacity>
     </View>
   );
@@ -56,6 +114,14 @@ const styles = ScaledSheet.create({
     padding: 25,
     textAlign: 'center',
     color: colors.darkBlue,
+  },
+  back: {
+    height: 64,
+    width: 289,
+    paddingHorizontal: s(14),
+    paddingVertical: vs(8),
+    borderRadius: s(10),
+    marginVertical: vs(16),
   },
   bottom: {
     position: 'absolute',

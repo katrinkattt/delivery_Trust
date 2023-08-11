@@ -32,6 +32,7 @@ export default function ContactDetails() {
     doorCode: '',
   };
   const [state, setState] = useState(initialValues);
+  const [agre, setAgre] = useState(false);
 
   const pressButton = (id: number) => {
     const newData = data.map(i => {
@@ -174,6 +175,8 @@ export default function ContactDetails() {
             <CustomCheckbox
               label="Согласие на обработку персональных данных"
               style={{marginTop: 16}}
+              onChange={() => setAgre(!agre)}
+              val={agre}
             />
 
             <View style={{alignItems: 'center'}}>

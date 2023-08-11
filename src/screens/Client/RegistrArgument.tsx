@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import Button from '../../components/common/Button';
 import {useNavigation} from '@react-navigation/native';
@@ -8,10 +8,10 @@ import AuthSelect from '../../components/common/AuthSelect';
 import CustomCheckbox from '../../components/common/CustomCheckbox';
 import {Formik} from 'formik';
 import {ClientRegistData, IClientDateRes} from '../../types/data';
-import {PickerInp} from '../../components/common/SelectPicker';
 import {FormButton} from '../../components/common/FormButton/FormButton';
 import {useAppDispatch} from '../../hooks/redux';
 import {ClientDataAction} from '../../state/user/action';
+
 export default function ClientRegistrArgumet() {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
@@ -24,71 +24,85 @@ export default function ClientRegistrArgumet() {
     home: '',
     room: '',
   };
+  const [isCorrect, setIsCorrect] = useState(false);
 
   const submit = (data: IClientDateRes) => {
-    dispatch(ClientDataAction({data}));
+    if (isCorrect) {
+      //@ts-ignore
+      navigation.navigate('TabScreen');
+      dispatch(ClientDataAction({data}));
+    }
   };
 
   return (
     <View style={styles.container}>
       <Formik initialValues={initialValues} onSubmit={submit}>
         {() => (
-          <ScrollView>
-            <Header title="Персональные данные" />
-            <AuthInput
-              name="name"
-              label="Фамилия имя отчество*"
-              placeholder="Введите фамилию имя отчество"
-              position="top"
-            />
+          <>
+            <ScrollView>
+              <Header title="Персональные данные" />
+              <AuthInput
+                name="name"
+                label="Фамилия имя отчество*"
+                placeholder="Введите фамилию имя отчество"
+                position="top"
+              />
 
-            <AuthInput
-              name="reg"
-              label="Регион*"
-              placeholder="Выберите свой регион"
-              position="center"
-            />
-            <AuthInput
-              name="city"
-              label="Город*"
-              placeholder="Выберите свой город"
-              position="center"
-            />
-            <AuthInput
-              name="street"
-              label="Улица*"
-              placeholder="Укажите вашу улицу"
-              position="center"
-            />
-            <AuthInput
-              name="home"
-              label="Дом*"
-              placeholder="Укажите номер вашего дома"
-              position="center"
-            />
+              <AuthInput
+                name="reg"
+                label="Регион*"
+                placeholder="Выберите свой регион"
+                position="center"
+              />
+              <AuthInput
+                name="city"
+                label="Город*"
+                placeholder="Выберите свой город"
+                position="center"
+              />
+              <AuthInput
+                name="street"
+                label="Улица*"
+                placeholder="Укажите вашу улицу"
+                position="center"
+              />
+              <AuthInput
+                name="home"
+                label="Дом*"
+                placeholder="Укажите номер вашего дома"
+                position="center"
+              />
 
-            <AuthInput
-              containerStyle={{borderBottomWidth: 0}}
-              label="Квартира"
-              placeholder="Укажите номер вашей квартиры"
-              position="center"
-              name="room"
-            />
+              <AuthInput
+                containerStyle={{borderBottomWidth: 1}}
+                label="Квартира"
+                placeholder="Укажите номер вашей квартиры"
+                position="center"
+                name="room"
+              />
 
-            <CustomCheckbox
-              label={`Подтверждаю корректность введенных${'\n'} данных`}
-              style={{marginTop: 10}}
-            />
+              {/* <CustomCheckbox
+                label={`Подтверждаю корректность введенных${'\n'} данных`}
+                style={{marginTop: 10}}
+              /> */}
 
-            <FormButton
-              // containerStyle={{ marginTop: 15 }}
-              //@ts-ignore
-              // onPress={() => navigation.navigate('TabScreen')}
-              text="Зарегистрироваться"
-            />
-
-            {/* <PickerInp /> */}
-          </ScrollView>
+              {/* <PickerInp /> */}
+            </ScrollView>
+            <View
+              style={{
+                width: '100%',
+                position: 'absolute',
+                bottom: 0,
+                left: 15,
+              }}>
+              <Button
+                // containerStyle={{ marginTop: 15 }}
+                //@ts-ignore
+                onPress={() => navigation.navigate('TabScreen')}
+                text="ЗАРЕГИСТРИРОВАТЬСЯ"
+              />
+            </View>
+          </>
         )}
       </Formik>
     </View>

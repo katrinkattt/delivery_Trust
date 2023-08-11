@@ -28,8 +28,9 @@ export default function OrdersITEM({item}: IProps) {
 
   const goToDetailOrder = () => {
     //@ts-ignore
-    navigation.navigate(R.routes.ORDER_DETAIL_MAP, {item: item});
+    navigation.navigate(R.routes.ORDER_DETAIL_MAP, {item: item, user: true});
   };
+
   return (
     <TouchableOpacity
       style={item.active ? styles.container : styles.containerTwo}
