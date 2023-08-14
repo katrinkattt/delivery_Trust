@@ -7,6 +7,7 @@ require Pod::Executable.execute_command('node', ['-p',
 
 platform :ios, '14.0'
 prepare_react_native_project!
+use_modular_headers!
 
 # If you are using a `react-native-flipper` your iOS build will fail when `NO_FLIPPER=1` is set.
 # because `react-native-flipper` depends on (FlipperKit,...) that will be excluded
@@ -48,7 +49,6 @@ target 'deliveryTrust' do
 
   target 'deliveryTrustTests' do
     pod 'GoogleMaps'
-    pod 'Google-Maps-iOS-Utils'
     rn_maps_path = '../node_modules/react-native-maps'
     pod 'react-native-google-maps', :path => rn_maps_path
     inherit! :complete

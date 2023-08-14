@@ -8127,6 +8127,11 @@ react-native-maps@^1.7.1:
   dependencies:
     "@types/geojson" "^7946.0.10"
 
+react-native-notifications@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-notifications/-/react-native-notifications-5.0.0.tgz#a6f8cead3372aa81aead50e9fc8bfac77d5b786d"
+  integrity sha512-QXtBBmbDtwq9X8WAPLn+OctIeEtnJOQ+RCT6iweaypvFTydt2baLPtawTAbCSXKuWpVDqDAdmZnlQjCcavNzoA==
+
 react-native-pager-view@^6.2.0:
   version "6.2.0"
   resolved "https://registry.npmjs.org/react-native-pager-view/-/react-native-pager-view-6.2.0.tgz"
@@ -8248,6 +8253,11 @@ react-native-tab-view@^3.5.1:
   integrity sha512-nE5WqjbeEPsWQx4mtz81QGVvgHRhujTNIIZiMCx3Bj6CBFDafbk7XZp9ocmtzXUQaZ4bhtVS43R4FIiR4LboJw==
   dependencies:
     use-latest-callback "^0.1.5"
+
+react-native-text-input-mask@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-text-input-mask/-/react-native-text-input-mask-3.2.0.tgz#d8c4f45e6a2ae34f2b704b2c9c1c5441d109e4e0"
+  integrity sha512-YAV1MeZr5ME/GOUBSPCjAVCcDMPNcyoXw5FOdPkA8GK9Q+t1TcvD2QOGWglVxc9vAKMddub7EZ2wQhk2ph+ElQ==
 
 react-native-typing-animation@0.1.7:
   version "0.1.7"

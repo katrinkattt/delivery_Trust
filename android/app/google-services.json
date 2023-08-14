@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "752287066766",
+    "project_id": "deliverytrust-31fea",
+    "storage_bucket": "deliverytrust-31fea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:752287066766:android:5a3f1b25b290f0571ef7df",
+        "android_client_info": {
+          "package_name": "com.deliveryTrust"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "752287066766-hvtbaklkibnbnb0179d9jkl15m91lc30.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9kgUNF3XbOCJjDzw8wtQBMjviPussSlE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "752287066766-hvtbaklkibnbnb0179d9jkl15m91lc30.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

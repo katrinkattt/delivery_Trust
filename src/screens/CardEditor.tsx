@@ -7,17 +7,17 @@ import Body from '../components/common/Body';
 import Button from '../components/common/Button';
 import {Ellipses} from '../components/common/Svgs';
 import {colors} from '../theme/themes';
+import {ModalCustom} from '../components/ModalCustom';
+import AuthInput from '../components/common/AuthInput';
+import InputTextMask from '../components/common/InputTextMask';
+import {Formik} from 'formik';
+import {validator, required} from '../utils/validators';
+import {ICardData} from '../types/data';
+import {Space} from '../components/common/Space';
 
 const masterCardImg = require('../assets/bank.png');
 
 export default function CardEditor() {
-  const [isOpenDonut, setIsOpenDonut] = useState(false);
-  // const [initialValue, setInitialValue] = useState({donut: 0});
-  const donutSend = () => {
-    if (isOpenDonut) {
-      //fd
-    } else setIsOpenDonut(true);
-  };
   const [cardArr, setCardArr] = useState([
     {
       id: 1,
@@ -41,7 +41,23 @@ export default function CardEditor() {
       recToken: '',
     },
   ]);
-  const [idCard, setIdCard] = useState(0);
+  const [addModalVisible, setAddModalVisible] = useState(false);
+  const [delModalVisible, setDelModalVisible] = useState(false);
+  const addCard = () => {
+    setAddModalVisible(false);
+    //reducer add card
+  };
+  const initialValues: ICardData = {
+    name: '',
+    cardNumber: '',
+    dateEnd: '',
+    cvv: '',
+  };
+  const delCard = () => {
+    setDelModalVisible(false);
+    //reducer del card
+  };
+
   const pressButton = (id: number) => {
     const newData = cardArr.map(i => {
       if (i.id === id) {
@@ -51,10 +67,101 @@ export default function CardEditor() {
       }
     });
     setCardArr(newData);
-    setIdCard(id);
   };
   return (
     <View style={{flex: 1}}>
+      <ModalCustom modalVisible={addModalVisible}>
+        <View style={{width: 290}}>
+          <TouchableOpacity
+            onPress={() => setAddModalVisible(false)}
+            style={{alignItems: 'flex-end'}}>
+            <Text
+              style={{
+                marginTop: -20,
+                color: colors.lavender,
+                fontSize: 26,
+              }}>
+              ×
+            </Text>
+          </TouchableOpacity>
+          <>
+            <Body
+              color="#243757"
+              bold
+              size={16}
+              style={{marginBottom: 20, marginTop: -16, fontWeight: 'bold'}}>
+              Заполните информацию о Вашей карте {initialValues.name}
+            </Body>
+            <Formik initialValues={initialValues} onSubmit={addCard}>
+              <>
+                <AuthInput
+                  name="name"
+                  label="Имя и Фамилия*"
+                  placeholder="ivan ivanov"
+                  position="top"
+                />
+                <InputTextMask
+                  name="cardNumber"
+                  label="Номер карты*"
+                  placeholder="**** **** **** ****"
+                  position="center"
+                  keyboardType="phone-pad"
+                  maxLength={19}
+                  mask="[0000] [0000] [0000] [0000]"
+                  validate={validator(required)}
+                />
+                <InputTextMask
+                  name="dateEnd"
+                  label="Срок действия*"
+                  placeholder="ДД/ММ/ГГГГ"
+                  keyboardType="phone-pad"
+                  position="center"
+                  maxLength={10}
+                  mask="[00]/[00]/[0000]"
+                  validate={validator(required)}
+                />
+                <AuthInput
+                  name="cvv"
+                  label="CVV/CVC*"
+                  placeholder="***"
+                  position="bottom"
+                  maxLength={4}
+                  keyboardType="phone-pad"
+                  validate={validator(required)}
+                />
+              </>
+            </Formik>
+            <Space height={20} />
+            <Button onPress={addCard} buttonType={2} text="ДОБАВИТЬ КАРТУ" />
+          </>
+        </View>
+      </ModalCustom>
+      <ModalCustom modalVisible={delModalVisible}>
+        <View style={{width: 290}}>
+          <TouchableOpacity
+            onPress={() => setDelModalVisible(false)}
+            style={{alignItems: 'flex-end'}}>
+            <Text
+              style={{
+                marginTop: -20,
+                color: colors.lavender,
+                fontSize: 26,
+              }}>
+              ×
+            </Text>
+          </TouchableOpacity>
+          <>
+            <Body
+              color="#243757"
+              bold
+              size={16}
+              style={{marginBottom: 20, fontWeight: 'bold'}}>
+              Вы уверены, что хотите удалить карту?
+            </Body>
+            <Button onPress={delCard} buttonType={1} text="УДАЛИТЬ" />
+          </>
+        </View>
+      </ModalCustom>
       <Header title="Банковская карта" />
       <View style={{marginHorizontal: 15}}>
         <Body
@@ -92,7 +199,9 @@ export default function CardEditor() {
                 )}
               </ImageBackground>
             </TouchableOpacity>
-            <TouchableOpacity style={{marginTop: 24, marginLeft: 10}}>
+            <TouchableOpacity
+              onPress={() => setDelModalVisible(true)}
+              style={{marginTop: 24, marginLeft: 10}}>
               <Body size={40} color={colors.ligthBorder}>
                 ×
               </Body>
@@ -100,11 +209,13 @@ export default function CardEditor() {
           </View>
         ))}
       </View>
-      <TouchableOpacity
-        style={styles.bottom}
-        onPress={() => setIsOpenDonut(false)}>
-        <Button text="ДОБАВИТЬ КАРТУ" onPress={donutSend} buttonType={1} />
-      </TouchableOpacity>
+      <View style={styles.bottom}>
+        <Button
+          text="ДОБАВИТЬ КАРТУ"
+          onPress={() => setAddModalVisible(true)}
+          buttonType={1}
+        />
+      </View>
     </View>
   );
 }

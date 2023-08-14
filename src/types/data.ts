@@ -29,6 +29,12 @@ interface QuickReplies {
   values: Reply[];
   keepIt?: boolean;
 }
+export interface ICardData {
+  name: string;
+  cardNumber: string;
+  dateEnd: string;
+  cvv: string;
+}
 
 export interface ICotactDetailsOrder {
   fio: string;

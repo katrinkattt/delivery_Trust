@@ -30,7 +30,7 @@ export function TabScreen() {
 
   return (
     <>
-      {!user?.typeInUser ? (
+      {user?.typeInUser ? (
         <Tab.Navigator
           screenOptions={{
             tabBarStyle: styles.tabHeader,
