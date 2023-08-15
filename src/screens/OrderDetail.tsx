@@ -2,8 +2,11 @@ import React, {useState} from 'react';
 import {ScrollView, TouchableOpacity, View, Text, Image} from 'react-native';
 import {ScaledSheet} from 'react-native-size-matters/extend';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import notifee from '@notifee/react-native';
 import Body from '../components/common/Body';
 import BackButton from '../components/common/BackButton';
+import {useDispatch} from 'react-redux';
+import {setCompletlyOrders} from '../state/orders/slice';
 import {
   FlagIcon,
   MessageIcon,
@@ -31,7 +34,7 @@ interface IProps {
   };
 }
 export default function OrderDetail({route}: IProps) {
-  // const user = useSelector(getUser);
+  const dispatch = useDispatch();
   const {item} = route.params;
   const {user} = route.params;
   const safeAreaInsets = useSafeAreaInsets();
@@ -46,14 +49,42 @@ export default function OrderDetail({route}: IProps) {
   const [modalVisible, setModalVisible] = useState(false);
   const [delOrder, setDelOrder] = useState(false);
 
+  async function onDisplayNotification() {
+    // Request permissions (required for iOS)
+    await notifee.requestPermission();
+    // Create a channel (required for Android)
+    const channelId = await notifee.createChannel({
+      id: 'defaul',
+      name: 'Default Channel',
+    });
+    // Display a notification
+    await notifee.displayNotification({
+      id: 'default',
+      title: 'Заказ закрыт',
+      body: `Заказ  ${item?.category} закрыт`,
+      android: {
+        channelId,
+        smallIcon: 'ic_launcher', // optional, defaults to 'ic_launcher'.
+        // pressAction is needed if you want the notification to open the app when pressed
+        pressAction: {
+          id: 'default',
+        },
+      },
+    });
+  }
+
   const confirmDelivery = () => {
-    if (user) {
-      if (item.active) {
-        setOrder(false);
+    if (item.active) {
+      dispatch(setCompletlyOrders({id: item.id}));
+      setOrder(false);
+      if (user) {
         //@ts-ignore
         navigation.navigate(R.routes.ORDER_REVIEW);
       }
     }
+    setTimeout(() => {
+      onDisplayNotification();
+    }, 5000);
   };
 
   return (

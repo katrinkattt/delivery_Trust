@@ -37,9 +37,9 @@ const OrdersData = [
   {
     id: 2394619,
     category: 'Военный билет',
-    completle: false,
+    completle: true,
     active: false,
-    activeMinute: 5 - 10,
+    activeMinute: 14,
     courierCoord: {latitude: 55.7422, longitude: 37.6325},
     finishCoord: {latitude: 55.7239, longitude: 37.5812},
     price: 200,
@@ -54,7 +54,7 @@ const OrdersData = [
   {
     id: 3321073,
     category: 'СНИЛС',
-    completle: true,
+    completle: false,
     active: false,
     activeMinute: 0,
     courierCoord: {latitude: 55.6639, longitude: 37.44212},
@@ -71,9 +71,9 @@ const OrdersData = [
   {
     id: 4329402,
     category: 'Налоговые отчеты',
-    completle: false,
+    completle: true,
     active: true,
-    activeMinute: 0,
+    activeMinute: 12,
     courierCoord: {latitude: 55.7239, longitude: 37.5812},
     finishCoord: {latitude: 55.6639, longitude: 37.44212},
     price: 290,

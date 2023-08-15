@@ -59,7 +59,13 @@ export default function OrdersITEM({item}: IProps) {
       <Space height={5} />
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <Body>{item.date}</Body>
-        <Body>В доставке</Body>
+        <Body color={item.completle || item.active ? '#888' : '#d55'} size={14}>
+          {item.active
+            ? 'В доставке'
+            : item.completle
+            ? 'Доставлен'
+            : 'Отменен'}
+        </Body>
       </View>
 
       {item.active ? (

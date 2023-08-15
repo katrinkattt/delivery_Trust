@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -19,14 +19,25 @@ import Messages from '.././screens/Messages';
 import {colors} from '.././theme/themes';
 
 import OrdersClientStack from './clientStack/OrdersClientStack';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {getUser} from '../state/user/selectors';
 import HomeClientStack from './clientStack/HomeClientStack';
+import {loadOrders} from '../state/orders/slice';
+import OrdersData from '../api/OrdersData';
+import OrdersDataCourier from '../api/OrdersDataCourier';
 
 const Tab = createBottomTabNavigator();
 
 export function TabScreen() {
   const user = useSelector(getUser);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (!user?.typeInUser) {
+      dispatch(loadOrders(OrdersData));
+    } else {
+      dispatch(loadOrders(OrdersDataCourier));
+    }
+  }, []);
 
   return (
     <>

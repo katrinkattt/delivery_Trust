@@ -2,9 +2,11 @@ import {combineReducers, configureStore, PayloadAction} from '@reduxjs/toolkit';
 import Reactotron from '../reactotron';
 import {userReducer} from './user/slice';
 import {persistStore} from 'redux-persist';
+import orderReducer from './orders/slice';
 
 const combinedReducer = combineReducers({
   user: userReducer,
+  orders: orderReducer,
 });
 
 //TODO: find how to give type for function

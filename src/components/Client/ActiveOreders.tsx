@@ -6,9 +6,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {useSelector} from 'react-redux';
 import Body from '../common/Body';
-import OrdersData from '../../api/OrdersData';
 import OrdersITEM from './OrdersITEM';
+import {OrderState} from '../../state/orders/types';
 
 const data = [
   {id: 1, name: 'Все', active: true},
@@ -19,6 +20,9 @@ const data = [
 ];
 
 export default function ActiveOrders() {
+  const orders = useSelector(state => state.orders);
+  const activeOrder = orders.filter((obj: OrderState) => obj.active);
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -44,7 +48,7 @@ export default function ActiveOrders() {
       </ScrollView>
 
       <FlatList
-        data={OrdersData}
+        data={activeOrder}
         keyExtractor={item => item.id.toString()}
         //@ts-ignore
         style={{marginBottom: 35}}

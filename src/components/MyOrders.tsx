@@ -1,5 +1,6 @@
 import React from 'react';
 import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {useSelector} from 'react-redux';
 import Body from './common/Body';
 import {CheckIcon, Hourglass} from './common/Svgs';
 import {useNavigation} from '@react-navigation/native';
@@ -13,97 +14,11 @@ const data = [
   {id: 4, name: 'СНИЛС', active: false},
   {id: 5, name: 'Военный билет', active: false},
 ];
-const OrdersData = [
-  {
-    id: 2394619,
-    category: 'Военный билет',
-    completle: false,
-    active: true,
-    activeMinute: 10,
-    courierCoord: {latitude: 55.7422, longitude: 37.6325},
-    finishCoord: {latitude: 55.7239, longitude: 37.5812},
-    price: 200,
-    date: '30 мая 20:11',
-    typeTarif: 24,
-    address: 'Москва, Ленинские горы, д. 1, стр. 52',
-    addressTo: 'Москва,Красная площадь, 3, к2 ',
-    orderTime: '13:52',
-    recipient: 'Антонов Власий Агафонович',
-    sender: 'Орехов Вадим Борисович',
-  },
-  {
-    id: 2394619,
-    category: 'Паспорт',
-    completle: false,
-    active: true,
-    activeMinute: 10,
-    courierCoord: {latitude: 55.7422, longitude: 37.6325},
-    finishCoord: {latitude: 55.7239, longitude: 37.5812},
-    price: 200,
-    date: '30 мая 20:11',
-    typeTarif: 24,
-    address: 'Москва, Ленинские горы, д. 1, стр. 52',
-    addressTo: 'Москва,Красная площадь, 3, к2 ',
-    orderTime: '13:52',
-    recipient: 'Агафонов Вадим Агафонович',
-    sender: 'Антонов Власий Борисович',
-  },
-  {
-    id: 1984912,
-    category: 'Налоговые отчеты',
-    completle: true,
-    active: false,
-    activeMinute: 15,
-    courierCoord: {latitude: 55.7422, longitude: 37.6325},
-    finishCoord: {latitude: 55.7539, longitude: 37.6212},
-    price: 190,
-    date: '01 августа 10:01',
-    typeTarif: 1,
-    address: 'Москва,Красная площадь, 3, к2 ',
-    addressTo: 'Москва, Ленинские горы, д. 1, стр. 52',
-    orderTime: '12:45',
-    recipient: 'Антонов Вадим Агафонович',
-    sender: 'Орехов Агафон Борисович',
-  },
-  {
-    id: 2394619,
-    category: 'Военный билет',
-    completle: true,
-    active: false,
-    activeMinute: 10,
-    courierCoord: {latitude: 55.7422, longitude: 37.6325},
-    finishCoord: {latitude: 55.7239, longitude: 37.5812},
-    price: 200,
-    date: '30 мая 20:11',
-    typeTarif: 24,
-    address: 'Москва, Ленинские горы, д. 1, стр. 52',
-    addressTo: 'Москва, Ленинградский проспект, 39',
-    orderTime: '13:52',
-    recipient: 'Антонов Вадим Агафонович',
-    sender: 'Орехов Власий Борисович',
-  },
-  {
-    id: 3321073,
-    category: 'СНИЛС',
-    completle: true,
-    active: false,
-    activeMinute: 0,
-    courierCoord: {latitude: 55.6639, longitude: 37.44212},
-    finishCoord: {latitude: 55.3539, longitude: 37.1212},
-    price: 290,
-    date: '3 мая 10:31',
-    typeTarif: 6,
-    address: 'Москва, Ленинградский проспект, 39',
-    addressTo: 'Москва, Ленинские горы, д. 1, стр. 52',
-    orderTime: '16:12',
-    recipient: 'Антонов Вадим Агафонович',
-    sender: 'Орехов Власий Борисович',
-  },
-];
 
 export default function MyOrders() {
   const navigation = useNavigation();
-  const dataOrders = OrdersData; //from back
+  // const dataOrders = OrdersData; //from back
+  const orders = useSelector(state => state.orders);
 
   return (
     <View style={styles.container}>
@@ -133,7 +48,7 @@ export default function MyOrders() {
         contentContainerStyle={{paddingBottom: 100}}
         showsVerticalScrollIndicator={false}
         style={{marginHorizontal: 15, marginTop: 23}}>
-        {dataOrders.map((order: ICategoryDataType) => (
+        {orders.map((order: ICategoryDataType) => (
           <TouchableOpacity
             onPress={() =>
               //@ts-ignore
@@ -161,7 +76,7 @@ export default function MyOrders() {
             ) : (
               <View style={{marginRight: 18, marginTop: 15}}>
                 <Body color="#243757" style={styles.price}>
-                  1 341 ₽
+                  {order?.price} ₽
                 </Body>
 
                 <Body color="#243757" style={styles.deliveredText}>

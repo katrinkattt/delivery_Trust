@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {ScaledSheet} from 'react-native-size-matters/extend';
 import {
   Dimensions,
@@ -8,6 +8,7 @@ import {
   Platform,
   FlatList,
 } from 'react-native';
+import notifee, {EventType} from '@notifee/react-native';
 import FastImage from 'react-native-fast-image';
 import {FlagIcon, SearchIcon} from '../../components/common/Svgs';
 import {colors} from '../../theme/themes';
@@ -49,6 +50,21 @@ export default function HomeClient() {
     navigation.navigate(R.routes.CLIENT_ORDER_PARAM);
   };
 
+  useEffect(() => {
+    return notifee.onForegroundEvent(({type, detail}) => {
+      switch (type) {
+        case EventType.DISMISSED:
+          console.log('User dismissed notification', detail.notification);
+          break;
+        case EventType.PRESS:
+          //@ts-ignore
+          navigation.navigate(R.routes.CLIENT_OREDERS);
+          console.log('User pressed notification', detail.notification);
+          break;
+      }
+    });
+  }, []);
+
   async function handleChange(e: string) {
     setText(e);
   }
@@ -69,7 +85,10 @@ export default function HomeClient() {
                 </Body>
               </View>
             </View>
-
+            {/* <Button
+              text="dvvf"
+              onPress={() => navigation.navigate(R.routes.CLIENT_OREDERS)}
+            /> */}
             <View style={{marginLeft: 80, marginTop: -20}}>
               <TouchableOpacity
                 onPress={() => setTips(!tips)}

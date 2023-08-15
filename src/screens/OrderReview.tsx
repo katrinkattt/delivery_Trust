@@ -2,19 +2,26 @@ import React, {useState} from 'react';
 import {ScaledSheet} from 'react-native-size-matters/extend';
 import {TouchableOpacity, View, Text} from 'react-native';
 import {Formik} from 'formik';
+import {useNavigation} from '@react-navigation/native';
 import AuthInput from '../components/common/AuthInput';
 import Header from '../components/Header';
 import Body from '../components/common/Body';
 import Button from '../components/common/Button';
 import {colors} from '../theme/themes';
+import R from '../res';
 
 export default function OrderReview() {
+  const navigation = useNavigation();
   const [isOpenDonut, setIsOpenDonut] = useState(false);
   const [initialValue, setInitialValue] = useState({donut: 0});
+
   const donutSend = () => {
     if (isOpenDonut) {
+      navigation.goBack();
+      //@ts-ignore
+      navigation.navigate(R.routes.CLIENT_HOME);
       if (initialValue.donut > 0) {
-        //send
+        //когда будет храниться в стейте
       }
     } else setIsOpenDonut(true);
   };
@@ -55,7 +62,10 @@ export default function OrderReview() {
       </View>
       <TouchableOpacity
         style={styles.bottom}
-        onPress={() => setIsOpenDonut(false)}>
+        onPress={() => {
+          isOpenDonut ? setIsOpenDonut(false) : navigation.goBack(); //@ts-ignore
+          navigation.navigate(R.routes.CLIENT_HOME);
+        }}>
         <Body semiBold size={16} center>
           БЕЗ ЧАЕВЫХ
         </Body>

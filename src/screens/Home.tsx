@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {ScaledSheet} from 'react-native-size-matters/extend';
 import {
   Dimensions,
@@ -9,19 +9,20 @@ import {
   Platform,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
+import notifee, {EventType} from '@notifee/react-native';
+import {useNavigation} from '@react-navigation/native';
 import {EyeActive, OrderIcon, SearchIcon} from '../components/common/Svgs';
 import {colors} from '../theme/themes';
 import DropShadow from 'react-native-drop-shadow';
-const user = require('../assets/user.png');
-
-const header = require('../assets/header.png');
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import CourierRating from '../components/CourierRating';
 import Body from '../components/common/Body';
 import HomeSlider from '../components/HomeSlider';
 import sliderData from '../api/SliderData';
-
+import R from '../res';
 const {width} = Dimensions.get('window');
+const user = require('../assets/user.png');
+const header = require('../assets/header.png');
 
 export default function Home() {
   const [overallBalance, setOverallBalance] = useState(false);
@@ -29,10 +30,26 @@ export default function Home() {
   const [fines, setFines] = useState(false);
   const [text, setText] = useState<string>('');
   const safeAreaInsets = useSafeAreaInsets();
+  const navigation = useNavigation();
 
   async function handleChange(e: string) {
     setText(e);
   }
+
+  useEffect(() => {
+    return notifee.onForegroundEvent(({type, detail}) => {
+      switch (type) {
+        case EventType.DISMISSED:
+          console.log('User dismissed notification', detail.notification);
+          break;
+        case EventType.PRESS:
+          //@ts-ignore
+          navigation.navigate(R.routes.OREDERS);
+          console.log('User pressed notification', detail.notification);
+          break;
+      }
+    });
+  }, []);
 
   return (
     <ScrollView
@@ -40,7 +57,6 @@ export default function Home() {
       contentContainerStyle={{paddingBottom: 100}}>
       <View style={{alignItems: 'center'}}>
         <FastImage source={header} style={styles.headerImage} />
-
         <View style={[styles.userBox, {top: 18 + safeAreaInsets.top}]}>
           <View style={{flexDirection: 'column'}}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
