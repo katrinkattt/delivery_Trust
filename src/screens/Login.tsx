@@ -1,4 +1,4 @@
-// import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Formik} from 'formik';
@@ -11,31 +11,36 @@ import Header from '../components/Header';
 import {requir, validator, email} from '../utils/validators';
 import {ILogin} from '../types/data';
 import R from '../res';
+import {useDispatch} from 'react-redux';
+import {loginAction} from '../state/user/action';
+import useAppSelector from '../hooks/useAppSelector';
+import {getUser} from '../state/user/selectors';
+import {FormButton} from '../components/common/FormButton/FormButton';
 
 export default function Login() {
+  const dispatch = useDispatch();
   const safeAreaInsets = useSafeAreaInsets();
   const navigation = useNavigation();
+  const {loading} = useAppSelector(getUser);
+  const [error, setError] = useState('');
 
   const initialValues: ILogin = {
     email: '',
     password: '',
   };
   const submit = (data: ILogin) => {
-    console.log('submit');
-    //@ts-ignore
-    navigation.navigate(R.routes.HOME);
-    // dispatch(
-    //   loginAction({
-    //         data,
-    //         onSuccess: () => {
-    //             //@ts-ignore
-    //             navigation.navigate(R.routes.CONFIRM_EMAIL)
-    //         },
-    //         onError: async () => {
-    //             setError('Предоставленный код не совпадает или истек срок действия')
-    //         },
-    //     }),
-    // )
+    dispatch(
+      loginAction({
+        data,
+        onSuccess: () => {
+          //@ts-ignore
+          navigation.navigate('TabScreen');
+        },
+        onError: async () => {
+          setError('Неверный логин или пароль');
+        },
+      }),
+    );
   };
   return (
     <Formik initialValues={initialValues} onSubmit={submit}>
@@ -69,7 +74,7 @@ export default function Login() {
         </TouchableOpacity>
 
         {/*//@ts-ignore*/}
-        <Button onPress={() => navigation.navigate('TabScreen')} text="ВОЙТИ" />
+        <FormButton loading={loading} text="ВОЙТИ" />
 
         <View style={styles.socialButtonsContainer}>
           <View style={styles.socialMediaButton}>
@@ -110,5 +115,6 @@ const styles = StyleSheet.create({
   socialButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
+    marginTop: 20,
   },
 });

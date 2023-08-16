@@ -30,18 +30,23 @@ export default function Register() {
   };
 
   const submit = (data: IRegistr) => {
-    //@ts-ignore
-    navigation.navigate(R.routes.CONFIRM_EMAIL);
     // REGISTER!!!!
     if (data.password !== data.passwordConfirmation) {
       setError('Пароли не совпадают');
     } else {
+      const dataAcc = {
+        email: data.email,
+        phone: data.phone,
+        password: data.password,
+      };
+      //@ts-ignore
+      // navigation.navigate(R.routes.CONFIRM_EMAIL, {data: dataAcc});
       dispatch(
         registerAction({
           data,
           onSuccess: () => {
             //@ts-ignore
-            navigation.navigate(R.routes.CONFIRM_EMAIL);
+            navigation.navigate(R.routes.CONFIRM_EMAIL, {data: dataAcc});
           },
           onError: async () => {
             setError(
@@ -99,7 +104,11 @@ export default function Register() {
           </Body>
 
           <Space height={20} />
-          <FormButton text="ЗАРЕГИСТРИРОВАТЬСЯ" loading={loading} />
+          <FormButton
+            text="ЗАРЕГИСТРИРОВАТЬСЯ"
+            loading={loading}
+            buttonType={2}
+          />
           <Space height={20} />
 
           <View style={styles.socialButtonsContainer}>

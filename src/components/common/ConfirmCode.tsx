@@ -11,17 +11,20 @@ import Body from './Body';
 import {Backspace} from './Svgs';
 // import { useNavigation } from '@react-navigation/native'
 import BackgroundTimer from 'react-native-background-timer';
-import {postConfirmCode} from '../../state/user/action';
 import {useAppDispatch} from '../../hooks/redux';
 import R from '../../res';
 import useSmartNavigation from '../../hooks/useSmartNavigation';
+import {confirmCodeAction} from '../../state/user/action';
 
 interface IProps {
   confirmCode: string;
   setConfirmCode: (confirmCode: string) => void;
 }
+interface IPropsConfirmCode {
+  data: {email: string; phone: string; password: string};
+}
 
-const ConfirmCodeField = () => {
+const ConfirmCodeField = ({data}: IPropsConfirmCode) => {
   const [confirmCode, setConfirmCode] = useState('');
   const [remainingTime, setRemainingTime] = useState(60);
   const dispatch = useAppDispatch();
@@ -67,12 +70,16 @@ const ConfirmCodeField = () => {
 
     if (newConfirmCode.length === 4) {
       //@ts-ignore
-      console.log('OTPku', newConfirmCode.join(''));
-      //@ts-ignore
-      navigation.navigate(R.routes.PROFILE_TYPE);
+      // console.log('OTPku', newConfirmCode);
+      const code = newConfirmCode.join('');
       dispatch(
-        postConfirmCode({
-          data: {code: newConfirmCode.join('')},
+        confirmCodeAction({
+          data: {
+            confirmation_code: code,
+            password: data.password,
+            email: data.email,
+            phone: data.phone,
+          },
           onSuccess: async () => {
             // @ts-ignore
             navigation.navigate(R.routes.PROFILE_TYPE);
@@ -139,7 +146,7 @@ const ConfirmCodeField = () => {
 
       <View style={styles.keyboardContainer}>
         {remainingTime > 0 ? (
-          <Body center color="#243757">
+          <Body center color="#243757" style={{paddingHorizontal: 20}}>
             Повторная отправка будет возможна через: {remainingTime} секунд
           </Body>
         ) : (

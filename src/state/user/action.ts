@@ -26,14 +26,37 @@ export const registerAction = createAsyncThunk<
     onSuccess?: (response: IRegistr) => void;
     onError?: (e: any) => void;
   }
->('user/registr', async arg => {
+>('register', async arg => {
   try {
     const {data: response} = await apiClient.post<IRegistr>(
       R.consts.API_PATH_REGISTER,
+      arg.data,
+    );
+
+    arg.onSuccess?.(response);
+    console.log(response, 'response');
+
+    return response;
+  } catch (e: any) {
+    arg.onError?.(e.response);
+    throw e;
+  }
+});
+export const confirmCodeAction = createAsyncThunk<
+  IConfirmCode,
+  {
+    data: IConfirmCode;
+    onSuccess?: (response: IConfirmCode) => void;
+    onError?: (e: any) => void;
+  }
+>('confirm', async arg => {
+  try {
+    const {data: response} = await apiClient.post<IConfirmCode>(
+      R.consts.API_PATH_CONFIRM_CODE,
       {
         ...arg.data,
-        passwordConfirmation: arg.data.passwordConfirmation,
-        accessToken: arg.data.accessToken,
+        passwordConfirmation: arg.data.refresh_token,
+        accessToken: arg.data.access_token,
       },
     );
 
@@ -47,40 +70,19 @@ export const registerAction = createAsyncThunk<
 export const loginAction = createAsyncThunk<
   ILogin,
   {
-    data: IRegistr;
+    data: ILogin;
     onSuccess?: (response: ILogin) => void;
     onError?: (e: any) => void;
   }
->('user/registr', async arg => {
+>('login', async arg => {
   try {
     const {data: response} = await apiClient.post<ILogin>(
-      R.consts.API_PATH_REGISTER,
+      R.consts.API_PATH_LOGIN,
       {
         ...arg.data,
-        accessToken: arg.data.accessToken,
+        accessToken: arg.data.access_token,
+        refresh_token: arg.data.refresh_token,
       },
-    );
-
-    arg.onSuccess?.(response);
-    return response;
-  } catch (e: any) {
-    arg.onError?.(e.response);
-    throw e;
-  }
-});
-
-export const postConfirmCode = createAsyncThunk<
-  IConfirmCode,
-  {
-    data: IConfirmCode;
-    onSuccess?: (response: IConfirmCode) => void;
-    onError?: (e: any) => void;
-  }
->('user/confir', async arg => {
-  try {
-    const {data: response} = await apiClient.post<IConfirmCode>(
-      R.consts.API_PATH_CONFIRM_CODE,
-      arg.data,
     );
 
     arg.onSuccess?.(response);

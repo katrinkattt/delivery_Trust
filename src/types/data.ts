@@ -52,16 +52,22 @@ export interface IRegistr {
   phone?: string;
   password?: string;
   passwordConfirmation?: string;
-  accessToken?: string;
+  access_token?: string;
+}
+export interface IConfirmCode {
+  email?: string;
+  confirmation_code?: string;
+  password?: string;
+  phone?: string;
+  access_token?: string;
+  refresh_token?: string;
 }
 
 export interface ILogin {
   email?: string;
   password?: string;
-}
-
-export interface IConfirmCode {
-  code: string;
+  access_token?: string;
+  refresh_token?: string;
 }
 
 export interface IRole {

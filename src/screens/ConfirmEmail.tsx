@@ -3,21 +3,10 @@ import {StyleSheet, Text, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Body from '../components/common/Body';
 import ConfirmCodeField from '../components/common/ConfirmCode';
-// import { useAppDispatch } from '../hooks/redux'
-// import { confirmCode } from '../state/user/action'
 
-export default function ConfirmEmail() {
+export default function ConfirmEmail({route}) {
   const safeAreaInsets = useSafeAreaInsets();
-  // const [code, setCode] = useState('')
-  // const dispatch = useAppDispatch()
-
-  // const onSubmit = () => {
-  //     dispatch(confirmCode({ data: { code: code } }))
-  // }
-
-  // useEffect(() => {
-  //     onSubmit()
-  // })
+  const {data} = route.params;
 
   return (
     <View style={[styles.container, {paddingTop: safeAreaInsets.top + 33}]}>
@@ -32,10 +21,9 @@ export default function ConfirmEmail() {
         center
         style={{marginVertical: 18}}>
         Ваш адрес:{' '}
-        <Text style={{color: 'rgba(47, 128, 237, 1)'}}>my-email@gmail.com</Text>
+        <Text style={{color: 'rgba(47, 128, 237, 1)'}}>{data?.email}</Text>
       </Body>
-
-      <ConfirmCodeField />
+      <ConfirmCodeField data={data} />
     </View>
   );
 }

@@ -101,7 +101,7 @@
 //         },
 //         [setRefreshTokenAction.type]: (state, action: PayloadAction<ITokens>) => {
 //             if (state.user) {
-//                 state.user.accessToken = action.payload.accessToken
+//                 state.user.access_token = action.payload.access_token
 //                 state.user.refreshToken = action.payload.refreshToken
 //             }
 //         },
@@ -293,7 +293,7 @@
 //     },
 // })
 
-// const tokensBlacklistFilter = createBlacklistFilter('user', ['refreshToken', 'accessToken'])
+// const tokensBlacklistFilter = createBlacklistFilter('user', ['refreshToken', 'access_token'])
 
 // const persistConfig: PersistConfig<UserState> = {
 //     key: 'auth',

@@ -1,44 +1,44 @@
-import axios from 'axios'
-import humps from 'humps'
-import { Platform } from 'react-native'
-import DeviceInfo from 'react-native-device-info'
-import R from '../res'
-import { store } from '../state'
+import axios from 'axios';
+import humps from 'humps';
+import {Platform} from 'react-native';
+import DeviceInfo from 'react-native-device-info';
+import R from '../res';
+import {store} from '../state';
 
 export const defaultHeader = {
-    'X-Hardware-Id': DeviceInfo.getUniqueId(),
-    'X-Platform': Platform.OS,
-    'X-App-Version': DeviceInfo.getVersion(),
-}
+  'X-Hardware-Id': DeviceInfo.getUniqueId(),
+  'X-Platform': Platform.OS,
+  'X-App-Version': DeviceInfo.getVersion(),
+};
 
 export const getDefaultHeader = async () => {
-    const HARDWARE_ID = await DeviceInfo.getUniqueId()
+  const HARDWARE_ID = await DeviceInfo.getUniqueId();
 
-    return {
-        'X-Hardware-Id': HARDWARE_ID,
-        'X-Platform': Platform.OS,
-        'X-App-Version': DeviceInfo.getVersion(),
-    }
-}
+  return {
+    'X-Hardware-Id': HARDWARE_ID,
+    'X-Platform': Platform.OS,
+    'X-App-Version': DeviceInfo.getVersion(),
+  };
+};
 
 const apiClient = axios.create({
-    baseURL: R.consts.API_BASE_URL,
-    // @ts-ignore
-    transformResponse: [...axios.defaults.transformResponse, humps.camelizeKeys],
-    // @ts-ignore
-    transformRequest: [decamelize, ...axios.defaults.transformRequest],
-})
+  baseURL: R.consts.API_BASE_URL,
+  // @ts-ignore
+  transformResponse: [...axios.defaults.transformResponse, humps.camelizeKeys],
+  // @ts-ignore
+  transformRequest: [decamelize, ...axios.defaults.transformRequest],
+});
 //@ts-ignore
 apiClient.interceptors.request.use(async (config: AxiosRequestConfig) => {
-    const accessToken = store.getState().user?.accessToken
-    config.headers = { ...(config.headers || {}), ...(await getDefaultHeader()) }
+  const access_token = store.getState().user?.access_token;
+  config.headers = {...(config.headers || {}), ...(await getDefaultHeader())};
 
-    if (accessToken) {
-        config.headers.authorization = `Bearer ${accessToken}`
-    }
+  if (access_token) {
+    config.headers.authorization = `Bearer ${access_token}`;
+  }
 
-    return config
-})
+  return config;
+});
 
 // apiClient.interceptors.response.use(
 //   response => response,
@@ -81,18 +81,18 @@ apiClient.interceptors.request.use(async (config: AxiosRequestConfig) => {
 // )
 
 function decamelize(object: any) {
-    // @ts-ignore
-    if (!(object && !(object instanceof File))) {
-        return object
-    }
+  // @ts-ignore
+  if (!(object && !(object instanceof File))) {
+    return object;
+  }
 
-    if (object instanceof FormData) {
-        return object
-    }
+  if (object instanceof FormData) {
+    return object;
+  }
 
-    if (typeof object === 'object') {
-        return humps.decamelizeKeys(object)
-    }
+  if (typeof object === 'object') {
+    return humps.decamelizeKeys(object);
+  }
 }
 
-export default apiClient
+export default apiClient;

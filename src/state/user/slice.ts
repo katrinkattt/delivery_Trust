@@ -106,7 +106,7 @@
 //         },
 //         [setRefreshTokenAction.type]: (state, action: PayloadAction<ITokens>) => {
 //             if (state.user) {
-//                 state.user.accessToken = action.payload.accessToken
+//                 state.user.access_token = action.payload.access_token
 //                 state.user.refreshToken = action.payload.refreshToken
 //             }
 //         },
@@ -298,7 +298,7 @@
 //     },
 // })
 
-// const tokensBlacklistFilter = createBlacklistFilter('user', ['refreshToken', 'accessToken'])
+// const tokensBlacklistFilter = createBlacklistFilter('user', ['refreshToken', 'access_token'])
 
 // const persistConfig: PersistConfig<UserState> = {
 //     key: 'auth',
@@ -322,12 +322,13 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {PersistConfig, persistReducer} from 'redux-persist';
-import {IRegistr, IRole} from '../../types/data';
+import {IRegistr, IRole, ILogin} from '../../types/data';
 import {userTypeEnum} from '../../enums';
 
 import {
   postRole,
   registerAction,
+  loginAction,
   setInputDisable,
   signOutUser,
   userType,
@@ -338,7 +339,8 @@ export const initialStateUser: UserState = {
   typeInUser: false,
   searchInput: false,
   loading: false,
-  accessToken: null,
+  access_token: null,
+  refresh_token: null,
   role: userTypeEnum.CLIENT,
 };
 
@@ -348,7 +350,7 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: {
     [signOutUser.type]: state => {
-      state.accessToken = null;
+      state.access_token = null;
     },
 
     [userType.type]: (state, action: PayloadAction<boolean>) => {
@@ -358,13 +360,11 @@ const userSlice = createSlice({
       state.searchInput = action.payload;
     },
 
-    [registerAction.fulfilled.type]: (
-      state,
-      action: PayloadAction<IRegistr>,
-    ) => {
+    [registerAction.fulfilled.type]: (state, action: PayloadAction<ILogin>) => {
       // state.token = action.payload
       state.loading = false;
-      state.accessToken = action.payload.accessToken;
+      state.access_token = action.payload.access_token;
+      state.refresh_token = action.payload.refresh_token;
     },
     [registerAction.pending.type]: state => {
       state.loading = true;
@@ -389,7 +389,7 @@ const userSlice = createSlice({
 const persistConfig: PersistConfig<UserState> = {
   key: 'auth',
   storage: AsyncStorage,
-  whitelist: ['user', 'accessToken', 'refreshToken', 'registerClient'],
+  whitelist: ['user', 'access_token', 'refreshToken', 'registerClient'],
 };
 
 export const userReducer = persistReducer(persistConfig, userSlice.reducer);

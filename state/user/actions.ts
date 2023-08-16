@@ -89,7 +89,7 @@
 //         if (response) {
 //             // @ts-ignore
 //             await TokenManger.set({
-//                 accessToken: response.accessToken,
+//                 access_token: response.access_token,
 //                 refreshToken: response.refreshToken,
 //             })
 //             await thunkAPI.dispatch(getUserDetailAction({ user: response }))
