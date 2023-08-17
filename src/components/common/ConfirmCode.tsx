@@ -9,12 +9,15 @@ import {
 } from 'react-native';
 import Body from './Body';
 import {Backspace} from './Svgs';
-// import { useNavigation } from '@react-navigation/native'
 import BackgroundTimer from 'react-native-background-timer';
 import {useAppDispatch} from '../../hooks/redux';
 import R from '../../res';
 import useSmartNavigation from '../../hooks/useSmartNavigation';
-import {confirmCodeAction} from '../../state/user/action';
+import {
+  regConfirmCodeAction,
+  resetPassVerifyCodeAction,
+} from '../../state/user/action';
+import {setCode, setEmail} from '../../state/user/slice';
 
 interface IProps {
   confirmCode: string;
@@ -30,7 +33,6 @@ const ConfirmCodeField = ({data}: IPropsConfirmCode) => {
   const dispatch = useAppDispatch();
   const [keyboardStatus, setKeyboardStatus] = useState('');
   const [error, setError] = useState('');
-
   const blocks = useRef<TextInput[]>([]);
   const navigation = useSmartNavigation();
 
@@ -72,27 +74,48 @@ const ConfirmCodeField = ({data}: IPropsConfirmCode) => {
       //@ts-ignore
       // console.log('OTPku', newConfirmCode);
       const code = newConfirmCode.join('');
-      dispatch(
-        confirmCodeAction({
-          data: {
-            confirmation_code: code,
-            password: data.password,
-            email: data.email,
-            phone: data.phone,
-          },
-          onSuccess: async () => {
-            // @ts-ignore
-            navigation.navigate(R.routes.PROFILE_TYPE);
-          },
-          onError: async () => {
-            setError(
-              'Предоставленный код не совпадает или истек срок действия',
-            );
-            //@ts-ignore
-            // navigation.navigate(R.routes.PROFILE_TYPE)
-          },
-        }),
-      );
+      if (data.password && data.email) {
+        dispatch(
+          regConfirmCodeAction({
+            data: {
+              confirmation_code: code,
+              password: data.password,
+              email: data.email,
+              phone: data.phone,
+            },
+            onSuccess: async () => {
+              // @ts-ignore
+              navigation.navigate(R.routes.PROFILE_TYPE);
+            },
+            onError: async () => {
+              setError(
+                'Предоставленный код не совпадает или истек срок действия',
+              );
+            },
+          }),
+        );
+      }
+      if (data.email && !data?.password) {
+        dispatch(setCode({code: code}));
+        dispatch(setEmail({email: data.email}));
+        dispatch(
+          resetPassVerifyCodeAction({
+            data: {
+              email: data.email,
+              code: code,
+            },
+            onSuccess: async () => {
+              // @ts-ignore
+              navigation.navigate(R.routes.NEW_PASS);
+            },
+            onError: async () => {
+              setError(
+                'Предоставленный код не совпадает или истек срок действия',
+              );
+            },
+          }),
+        );
+      }
     }
 
     if (index < 3 && text.length === 1) {

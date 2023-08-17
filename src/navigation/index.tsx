@@ -12,6 +12,7 @@ import Register from '.././screens/Register';
 import ResetPasswordEmail from '.././screens/ResetPasswordEmail';
 import ResetPasswordSave from '.././screens/ResetPasswordSave';
 import ConfirmEmail from '.././screens/ConfirmEmail';
+import NewPass from '../screens/NewPass';
 import ProfileType from '.././screens/ProfileType';
 import CourierProfileData from '.././screens/CourierProfileData';
 import SigningAnAgreement from '.././screens/SigningAnAgreement';
@@ -49,6 +50,7 @@ export const Navigation = () => {
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Register" component={Register} />
             <Stack.Screen name="ConfirmEmail" component={ConfirmEmail} />
+            <Stack.Screen name="NewPass" component={NewPass} />
             <Stack.Screen
               name="ResetPasswordEmail"
               component={ResetPasswordEmail}

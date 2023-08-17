@@ -61,6 +61,7 @@ export interface IConfirmCode {
   phone?: string;
   access_token?: string;
   refresh_token?: string;
+  message?: string;
 }
 
 export interface ILogin {
@@ -68,6 +69,17 @@ export interface ILogin {
   password?: string;
   access_token?: string;
   refresh_token?: string;
+}
+export interface IResetPassCode {
+  email?: string;
+  code?: string;
+  valid_code?: boolean;
+}
+export interface IResetPass {
+  email?: string;
+  code?: string;
+  new_password?: string;
+  passwordConfirmation?: string;
 }
 
 export interface IRole {

@@ -40,6 +40,7 @@ export const PROFILE = 'Profile';
 export const PROFILE_TYPE = 'ProfileType';
 export const RESET_PASSWORD_EMAIL = 'ResetPasswordEmail';
 export const RESED_PASSWORD_SAVE = 'ResetPasswordSave';
+export const NEW_PASS = 'NewPass';
 export const SIGNING_AN_AGREEMENT = 'SigningAnAgreement';
 export const AGREEMENT = 'Agreement';
 export const REGISTER = 'Register';

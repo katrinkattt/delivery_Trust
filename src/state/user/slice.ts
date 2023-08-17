@@ -322,13 +322,23 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {PersistConfig, persistReducer} from 'redux-persist';
-import {IRegistr, IRole, ILogin} from '../../types/data';
+import {
+  IRegistr,
+  IRole,
+  ILogin,
+  IResetPassCode,
+  IResetPass,
+} from '../../types/data';
 import {userTypeEnum} from '../../enums';
 
 import {
   postRole,
   registerAction,
   loginAction,
+  regConfirmCodeAction,
+  resetPassCodeAction,
+  resetPassVerifyCodeAction,
+  resetPassAction,
   setInputDisable,
   signOutUser,
   userType,
@@ -342,12 +352,26 @@ export const initialStateUser: UserState = {
   access_token: null,
   refresh_token: null,
   role: userTypeEnum.CLIENT,
+  code: null,
+  email: null,
+  valid_code: false,
 };
 
 const userSlice = createSlice({
   name: 'user',
   initialState: initialStateUser,
-  reducers: {},
+  reducers: {
+    setCode: (state, action) => {
+      const {code} = action.payload;
+      state.code = code;
+      return state;
+    },
+    setEmail: (state, action) => {
+      const {email} = action.payload;
+      state.email = email;
+      return state;
+    },
+  },
   extraReducers: {
     [signOutUser.type]: state => {
       state.access_token = null;
@@ -363,13 +387,74 @@ const userSlice = createSlice({
     [registerAction.fulfilled.type]: (state, action: PayloadAction<ILogin>) => {
       // state.token = action.payload
       state.loading = false;
-      state.access_token = action.payload.access_token;
-      state.refresh_token = action.payload.refresh_token;
     },
     [registerAction.pending.type]: state => {
       state.loading = true;
     },
     [registerAction.rejected.type]: state => {
+      state.loading = false;
+    },
+
+    [regConfirmCodeAction.fulfilled.type]: (
+      state,
+      action: PayloadAction<ILogin>,
+    ) => {
+      // state.token = action.payload
+      state.loading = false;
+    },
+    [regConfirmCodeAction.pending.type]: state => {
+      state.loading = true;
+    },
+    [regConfirmCodeAction.rejected.type]: state => {
+      state.loading = false;
+    },
+    [loginAction.fulfilled.type]: (state, action: PayloadAction<ILogin>) => {
+      state.loading = false;
+      state.access_token = action.payload.access_token;
+    },
+    [loginAction.pending.type]: state => {
+      state.loading = true;
+    },
+    [loginAction.rejected.type]: state => {
+      state.loading = false;
+    },
+
+    [resetPassCodeAction.fulfilled.type]: (
+      state,
+      action: PayloadAction<IResetPassCode>,
+    ) => {
+      state.loading = false;
+    },
+    [resetPassCodeAction.pending.type]: state => {
+      state.loading = true;
+    },
+    [resetPassCodeAction.rejected.type]: state => {
+      state.loading = false;
+    },
+
+    [resetPassVerifyCodeAction.fulfilled.type]: (
+      state,
+      action: PayloadAction<IResetPassCode>,
+    ) => {
+      state.loading = false;
+      state.valid_code = action.payload.valid_code;
+    },
+    [resetPassVerifyCodeAction.pending.type]: state => {
+      state.loading = true;
+    },
+    [resetPassVerifyCodeAction.rejected.type]: state => {
+      state.loading = false;
+    },
+    [resetPassAction.fulfilled.type]: (
+      state,
+      action: PayloadAction<IResetPass>,
+    ) => {
+      state.loading = false;
+    },
+    [resetPassAction.pending.type]: state => {
+      state.loading = true;
+    },
+    [resetPassAction.rejected.type]: state => {
       state.loading = false;
     },
 
@@ -391,5 +476,5 @@ const persistConfig: PersistConfig<UserState> = {
   storage: AsyncStorage,
   whitelist: ['user', 'access_token', 'refreshToken', 'registerClient'],
 };
-
+export const {setCode, setEmail} = userSlice.actions;
 export const userReducer = persistReducer(persistConfig, userSlice.reducer);

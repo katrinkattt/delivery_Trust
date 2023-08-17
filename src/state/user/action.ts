@@ -5,6 +5,8 @@ import {
   IRegistr,
   ILogin,
   IRole,
+  IResetPassCode,
+  IResetPass,
 } from '../../types/data';
 import R from '../../res';
 import apiClient from '../../api/instance';
@@ -26,7 +28,7 @@ export const registerAction = createAsyncThunk<
     onSuccess?: (response: IRegistr) => void;
     onError?: (e: any) => void;
   }
->('register', async arg => {
+>('register/sendcode', async arg => {
   try {
     const {data: response} = await apiClient.post<IRegistr>(
       R.consts.API_PATH_REGISTER,
@@ -42,14 +44,14 @@ export const registerAction = createAsyncThunk<
     throw e;
   }
 });
-export const confirmCodeAction = createAsyncThunk<
+export const regConfirmCodeAction = createAsyncThunk<
   IConfirmCode,
   {
     data: IConfirmCode;
     onSuccess?: (response: IConfirmCode) => void;
     onError?: (e: any) => void;
   }
->('confirm', async arg => {
+>('register', async arg => {
   try {
     const {data: response} = await apiClient.post<IConfirmCode>(
       R.consts.API_PATH_CONFIRM_CODE,
@@ -74,7 +76,7 @@ export const loginAction = createAsyncThunk<
     onSuccess?: (response: ILogin) => void;
     onError?: (e: any) => void;
   }
->('login', async arg => {
+>('auth', async arg => {
   try {
     const {data: response} = await apiClient.post<ILogin>(
       R.consts.API_PATH_LOGIN,
@@ -82,6 +84,79 @@ export const loginAction = createAsyncThunk<
         ...arg.data,
         accessToken: arg.data.access_token,
         refresh_token: arg.data.refresh_token,
+      },
+    );
+
+    arg.onSuccess?.(response);
+    return response;
+  } catch (e: any) {
+    arg.onError?.(e.response);
+    throw e;
+  }
+});
+export const resetPassCodeAction = createAsyncThunk<
+  IResetPassCode,
+  {
+    data: IResetPassCode;
+    onSuccess?: (response: IResetPassCode) => void;
+    onError?: (e: any) => void;
+  }
+>('resetpassword/sendcode', async arg => {
+  try {
+    const {data: response} = await apiClient.post<IResetPassCode>(
+      R.consts.API_RESET_PASS_CODE,
+      arg.data,
+    );
+
+    arg.onSuccess?.(response);
+    console.log(response, 'response');
+
+    return response;
+  } catch (e: any) {
+    arg.onError?.(e.response);
+    throw e;
+  }
+});
+export const resetPassVerifyCodeAction = createAsyncThunk<
+  IResetPassCode,
+  {
+    data: IResetPassCode;
+    onSuccess?: (response: IResetPassCode) => void;
+    onError?: (e: any) => void;
+  }
+>('resetpassword/verifycode', async arg => {
+  try {
+    const {data: response} = await apiClient.post<IResetPassCode>(
+      R.consts.API_RESET_PASS_VERIFY,
+      {
+        ...arg.data,
+        valid_code: arg.data.valid_code,
+      },
+    );
+
+    arg.onSuccess?.(response);
+    return response;
+  } catch (e: any) {
+    arg.onError?.(e.response);
+    throw e;
+  }
+});
+export const resetPassAction = createAsyncThunk<
+  IResetPass,
+  {
+    data: IResetPass;
+    onSuccess?: (response: IResetPass) => void;
+    onError?: (e: any) => void;
+  }
+>('resetpassword', async arg => {
+  try {
+    const {data: response} = await apiClient.post<IResetPass>(
+      R.consts.API_RESET_PASS,
+      {
+        ...arg.data,
+        email: arg.data.email,
+        code: arg.data.code,
+        new_password: arg.data.new_password,
       },
     );
 

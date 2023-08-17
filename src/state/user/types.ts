@@ -27,4 +27,7 @@ export type UserState = {
   access_token?: string | null;
   refresh_token?: string | null;
   role?: string;
+  code?: string | null;
+  valid_code?: boolean;
+  email?: string | null;
 };

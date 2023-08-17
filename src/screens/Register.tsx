@@ -49,9 +49,7 @@ export default function Register() {
             navigation.navigate(R.routes.CONFIRM_EMAIL, {data: dataAcc});
           },
           onError: async () => {
-            setError(
-              'Предоставленный код не совпадает или истек срок действия',
-            );
+            setError('Пользователь уже существует');
           },
         }),
       );
