@@ -1,31 +1,34 @@
-import { useAppState } from './hooks/useAppState'
-import React, { ReactChild, ReactElement, ReactNode, useEffect } from 'react'
-import { AppState, AppStateStatus } from 'react-native'
+import {useAppState} from './hooks/useAppState';
+import React, {ReactChild, ReactElement, ReactNode, useEffect} from 'react';
+import {AppState, AppStateStatus} from 'react-native';
 
 interface IAppLogic {
-    children: ReactNode | ReactChild | ReactElement
+  children: ReactNode | ReactChild | ReactElement;
 }
 
 const AppLogic = (props: IAppLogic) => {
-    const appState = useAppState()
+  const appState = useAppState();
 
-    useEffect(() => {
-        const subscription = AppState.addEventListener('change', handleAppStateChange)
+  useEffect(() => {
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange,
+    );
 
-        return () => {
-            subscription.remove()
-        }
-    }, [])
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
-    // App state
-    useEffect(() => {}, [appState])
+  // App state
+  useEffect(() => {}, [appState]);
 
-    const handleAppStateChange = (appStateProps: AppStateStatus) => {
-        if (appStateProps === 'active') {
-        }
+  const handleAppStateChange = (appStateProps: AppStateStatus) => {
+    if (appStateProps === 'active') {
     }
+  };
 
-    return <>{props.children}</>
-}
+  return <>{props.children}</>;
+};
 
-export default AppLogic
+export default AppLogic;

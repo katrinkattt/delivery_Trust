@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-community/async-storage';
 import {createAction, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {PersistConfig, persistReducer} from 'redux-persist';
 import {OrderState} from './types';

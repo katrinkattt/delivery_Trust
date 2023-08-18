@@ -83,7 +83,10 @@ export interface IResetPass {
 }
 
 export interface IRole {
-  role: string;
+  email?: string;
+  user_type?: number;
+  access_token?: string;
+  role?: string;
 }
 export interface IChangePass {
   oldPasword: string;

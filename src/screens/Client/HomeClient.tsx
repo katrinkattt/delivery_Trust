@@ -42,7 +42,6 @@ export default function HomeClient() {
   const [tips, setTips] = useState(false);
   const [text, setText] = useState<string>('');
   const safeAreaInsets = useSafeAreaInsets();
-
   const navigation = useNavigation();
 
   const pressNewOreder = () => {

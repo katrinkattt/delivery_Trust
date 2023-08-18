@@ -4,11 +4,12 @@ import {ScaledSheet} from 'react-native-size-matters/extend';
 import TabViewExample from '../components/TabView';
 import Header from '../components/Header';
 import Body from '../components/common/Body';
+import {useSelector} from 'react-redux';
 
 export default function Profile() {
   const [text, setText] = useState<string>('');
   const [index, setIndex] = useState(0);
-
+  const user = useSelector(state => state.user);
   const routes = [
     {key: 'Setting', title: 'Настройки'},
     {key: 'Data', title: 'Личные данные'},
@@ -19,9 +20,9 @@ export default function Profile() {
     <>
       <View style={[styles.container, index !== 1 && {marginBottom: -30}]}>
         {index === 1 ? (
-          <Header title="Игорь Голованов" />
+          <Header title={user?.email} />
         ) : (
-          <Header title={routes[index]?.title} />
+          <Header title={routes[index]?.title + user?.email} />
         )}
         {index === 1 ? (
           <View style={styles.dataHeader}>

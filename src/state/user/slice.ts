@@ -335,6 +335,7 @@ import {
   postRole,
   registerAction,
   loginAction,
+  loginTokenRefrAction,
   regConfirmCodeAction,
   resetPassCodeAction,
   resetPassVerifyCodeAction,
@@ -351,7 +352,7 @@ export const initialStateUser: UserState = {
   loading: false,
   access_token: null,
   refresh_token: null,
-  role: userTypeEnum.CLIENT,
+  role: userTypeEnum.NO,
   code: null,
   email: null,
   valid_code: false,
@@ -399,7 +400,9 @@ const userSlice = createSlice({
       state,
       action: PayloadAction<ILogin>,
     ) => {
-      // state.token = action.payload
+      // state.token = action.payload;
+      state.access_token = action.payload.access_token;
+      state.refresh_token = action.payload.refresh_token;
       state.loading = false;
     },
     [regConfirmCodeAction.pending.type]: state => {
@@ -411,6 +414,7 @@ const userSlice = createSlice({
     [loginAction.fulfilled.type]: (state, action: PayloadAction<ILogin>) => {
       state.loading = false;
       state.access_token = action.payload.access_token;
+      state.refresh_token = action.payload.refresh_token;
     },
     [loginAction.pending.type]: state => {
       state.loading = true;
@@ -418,7 +422,19 @@ const userSlice = createSlice({
     [loginAction.rejected.type]: state => {
       state.loading = false;
     },
-
+    [loginTokenRefrAction.fulfilled.type]: (
+      state,
+      action: PayloadAction<ILogin>,
+    ) => {
+      state.loading = false;
+      state.access_token = action.payload.access_token;
+    },
+    [loginTokenRefrAction.pending.type]: state => {
+      state.loading = true;
+    },
+    [loginTokenRefrAction.rejected.type]: state => {
+      state.loading = false;
+    },
     [resetPassCodeAction.fulfilled.type]: (
       state,
       action: PayloadAction<IResetPassCode>,
@@ -474,7 +490,6 @@ const userSlice = createSlice({
 const persistConfig: PersistConfig<UserState> = {
   key: 'auth',
   storage: AsyncStorage,
-  whitelist: ['user', 'access_token', 'refreshToken', 'registerClient'],
 };
 export const {setCode, setEmail} = userSlice.actions;
 export const userReducer = persistReducer(persistConfig, userSlice.reducer);

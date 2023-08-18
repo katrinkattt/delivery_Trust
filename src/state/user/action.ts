@@ -10,6 +10,7 @@ import {
 } from '../../types/data';
 import R from '../../res';
 import apiClient from '../../api/instance';
+import {setAccessToken} from './slice';
 export const signOutUser = createAction('user/signOut');
 export const removeUserInfo = createAction('user/removeUserInfo');
 export const firstJoin = createAction('user/firstJoin');
@@ -84,6 +85,29 @@ export const loginAction = createAsyncThunk<
         ...arg.data,
         accessToken: arg.data.access_token,
         refresh_token: arg.data.refresh_token,
+      },
+    );
+    arg.onSuccess?.(response);
+    return response;
+  } catch (e: any) {
+    arg.onError?.(e.response);
+    throw e;
+  }
+});
+export const loginTokenRefrAction = createAsyncThunk<
+  ILogin,
+  {
+    data: ILogin;
+    onSuccess?: (response: ILogin) => void;
+    onError?: (e: any) => void;
+  }
+>('auth/refresh', async arg => {
+  try {
+    const {data: response} = await apiClient.post<ILogin>(
+      R.consts.API_REFRESH_TOKEN,
+      {
+        ...arg.data,
+        accessToken: arg.data.access_token,
       },
     );
 
@@ -175,11 +199,11 @@ export const postRole = createAsyncThunk<
     onSuccess?: (response: IRole) => void;
     onError?: (e: any) => void;
   }
->('user/role', async arg => {
+>('role/type', async arg => {
   try {
     const {data: response} = await apiClient.post<IRole>(
       R.consts.API_PATH_ROLE,
-      arg.data,
+      {...arg.data, email: arg.data.email, user_type: arg.data.user_type},
     );
 
     arg.onSuccess?.(response);

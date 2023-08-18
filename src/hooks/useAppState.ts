@@ -1,8 +1,8 @@
-import AppStateContext from 'contexts/AppStateContext'
-import { useContext } from 'react'
+import AppStateContext from '../contexts/AppStateContext';
+import {useContext} from 'react';
 
 export const useAppState = () => {
-  const state = useContext(AppStateContext)
+  const state = useContext(AppStateContext);
 
-  return state
-}
+  return state;
+};

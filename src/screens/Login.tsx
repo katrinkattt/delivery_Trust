@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Formik} from 'formik';
+import {useSelector} from 'react-redux';
 import {AppleLogo, FacebookLogo, GoogleLogo} from '../components/common/Svgs';
 import Body from '../components/common/Body';
 import Button from '../components/common/Button';
@@ -16,9 +17,12 @@ import {loginAction, resetPassCodeAction} from '../state/user/action';
 import useAppSelector from '../hooks/useAppSelector';
 import {getUser} from '../state/user/selectors';
 import {FormButton} from '../components/common/FormButton/FormButton';
+import {setEmail} from '../state/user/slice';
+import {useAppDispatch} from '../hooks/redux';
 
 export default function Login() {
-  const dispatch = useDispatch();
+  const disp = useDispatch();
+  const dispatch = useAppDispatch();
   const safeAreaInsets = useSafeAreaInsets();
   const navigation = useNavigation();
   const {loading} = useAppSelector(getUser);
@@ -26,7 +30,7 @@ export default function Login() {
   const [emailRecov, setEmailRecov] = useState('');
   const [title, setTitle] = useState('Войти');
   const [recov, setRecov] = useState(false);
-
+  const user = useSelector(state => state.user);
   useEffect(() => {
     if (recov) {
       setTitle('Востановление пароля');
@@ -47,12 +51,15 @@ export default function Login() {
     }
     if (!recov) {
       dispatch(
-        //@ts-ignore
         loginAction({
           data,
           onSuccess: () => {
-            //@ts-ignore
-            navigation.navigate('TabScreen');
+            disp(setEmail({email: data.email}));
+            !!user?.role
+              ? //@ts-ignore
+                navigation.navigate('ProfileType')
+              : // @ts-ignore
+                navigation.navigate('TabScreen');
           },
           onError: async () => {
             setError('Неверный логин или пароль');
@@ -61,7 +68,6 @@ export default function Login() {
       );
     } else {
       dispatch(
-        //@ts-ignores
         resetPassCodeAction({
           data: {email: data.email},
           onSuccess: () => {

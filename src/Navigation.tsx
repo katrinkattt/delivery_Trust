@@ -36,6 +36,7 @@ import CardEditor from './screens/CardEditor';
 import ClientHomeStack from './StackHomeClient';
 import ClientOrder from './screens/Client/ClientOrders';
 import {MessageScreen} from './components/messages/MessageScreen';
+import {useSelector} from 'react-redux';
 
 const Stack = createStackNavigator();
 
@@ -46,6 +47,7 @@ export const Navigation = () => {
     ...DefaultTheme,
     colors: {...DefaultTheme.colors, background: colors.white},
   };
+  const user = useSelector(state => state.user);
 
   return (
     <>

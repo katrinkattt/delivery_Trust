@@ -15,12 +15,14 @@ import R from '../res';
 import useAppSelector from '../hooks/useAppSelector';
 import {requir, validator, email, tel} from '../utils/validators';
 import Body from '../components/common/Body';
+import {useSelector} from 'react-redux';
 
 export default function Register() {
   const [error, setError] = useState('');
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const {loading} = useAppSelector(getUser);
+  const user = useSelector(state => state.user);
 
   const initialValues: IRegistr = {
     email: '',
@@ -49,7 +51,7 @@ export default function Register() {
             navigation.navigate(R.routes.CONFIRM_EMAIL, {data: dataAcc});
           },
           onError: async () => {
-            setError('Пользователь уже существует');
+            setError('Пользователь 3 уже существует');
           },
         }),
       );
@@ -60,8 +62,7 @@ export default function Register() {
     <Formik initialValues={initialValues} onSubmit={submit}>
       {() => (
         <View style={styles.container}>
-          <Header title="Регистрация" />
-
+          <Header title={'Регистрация' + user?.email} />
           <AuthInput
             label="E-mail*"
             placeholder="Введите e-mail"

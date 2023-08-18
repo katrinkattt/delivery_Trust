@@ -1,4 +1,5 @@
 export enum userTypeEnum {
-    CLIENT = 'CLIENT',
-    COURIER = 'COURIER',
+  NO = '',
+  CLIENT = 'Client',
+  COURIER = 'Courier',
 }

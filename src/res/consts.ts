@@ -11,10 +11,11 @@ export const BASE_URL = Config.BASE_URL || 'http://92.51.39.155:5000/';
 export const API_PATH_REGISTER = '/register/sendcode';
 export const API_PATH_CONFIRM_CODE = '/register';
 export const API_PATH_LOGIN = '/auth';
+export const API_REFRESH_TOKEN = '/auth/refresh';
 export const API_RESET_PASS_CODE = '/resetpassword/sendcode';
 export const API_RESET_PASS_VERIFY = '/resetpassword/verifycode';
 export const API_RESET_PASS = '/resetpassword';
-export const API_PATH_ROLE = 'api/v1/auth/role';
+export const API_PATH_ROLE = '/role/type';
 export const API_PATH_CLIENT_SETTING = 'api/v1/customer/settings';
 
 //Device

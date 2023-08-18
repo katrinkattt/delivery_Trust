@@ -94,6 +94,7 @@ const ConfirmCodeField = ({data}: IPropsConfirmCode) => {
             },
           }),
         );
+        dispatch(setEmail({email: data.email}));
       }
       if (data.email && !data?.password) {
         dispatch(setCode({code: code}));

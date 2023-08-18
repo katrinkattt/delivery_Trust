@@ -1,3 +1,3 @@
-import { RootState } from '../index'
+import {RootState} from '../../src/state';
 
-export const firstLogSelector = (state: RootState) => state.fistLogin
+export const firstLogSelector = (state: RootState) => state.fistLogin;

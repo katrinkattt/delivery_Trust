@@ -3,6 +3,8 @@ import Reactotron from '../reactotron';
 import {userReducer} from './user/slice';
 import {persistStore} from 'redux-persist';
 import orderReducer from './orders/slice';
+import AsyncStorage from '@react-native-community/async-storage';
+import persistReducer from 'redux-persist/es/persistReducer';
 
 const combinedReducer = combineReducers({
   user: userReducer,
@@ -19,8 +21,15 @@ const rootReducer: typeof combinedReducer = (
 };
 
 const setupStore = () => {
+  const persistConfig = {
+    key: 'root',
+    storage: AsyncStorage,
+  };
+
+  const persistedReducer = persistReducer(persistConfig, rootReducer);
+
   return configureStore({
-    reducer: rootReducer,
+    reducer: persistedReducer,
     enhancers: [
       // @ts-ignore
       Reactotron.createEnhancer(),
