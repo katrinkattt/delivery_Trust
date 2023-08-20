@@ -38,7 +38,7 @@ export function TabScreen() {
       dispatch(loadOrders(OrdersDataCourier));
     }
   }, []);
-
+  console.log('STATE', user);
   return (
     <>
       {user?.typeInUser ? (

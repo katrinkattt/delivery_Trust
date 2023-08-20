@@ -59,7 +59,7 @@ export const regConfirmCodeAction = createAsyncThunk<
       {
         ...arg.data,
         passwordConfirmation: arg.data.refresh_token,
-        accessToken: arg.data.access_token,
+        access_token: arg.data.access_token,
       },
     );
 
@@ -83,11 +83,16 @@ export const loginAction = createAsyncThunk<
       R.consts.API_PATH_LOGIN,
       {
         ...arg.data,
-        accessToken: arg.data.access_token,
+        access_token: arg.data.access_token,
         refresh_token: arg.data.refresh_token,
       },
     );
+    console.log('data', arg.data);
+
     arg.onSuccess?.(response);
+
+    console.warn('resp', response);
+
     return response;
   } catch (e: any) {
     arg.onError?.(e.response);
@@ -107,7 +112,7 @@ export const loginTokenRefrAction = createAsyncThunk<
       R.consts.API_REFRESH_TOKEN,
       {
         ...arg.data,
-        accessToken: arg.data.access_token,
+        access_token: arg.data.access_token,
       },
     );
 

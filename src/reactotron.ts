@@ -14,7 +14,7 @@ if (__DEV__) {
 }
 
 // @ts-ignore
-console.log = Reactotron.log;
+// console.log = Reactotron.log;
 // @ts-ignore
 console.warn = Reactotron.logImportant;
 // @ts-ignore

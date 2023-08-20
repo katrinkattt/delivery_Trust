@@ -13,12 +13,11 @@ const App = () => {
   if (__DEV__) {
     import('./reactotron').then(() => console.log('Reactotron Configured'));
   }
-
-  LogBox.ignoreLogs([
-    'new NativeEventEmitter',
-    'RCTBridge',
-    '[react-native-gesture-handler]',
-  ]);
+  // LogBox.ignoreLogs([
+  //   'new NativeEventEmitter',
+  //   'RCTBridge',
+  //   '[react-native-gesture-handler]',
+  // ]);
 
   useEffect(() => {
     if (Platform.OS === 'android') {

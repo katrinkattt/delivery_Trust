@@ -373,117 +373,129 @@ const userSlice = createSlice({
       return state;
     },
   },
-  extraReducers: {
-    [signOutUser.type]: state => {
+  extraReducers: builder => {
+    builder.addCase(signOutUser.type, state => {
       state.access_token = null;
-    },
+    }),
+      builder.addCase(
+        userType.type,
+        (state, action: PayloadAction<boolean>) => {
+          state.typeInUser = action.payload;
+        },
+      ),
+      builder.addCase(
+        setInputDisable.type,
+        (state, action: PayloadAction<boolean>) => {
+          state.searchInput = action.payload;
+        },
+      ),
+      builder.addCase(
+        registerAction.fulfilled.type,
+        (state, action: PayloadAction<ILogin>) => {
+          // state.token = action.payload
+          state.loading = false;
+        },
+      ),
+      builder.addCase(registerAction.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(registerAction.rejected.type, state => {
+        state.loading = false;
+      }),
+      builder.addCase(
+        regConfirmCodeAction.fulfilled.type,
+        (state, action: PayloadAction<ILogin>) => {
+          // state.token = action.payload;
+          state.access_token = action.payload.accessToken;
+          state.refresh_token = action.payload.refreshToken;
+          state.loading = false;
+        },
+      ),
+      builder.addCase(regConfirmCodeAction.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(regConfirmCodeAction.rejected.type, state => {
+        state.loading = false;
+      }),
+      builder.addCase(
+        loginAction.fulfilled.type,
+        (state, action: PayloadAction<ILogin>) => {
+          console.log('IN SLISE:action.payload', action.payload);
 
-    [userType.type]: (state, action: PayloadAction<boolean>) => {
-      state.typeInUser = action.payload;
-    },
-    [setInputDisable.type]: (state, action: PayloadAction<boolean>) => {
-      state.searchInput = action.payload;
-    },
-
-    [registerAction.fulfilled.type]: (state, action: PayloadAction<ILogin>) => {
-      // state.token = action.payload
-      state.loading = false;
-    },
-    [registerAction.pending.type]: state => {
-      state.loading = true;
-    },
-    [registerAction.rejected.type]: state => {
-      state.loading = false;
-    },
-
-    [regConfirmCodeAction.fulfilled.type]: (
-      state,
-      action: PayloadAction<ILogin>,
-    ) => {
-      // state.token = action.payload;
-      state.access_token = action.payload.access_token;
-      state.refresh_token = action.payload.refresh_token;
-      state.loading = false;
-    },
-    [regConfirmCodeAction.pending.type]: state => {
-      state.loading = true;
-    },
-    [regConfirmCodeAction.rejected.type]: state => {
-      state.loading = false;
-    },
-    [loginAction.fulfilled.type]: (state, action: PayloadAction<ILogin>) => {
-      state.loading = false;
-      state.access_token = action.payload.access_token;
-      state.refresh_token = action.payload.refresh_token;
-    },
-    [loginAction.pending.type]: state => {
-      state.loading = true;
-    },
-    [loginAction.rejected.type]: state => {
-      state.loading = false;
-    },
-    [loginTokenRefrAction.fulfilled.type]: (
-      state,
-      action: PayloadAction<ILogin>,
-    ) => {
-      state.loading = false;
-      state.access_token = action.payload.access_token;
-    },
-    [loginTokenRefrAction.pending.type]: state => {
-      state.loading = true;
-    },
-    [loginTokenRefrAction.rejected.type]: state => {
-      state.loading = false;
-    },
-    [resetPassCodeAction.fulfilled.type]: (
-      state,
-      action: PayloadAction<IResetPassCode>,
-    ) => {
-      state.loading = false;
-    },
-    [resetPassCodeAction.pending.type]: state => {
-      state.loading = true;
-    },
-    [resetPassCodeAction.rejected.type]: state => {
-      state.loading = false;
-    },
-
-    [resetPassVerifyCodeAction.fulfilled.type]: (
-      state,
-      action: PayloadAction<IResetPassCode>,
-    ) => {
-      state.loading = false;
-      state.valid_code = action.payload.valid_code;
-    },
-    [resetPassVerifyCodeAction.pending.type]: state => {
-      state.loading = true;
-    },
-    [resetPassVerifyCodeAction.rejected.type]: state => {
-      state.loading = false;
-    },
-    [resetPassAction.fulfilled.type]: (
-      state,
-      action: PayloadAction<IResetPass>,
-    ) => {
-      state.loading = false;
-    },
-    [resetPassAction.pending.type]: state => {
-      state.loading = true;
-    },
-    [resetPassAction.rejected.type]: state => {
-      state.loading = false;
-    },
-
-    [postRole.fulfilled.type]: (state, action: PayloadAction<IRole>) => {
-      state.loading = false;
-      state.role = action.payload.role;
-    },
-    [postRole.pending.type]: state => {
-      state.loading = true;
-    },
-    [postRole.rejected.type]: state => {
-      state.loading = false;
-    },
+          state.loading = false;
+          state.access_token = action.payload.accessToken;
+          state.refresh_token = action.payload.refreshToken;
+        },
+      ),
+      builder.addCase(loginAction.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(loginAction.rejected.type, state => {
+        state.loading = false;
+      }),
+      builder.addCase(
+        loginTokenRefrAction.fulfilled.type,
+        (state, action: PayloadAction<ILogin>) => {
+          state.loading = false;
+          state.access_token = action.payload.access_token;
+        },
+      ),
+      builder.addCase(loginTokenRefrAction.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(loginTokenRefrAction.rejected.type, state => {
+        state.loading = false;
+      }),
+      builder.addCase(
+        resetPassCodeAction.fulfilled.type,
+        (state, action: PayloadAction<IResetPassCode>) => {
+          state.loading = false;
+        },
+      ),
+      builder.addCase(resetPassCodeAction.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(resetPassCodeAction.rejected.type, state => {
+        state.loading = false;
+      }),
+      builder.addCase(
+        resetPassVerifyCodeAction.fulfilled.type,
+        (state, action: PayloadAction<IResetPassCode>) => {
+          state.loading = false;
+          state.valid_code = action.payload.valid_code;
+        },
+      ),
+      builder.addCase(resetPassVerifyCodeAction.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(resetPassVerifyCodeAction.rejected.type, state => {
+        state.loading = false;
+      }),
+      builder.addCase(
+        resetPassAction.fulfilled.type,
+        (state, action: PayloadAction<IResetPass>) => {
+          state.loading = false;
+        },
+      ),
+      builder.addCase(resetPassAction.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(resetPassAction.rejected.type, state => {
+        state.loading = false;
+      }),
+      builder.addCase(
+        postRole.fulfilled.type,
+        (state, action: PayloadAction<IRole>) => {
+          state.loading = false;
+          state.role = action.payload.role;
+        },
+      ),
+      builder.addCase(postRole.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(postRole.rejected.type, state => {
+        state.loading = false;
+      });
   },
 });
 

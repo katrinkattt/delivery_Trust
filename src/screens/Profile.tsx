@@ -22,7 +22,7 @@ export default function Profile() {
         {index === 1 ? (
           <Header title={user?.email} />
         ) : (
-          <Header title={routes[index]?.title + user?.email} />
+          <Header title={routes[index]?.title + user?.accessToken} />
         )}
         {index === 1 ? (
           <View style={styles.dataHeader}>

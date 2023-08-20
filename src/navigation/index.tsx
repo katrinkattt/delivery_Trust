@@ -25,11 +25,13 @@ import {MessageScreen} from '../components/messages/MessageScreen';
 import R from '../res';
 import {TabScreen} from './Tabs';
 import {useSelector} from 'react-redux';
+import {getUser} from '../state/user/selectors';
 
 const Stack = createStackNavigator();
 
 export const Navigation = () => {
-  const user = useSelector(state => state.user);
+  const user = useSelector(getUser);
+  console.log('STATE USER', user);
   const theme = {
     ...DefaultTheme,
     colors: {...DefaultTheme.colors, background: colors.white},
@@ -46,7 +48,9 @@ export const Navigation = () => {
       <NavigationContainer theme={theme}>
         <BottomSheetModalProvider>
           <Stack.Navigator
-            initialRouteName={user?.email ? 'TabScreen' : 'AuthNavigator'}
+            initialRouteName={
+              user?.access_token ? 'TabScreen' : 'AuthNavigator'
+            }
             screenOptions={{headerShown: false}}>
             <Stack.Screen name="AuthNavigator" component={AuthNavigator} />
             <Stack.Screen name="Login" component={Login} />

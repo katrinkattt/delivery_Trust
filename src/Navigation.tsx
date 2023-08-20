@@ -37,6 +37,7 @@ import ClientHomeStack from './StackHomeClient';
 import ClientOrder from './screens/Client/ClientOrders';
 import {MessageScreen} from './components/messages/MessageScreen';
 import {useSelector} from 'react-redux';
+import {getUser} from './state/user/selectors';
 
 const Stack = createStackNavigator();
 
@@ -47,7 +48,8 @@ export const Navigation = () => {
     ...DefaultTheme,
     colors: {...DefaultTheme.colors, background: colors.white},
   };
-  const user = useSelector(state => state.user);
+  const user = useSelector(getUser);
+  console.log('STATE USER', user);
 
   return (
     <>
