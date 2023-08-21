@@ -30,4 +30,10 @@ export type UserState = {
   code?: string | null;
   valid_code?: boolean;
   email?: string | null;
+  full_name?: string;
+  region?: string;
+  city?: string;
+  street?: string;
+  house?: string;
+  apartment?: string;
 };

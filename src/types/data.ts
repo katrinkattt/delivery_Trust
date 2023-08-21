@@ -64,6 +64,18 @@ export interface IConfirmCode {
   message?: string;
 }
 
+export interface ICreateUser {
+  email?: string;
+  user_type?: string;
+  full_name?: string;
+  region?: string;
+  city?: string;
+  street?: string;
+  house?: string;
+  apartment?: string;
+  document?: {};
+  documentTwo?: {};
+}
 export interface ILogin {
   email?: string;
   password?: string;
@@ -89,6 +101,7 @@ export interface IRole {
   user_type?: number;
   access_token?: string;
   role?: string;
+  userType?: string;
 }
 export interface IChangePass {
   oldPasword: string;
@@ -96,14 +109,16 @@ export interface IChangePass {
   passwordConfirmation: string;
 }
 
-export interface ClientRegistData {
-  name?: string;
-  reg?: string;
-  city?: string;
-  street?: string;
-  home?: string;
-  room?: string;
-}
+// export interface ClientRegistData {
+//   name?: string;
+//   reg?: string;
+//   city?: string;
+//   street?: string;
+//   home?: string;
+//   room?: string;
+//   document?: {};
+//   documentTwo?: {};
+// }
 
 export interface IClientDateRes {
   name?: string;

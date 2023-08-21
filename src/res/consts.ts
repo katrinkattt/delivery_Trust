@@ -10,6 +10,7 @@ export const BASE_URL = Config.BASE_URL || 'http://92.51.39.155:5000/';
 
 export const API_PATH_REGISTER = '/register/sendcode';
 export const API_PATH_CONFIRM_CODE = '/register';
+export const API_CREATE_USER = '/api/create-user';
 export const API_PATH_LOGIN = '/auth';
 export const API_REFRESH_TOKEN = '/auth/refresh';
 export const API_RESET_PASS_CODE = '/resetpassword/sendcode';

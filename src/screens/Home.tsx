@@ -20,8 +20,10 @@ import Body from '../components/common/Body';
 import HomeSlider from '../components/HomeSlider';
 import sliderData from '../api/SliderData';
 import R from '../res';
+import {useSelector} from 'react-redux';
+import {getUser} from '../state/user/selectors';
 const {width} = Dimensions.get('window');
-const user = require('../assets/user.png');
+const userImg = require('../assets/user.png');
 const header = require('../assets/header.png');
 
 export default function Home() {
@@ -31,6 +33,7 @@ export default function Home() {
   const [text, setText] = useState<string>('');
   const safeAreaInsets = useSafeAreaInsets();
   const navigation = useNavigation();
+  const user = useSelector(getUser);
 
   async function handleChange(e: string) {
     setText(e);
@@ -60,11 +63,11 @@ export default function Home() {
         <View style={[styles.userBox, {top: 18 + safeAreaInsets.top}]}>
           <View style={{flexDirection: 'column'}}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <FastImage source={user} style={styles.image} />
+              <FastImage source={userImg} style={styles.image} />
 
               <View style={{marginLeft: 14}}>
                 <Body color="#243757" style={{fontSize: 20, fontWeight: '700'}}>
-                  Дмитрий П.
+                  {user?.full_name}
                 </Body>
               </View>
             </View>

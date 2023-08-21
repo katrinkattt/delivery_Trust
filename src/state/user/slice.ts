@@ -343,6 +343,7 @@ import {
   setInputDisable,
   signOutUser,
   userType,
+  createUserAction,
 } from './action';
 import {UserState} from './types';
 
@@ -352,10 +353,16 @@ export const initialStateUser: UserState = {
   loading: false,
   access_token: null,
   refresh_token: null,
-  role: userTypeEnum.NO,
+  role: userTypeEnum.COURIER,
   code: null,
   email: null,
   valid_code: false,
+  full_name: '',
+  region: '',
+  city: '',
+  street: '',
+  house: '',
+  apartment: '',
 };
 
 const userSlice = createSlice({
@@ -371,6 +378,25 @@ const userSlice = createSlice({
       const {email} = action.payload;
       state.email = email;
       return state;
+    },
+    setAddress: (state, action) => {
+      const {address} = action.payload;
+      state.region = address.region;
+      state.city = address.city;
+      state.street = address.street;
+      state.house = address.house;
+      if (address?.apartment) {
+        state.apartment = address?.apartment;
+      }
+      return state;
+    },
+    setFullName: (state, action) => {
+      const {full_name} = action.payload;
+      state.full_name = full_name;
+    },
+    setRole: (state, action) => {
+      const {role} = action.payload;
+      state.role = role;
     },
   },
   extraReducers: builder => {
@@ -417,16 +443,31 @@ const userSlice = createSlice({
       builder.addCase(regConfirmCodeAction.rejected.type, state => {
         state.loading = false;
       }),
+      //createUserAction
       builder.addCase(
-        loginAction.fulfilled.type,
+        createUserAction.fulfilled.type,
         (state, action: PayloadAction<ILogin>) => {
           console.log('IN SLISE:action.payload', action.payload);
-
           state.loading = false;
-          state.access_token = action.payload.accessToken;
-          state.refresh_token = action.payload.refreshToken;
         },
       ),
+      builder.addCase(createUserAction.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(createUserAction.rejected.type, state => {
+        state.loading = false;
+      });
+
+    builder.addCase(
+      loginAction.fulfilled.type,
+      (state, action: PayloadAction<ILogin>) => {
+        console.log('IN SLISE:action.payload', action.payload);
+
+        state.loading = false;
+        state.access_token = action.payload.accessToken;
+        state.refresh_token = action.payload.refreshToken;
+      },
+    ),
       builder.addCase(loginAction.pending.type, state => {
         state.loading = true;
       }),
@@ -487,7 +528,8 @@ const userSlice = createSlice({
         postRole.fulfilled.type,
         (state, action: PayloadAction<IRole>) => {
           state.loading = false;
-          state.role = action.payload.role;
+          state.role = action.payload.userType;
+          state.typeInUser = action.payload.userType === 'Client';
         },
       ),
       builder.addCase(postRole.pending.type, state => {
@@ -503,5 +545,6 @@ const persistConfig: PersistConfig<UserState> = {
   key: 'auth',
   storage: AsyncStorage,
 };
-export const {setCode, setEmail} = userSlice.actions;
+export const {setCode, setEmail, setAddress, setFullName, setRole} =
+  userSlice.actions;
 export const userReducer = persistReducer(persistConfig, userSlice.reducer);

@@ -7,10 +7,10 @@ import {
   IRole,
   IResetPassCode,
   IResetPass,
+  ICreateUser,
 } from '../../types/data';
 import R from '../../res';
 import apiClient from '../../api/instance';
-import {setAccessToken} from './slice';
 export const signOutUser = createAction('user/signOut');
 export const removeUserInfo = createAction('user/removeUserInfo');
 export const firstJoin = createAction('user/firstJoin');
@@ -67,6 +67,33 @@ export const regConfirmCodeAction = createAsyncThunk<
     return response;
   } catch (e: any) {
     arg.onError?.(e.response);
+    throw e;
+  }
+});
+export const createUserAction = createAsyncThunk<
+  ILogin,
+  {
+    data: ICreateUser;
+    onSuccess?: (response: ICreateUser) => void;
+    onError?: (e: any) => void;
+  }
+>('api/create-user', async arg => {
+  console.log('DATA IN createUserAction', arg.data);
+  console.log('createUserAction');
+  try {
+    const {data: response} = await apiClient.post<ICreateUser>(
+      R.consts.API_CREATE_USER,
+      arg.data,
+    );
+    console.log('data in API_CREATE_USER', arg.data);
+
+    arg.onSuccess?.(response);
+
+    return response;
+  } catch (e: any) {
+    arg.onError?.(e.response);
+    console.log('e.response', e.response);
+
     throw e;
   }
 });
@@ -210,6 +237,7 @@ export const postRole = createAsyncThunk<
       R.consts.API_PATH_ROLE,
       {...arg.data, email: arg.data.email, user_type: arg.data.user_type},
     );
+    console.log('role resp', response);
 
     arg.onSuccess?.(response);
     return response;

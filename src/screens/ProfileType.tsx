@@ -35,9 +35,6 @@ export default function ProfileType() {
   const [error, setError] = useState('');
 
   const submit = (type: number) => {
-    type === 1
-      ? navigation.navigate('CourierProfileData')
-      : navigation.navigate('ClientRegistrArgumet');
     dispatch(
       postRole({
         data: {
@@ -46,8 +43,9 @@ export default function ProfileType() {
           access_token: user?.access_token,
         },
         onSuccess: async () => {
-          // @ts-ignore
-          //   navigation.navigate(R.routes.PROFILE_TYPE);
+          type === 1
+            ? navigation.navigate('CourierProfileData')
+            : navigation.navigate('ClientRegistrArgumet');
         },
         onError: async () => {
           setError('Ошибка соеденения с сервером');

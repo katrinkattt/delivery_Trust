@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react';
-import {StyleSheet, View, Platform, Image, Text} from 'react-native';
+import {StyleSheet, View, Linking, Platform, Image, Text} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import {
   GiftedChat,
@@ -65,6 +65,8 @@ export const MessageScreen = ({route}: IProps) => {
         presentationStyle: 'fullScreen',
       });
       let imgRegex = /image/g;
+      console.log('FULL response', response);
+
       let str = response[0]?.type;
       if (str?.match(imgRegex)) {
         let sendObjPict = {
@@ -75,6 +77,7 @@ export const MessageScreen = ({route}: IProps) => {
           file: response[0]?.uri,
           image: response[0]?.uri,
         };
+        console.log('obj IMG', sendObjPict);
         // @ts-ignore
         onSend([sendObjPict]);
       } else {
@@ -86,12 +89,13 @@ export const MessageScreen = ({route}: IProps) => {
           name: response[0].name,
           file: response[0]?.uri,
           file_id: response[0]?.size,
-          file_type: 'pdf' || 'docx',
+          file_type: response[0]?.type,
           attachment: {
             url: response[0].uri,
-            type: 'pdf' || 'docx',
+            type: response[0]?.type,
           },
         };
+        console.log('obj DOC', sendObjDoc);
         // @ts-ignore
         onSend([sendObjDoc]);
       }
@@ -205,12 +209,17 @@ export const MessageScreen = ({route}: IProps) => {
     if (props?.currentMessage?.file_type) {
       return (
         <TouchableOpacity
-          onPress={() => {}}
+          onPress={() => {
+            Linking.openURL(
+              decodeURIComponent(props.currentMessage.attachment.url),
+            );
+          }}
           style={{
             backgroundColor: colors.lavender,
             height: 40,
             borderRadius: 10,
           }}>
+          {/* <Link */}
           <Image source={{uri: props.currentMessage.attachment.url}} />
           <Text style={{color: '#fff', padding: 10}}>
             {props?.currentMessage.name}

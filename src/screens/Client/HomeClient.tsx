@@ -17,7 +17,7 @@ import {useSharedValue} from 'react-native-reanimated';
 import {Slider} from 'react-native-awesome-slider';
 import CategoryData from '../../api/ClientHomeData';
 
-const user = require('../../assets/use.png');
+const userImg = require('../../assets/use.png');
 const header = require('../../assets/head.png');
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
@@ -25,6 +25,8 @@ import Body from '../../components/common/Body';
 import Button from '../../components/common/Button';
 import HomeClientItems from '../../components/HomeClientItems';
 import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+import {getUser} from '../../state/user/selectors';
 import R from '../../res';
 
 const {width} = Dimensions.get('window');
@@ -38,6 +40,7 @@ export default function HomeClient() {
   const progress = useSharedValue(3);
   const min = useSharedValue(0);
   const max = useSharedValue(100);
+  const user = useSelector(getUser);
 
   const [tips, setTips] = useState(false);
   const [text, setText] = useState<string>('');
@@ -76,11 +79,11 @@ export default function HomeClient() {
         <View style={[styles.userBox, {top: 18 + safeAreaInsets.top}]}>
           <View style={{flexDirection: 'column'}}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <FastImage source={user} style={styles.image} />
+              <FastImage source={userImg} style={styles.image} />
 
-              <View style={{marginLeft: 14}}>
+              <View style={{marginLeft: 24}}>
                 <Body color="white" style={{fontSize: 20, fontWeight: '700'}}>
-                  Ирина З.
+                  {user?.full_name}
                 </Body>
               </View>
             </View>
@@ -88,13 +91,13 @@ export default function HomeClient() {
               text="dvvf"
               onPress={() => navigation.navigate(R.routes.CLIENT_OREDERS)}
             /> */}
-            <View style={{marginLeft: 80, marginTop: -20}}>
+            <View style={{marginLeft: 76, marginTop: -20}}>
               <TouchableOpacity
                 onPress={() => setTips(!tips)}
                 activeOpacity={0.7}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Body color="white" style={styles.title}>
-                    Москва, Российская улица, 161/3
+                    {user?.city}, {user?.street}, {user?.house}
                   </Body>
                 </View>
               </TouchableOpacity>

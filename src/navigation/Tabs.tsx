@@ -30,6 +30,9 @@ const Tab = createBottomTabNavigator();
 
 export function TabScreen() {
   const user = useSelector(getUser);
+  const isTypeInUser = user?.role;
+  console.log('ROLEE', isTypeInUser);
+
   const dispatch = useDispatch();
   useEffect(() => {
     if (!user?.typeInUser) {
@@ -38,10 +41,9 @@ export function TabScreen() {
       dispatch(loadOrders(OrdersDataCourier));
     }
   }, []);
-  console.log('STATE', user);
   return (
     <>
-      {user?.typeInUser ? (
+      {!user?.typeInUser ? (
         <Tab.Navigator
           screenOptions={{
             tabBarStyle: styles.tabHeader,

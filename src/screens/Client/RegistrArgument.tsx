@@ -7,31 +7,57 @@ import Header from '../../components/Header';
 import AuthSelect from '../../components/common/AuthSelect';
 import CustomCheckbox from '../../components/common/CustomCheckbox';
 import {Formik} from 'formik';
-import {ClientRegistData, IClientDateRes} from '../../types/data';
+import {ICreateUser, IClientDateRes} from '../../types/data';
 import {FormButton} from '../../components/common/FormButton/FormButton';
 import {useAppDispatch} from '../../hooks/redux';
-import {ClientDataAction} from '../../state/user/action';
+import {createUserAction} from '../../state/user/action';
+import Body from '../../components/common/Body';
+import {useDispatch} from 'react-redux';
+import {useAppSelector} from '../../hooks/redux';
+import {getUser} from '../../state/user/selectors';
+import {setAddress, setFullName} from '../../state/user/slice';
 
 export default function ClientRegistrArgumet() {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
+  const disp = useDispatch();
+  const {loading, email, role} = useAppSelector(getUser);
 
-  const initialValues: ClientRegistData = {
-    name: '',
-    reg: '',
+  const initialValues: ICreateUser = {
+    full_name: '',
+    region: '',
     city: '',
     street: '',
-    home: '',
-    room: '',
+    house: '',
+    apartment: '',
   };
-  const [isCorrect, setIsCorrect] = useState(false);
+  const [error, setError] = useState('');
 
-  const submit = (data: IClientDateRes) => {
-    if (isCorrect) {
-      //@ts-ignore
-      navigation.navigate('TabScreen');
-      dispatch(ClientDataAction({data}));
-    }
+  const submit = (dataForm: ICreateUser) => {
+    disp(setAddress({address: dataForm}));
+    disp(setFullName({full_name: dataForm.full_name}));
+
+    //@ts-ignore
+    navigation.navigate('TabScreen'); // удалить когда бек норм ответит
+
+    const data = {
+      ...dataForm,
+      email: email || 'sixrosesg@gmail.com',
+      user_type: 'Client',
+    };
+    dispatch(
+      createUserAction({
+        data,
+        onSuccess: () => {
+          //@ts-ignore
+          navigation.navigate('TabScreen');
+          console.log('success');
+        },
+        onError: async () => {
+          setError('Ошибка сервера, попробуйте позже');
+        },
+      }),
+    );
   };
 
   return (
@@ -42,14 +68,14 @@ export default function ClientRegistrArgumet() {
             <ScrollView>
               <Header title="Персональные данные" />
               <AuthInput
-                name="name"
+                name="full_name"
                 label="Фамилия имя отчество*"
                 placeholder="Введите фамилию имя отчество"
                 position="top"
               />
 
               <AuthInput
-                name="reg"
+                name="region"
                 label="Регион*"
                 placeholder="Выберите свой регион"
                 position="center"
@@ -67,7 +93,7 @@ export default function ClientRegistrArgumet() {
                 position="center"
               />
               <AuthInput
-                name="home"
+                name="house"
                 label="Дом*"
                 placeholder="Укажите номер вашего дома"
                 position="center"
@@ -78,7 +104,7 @@ export default function ClientRegistrArgumet() {
                 label="Квартира"
                 placeholder="Укажите номер вашей квартиры"
                 position="center"
-                name="room"
+                name="apartment"
               />
 
               {/* <CustomCheckbox
@@ -87,21 +113,25 @@ export default function ClientRegistrArgumet() {
               /> */}
 
               {/* <PickerInp /> */}
+              <Body size={12} color="#a22" style={{marginBottom: 90}}>
+                {error}
+              </Body>
+              <FormButton
+                containerStyle={{marginVetrical: 15}}
+                //@ts-ignore
+                onPress={loading}
+                text="ЗАРЕГИСТРИРОВАТЬСЯ"
+              />
             </ScrollView>
-            <View
+            {/* <View
               style={{
                 width: '100%',
                 position: 'absolute',
-                bottom: 0,
+                bottom: 15,
                 left: 15,
-              }}>
-              <Button
-                // containerStyle={{ marginTop: 15 }}
-                //@ts-ignore
-                onPress={() => navigation.navigate('TabScreen')}
-                text="ЗАРЕГИСТРИРОВАТЬСЯ"
-              />
-            </View>
+              }}> */}
+
+            {/* </View> */}
           </>
         )}
       </Formik>

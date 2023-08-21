@@ -48,8 +48,8 @@ export const Navigation = () => {
     ...DefaultTheme,
     colors: {...DefaultTheme.colors, background: colors.white},
   };
-  const user = useSelector(getUser);
-  console.log('STATE USER', user);
+  // const user = useSelector(getUser);
+  // console.log('STATE USER', user);
 
   return (
     <>
