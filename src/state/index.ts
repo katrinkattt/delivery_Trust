@@ -1,14 +1,16 @@
 import {combineReducers, configureStore, PayloadAction} from '@reduxjs/toolkit';
 import Reactotron from '../reactotron';
 import {userReducer} from './user/slice';
+import {ratingReducer} from './rating/slice';
 import {persistStore} from 'redux-persist';
-import orderReducer from './orders/slice';
+import {orderReducer} from './orders/slice';
 import AsyncStorage from '@react-native-community/async-storage';
 import persistReducer from 'redux-persist/es/persistReducer';
 
 const combinedReducer = combineReducers({
   user: userReducer,
-  orders: orderReducer,
+  order: orderReducer,
+  rating: ratingReducer,
 });
 
 //TODO: find how to give type for function

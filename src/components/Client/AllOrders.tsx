@@ -20,7 +20,7 @@ const data = [
 ];
 
 export default function AllOrders() {
-  const orders = useSelector(state => state.orders);
+  const {orders} = useSelector(state => state.order);
 
   return (
     <View style={styles.container}>

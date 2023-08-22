@@ -1,10 +1,14 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {useSelector} from 'react-redux';
 import {ArrowBottom, ArrowTop, Minus} from './common/Svgs';
 import {colors} from '../theme/themes';
 import Body from './common/Body';
 import {useNavigation} from '@react-navigation/native';
 import R from '../res';
+import {useAppDispatch} from '../hooks/redux';
+import {loadRating} from '../state/rating/action';
+import {RatingItem} from '../state/rating/types';
 
 export interface IRatingCourier {
   name: string;
@@ -15,47 +19,34 @@ export interface IRatingCourier {
 export interface ICourierRating {
   full?: boolean;
 }
-const rating = [
-  {name: 'Аркадий Ф.', rating: 85, orderCount: 566, dinamic: -1},
-  {name: 'Игорь В.', rating: 83, orderCount: 231, dinamic: 0},
-  {name: 'Александр Ф.', rating: 70, orderCount: 344, dinamic: 1},
-  {name: 'Владимир А.', rating: 60, orderCount: 127, dinamic: -1},
-  {name: 'Иван С.', rating: 50, orderCount: 364, dinamic: 1},
-  {name: 'Саша А.', rating: 90, orderCount: 302, dinamic: 0},
-  {name: 'Аркадий Ф.', rating: 40, orderCount: 291, dinamic: -1},
-  {name: 'Дмитрий П.', rating: 70, orderCount: 176, dinamic: 1},
-  {name: 'Игорь В.', rating: 80, orderCount: 311, dinamic: 0},
-  {name: 'Александр Ф.', rating: 80, orderCount: 199, dinamic: -1},
-  {name: 'Владимир А.', rating: 84, orderCount: 132, dinamic: 1},
-  {name: 'Иван С.', rating: 84, orderCount: 317, dinamic: 0},
-  {name: 'Саша А.', rating: 84, orderCount: 164, dinamic: -1},
-  {name: 'Аркадий Ф.', rating: 84, orderCount: 281, dinamic: 1},
-  {name: 'Дмитрий П.', rating: 90, orderCount: 224, dinamic: 0},
-  {name: 'Игорь В.', rating: 84, orderCount: 389, dinamic: -1},
-  {name: 'Александр Ф.', rating: 80, orderCount: 275, dinamic: 1},
-  {name: 'Владимир А.', rating: 84, orderCount: 236, dinamic: 0},
-  {name: 'Иван С.', rating: 80, orderCount: 190, dinamic: -1},
-  {name: 'Саша А.', rating: 80, orderCount: 201, dinamic: 1},
-  {name: 'Аркадий Ф.', rating: 84, orderCount: 222, dinamic: 0},
-  {name: 'Дмитрий П.', rating: 84, orderCount: 72, dinamic: -1},
-  {name: 'Игорь В.', rating: 84, orderCount: 311, dinamic: 1},
-  {name: 'Александр Ф.', rating: 84, orderCount: 102, dinamic: 0},
-  {name: 'Владимир А.', rating: 84, orderCount: 245, dinamic: -1},
-  {name: 'Иван С.', rating: 84, orderCount: 372, dinamic: 1},
-  {name: 'Саша А.', rating: 84, orderCount: 396, dinamic: 0},
-  {name: 'Аркадий Ф.', rating: 84, orderCount: 231, dinamic: -1},
-  {name: 'Дмитрий П.', rating: 84, orderCount: 299, dinamic: 1},
-  {name: 'Игорь В.', rating: 84, orderCount: 197, dinamic: 0},
-];
+
 export default function CourierRating({full}: ICourierRating) {
   const navigation = useNavigation();
-  const ratingArr = full ? rating : rating.slice(0, 8);
+  const dispatch = useAppDispatch();
+  const rating = useSelector(state => state.rating);
+  const ratingA = rating?.raiting;
+  console.log('RATING.RATING', ratingA);
+  const ratingArr = full ? ratingA : ratingA.slice(0, 3);
 
   const showAllRating = () => {
     //@ts-ignore
     navigation.navigate(R.routes.RATING_COURIER);
   };
-
+  const getRating = () => {
+    dispatch(
+      loadRating({
+        onSuccess: () => {
+          console.log('good');
+        },
+        onError: async () => {
+          console.log('ERR');
+        },
+      }),
+    );
+  };
+  useEffect(() => {
+    getRating();
+  }, []);
   return (
     <>
       {!full && (
@@ -66,40 +57,46 @@ export default function CourierRating({full}: ICourierRating) {
 
       <View style={{paddingHorizontal: 15, width: '100%'}}>
         <View style={styles.ratingBox}>
-          {ratingArr.map((courier: IRatingCourier, i) => (
-            <View
-              style={[
-                styles.tableBox,
-                i % 2 == 0 ? {borderRadius: 5} : {backgroundColor: '#DCE8FF'},
-              ]}>
-              <View style={{flexDirection: 'row'}}>
-                <Body color="#243757" style={styles.tableNumber}>
-                  {courier.orderCount}
-                </Body>
+          {rating?.raiting.length < 1 ? (
+            <TouchableOpacity onPress={getRating}>
+              <Body color={colors.blue} size={20} style={{paddingLeft: 20}}>
+                Загрузить
+              </Body>
+            </TouchableOpacity>
+          ) : (
+            ratingArr.map((courier: RatingItem, i: number) => (
+              <View
+                style={[
+                  styles.tableBox,
+                  i % 2 == 0 ? {borderRadius: 5} : {backgroundColor: '#DCE8FF'},
+                ]}>
+                <View style={{flexDirection: 'row'}}>
+                  <Body color="#243757" style={styles.tableNumber}>
+                    {courier.orderCount}
+                  </Body>
 
-                <Body
-                  color="#243757"
-                  style={[styles.tableName, {marginLeft: 40}]}>
-                  {courier.name}
-                </Body>
-              </View>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                {courier.dinamic == 1 ? (
-                  <ArrowTop width={13} height={12} />
-                ) : courier.dinamic == -1 ? (
-                  <ArrowBottom width={13} height={12} />
-                ) : (
-                  <Minus width={13} height={3} />
-                )}
+                  <Body
+                    color="#243757"
+                    style={[styles.tableName, {marginLeft: 40}]}>
+                    {courier.name}
+                  </Body>
+                </View>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  {courier.dynamic == 1 ? (
+                    <ArrowTop width={13} height={12} />
+                  ) : courier.dynamic == -1 ? (
+                    <ArrowBottom width={13} height={12} />
+                  ) : (
+                    <Minus width={13} height={3} />
+                  )}
 
-                <Body
-                  color="#243757"
-                  style={[styles.tableName, {marginLeft: 13}]}>
-                  {courier.rating}
-                </Body>
+                  <Body color="#243757" style={[styles.tableName, {width: 38}]}>
+                    {courier.rating}
+                  </Body>
+                </View>
               </View>
-            </View>
-          ))}
+            ))
+          )}
         </View>
       </View>
       {!full && (
@@ -141,6 +138,7 @@ const styles = StyleSheet.create({
   tableName: {
     fontSize: 16,
     fontWeight: '500',
+    paddingLeft: 10,
   },
   linkText: {
     marginTop: 10,

@@ -1,4 +1,9 @@
 export type OrderState = {
+  orders: OrdersState[];
+  newOrder: OrdersState;
+  loading: boolean;
+};
+export type OrdersState = {
   id?: number;
   category?: string;
   active?: boolean;

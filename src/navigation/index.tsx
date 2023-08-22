@@ -31,7 +31,8 @@ const Stack = createStackNavigator();
 
 export const Navigation = () => {
   const user = useSelector(getUser);
-  console.log('STATE USER', user);
+  const state = useSelector(state => state);
+  console.log('STATE==>', state);
   const theme = {
     ...DefaultTheme,
     colors: {...DefaultTheme.colors, background: colors.white},

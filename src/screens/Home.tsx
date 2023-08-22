@@ -34,7 +34,6 @@ export default function Home() {
   const safeAreaInsets = useSafeAreaInsets();
   const navigation = useNavigation();
   const user = useSelector(getUser);
-
   async function handleChange(e: string) {
     setText(e);
   }

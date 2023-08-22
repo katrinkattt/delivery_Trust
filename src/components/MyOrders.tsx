@@ -18,7 +18,7 @@ const data = [
 export default function MyOrders() {
   const navigation = useNavigation();
   // const dataOrders = OrdersData; //from back
-  const orders = useSelector(state => state.orders);
+  const {orders} = useSelector(state => state.order);
 
   return (
     <View style={styles.container}>

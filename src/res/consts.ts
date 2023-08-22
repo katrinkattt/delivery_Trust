@@ -19,6 +19,12 @@ export const API_RESET_PASS = '/resetpassword';
 export const API_PATH_ROLE = '/role/type';
 export const API_PATH_CLIENT_SETTING = 'api/v1/customer/settings';
 
+//rating
+export const API_GET_RATING = '/rating';
+// orders
+// пока так назвала
+export const API_GET_ORDERS = '/orders';
+
 //Device
 export const IS_ANDROID = Platform.OS === 'android';
 export const IS_IOS = !IS_ANDROID;

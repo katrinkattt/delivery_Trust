@@ -36,9 +36,9 @@ export function TabScreen() {
   const dispatch = useDispatch();
   useEffect(() => {
     if (!user?.typeInUser) {
-      dispatch(loadOrders(OrdersData));
+      dispatch(loadOrders({arr: OrdersData}));
     } else {
-      dispatch(loadOrders(OrdersDataCourier));
+      dispatch(loadOrders({arr: OrdersDataCourier}));
     }
   }, []);
   return (

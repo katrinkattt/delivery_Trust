@@ -47,7 +47,8 @@ export default function ProfileType() {
             ? navigation.navigate('CourierProfileData')
             : navigation.navigate('ClientRegistrArgumet');
         },
-        onError: async () => {
+        onError: async e => {
+          console.log('ERR:', e);
           setError('Ошибка соеденения с сервером');
         },
       }),

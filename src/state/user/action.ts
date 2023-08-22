@@ -85,7 +85,7 @@ export const createUserAction = createAsyncThunk<
       R.consts.API_CREATE_USER,
       arg.data,
     );
-    console.log('data in API_CREATE_USER', arg.data);
+    console.log('response in API_CREATE_USER', response);
 
     arg.onSuccess?.(response);
 

@@ -20,7 +20,7 @@ const data = [
 ];
 
 export default function CompleteOrders() {
-  const orders = useSelector(state => state.orders);
+  const {orders} = useSelector(state => state.order);
   const completeOrder = orders.filter((obj: OrderState) => !obj.active);
 
   return (

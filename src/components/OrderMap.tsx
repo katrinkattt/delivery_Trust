@@ -10,7 +10,7 @@ import {
 } from '../../assets/icons/MapIcons';
 import {GOOGLE_API_KEY_A} from '../api/googleApi';
 import {colors} from '../theme/themes';
-import {ICategoryDataType} from '../api/OrdersData';
+import {IOrdersLoad} from '../types/data';
 
 const styles = StyleSheet.create({
   container: {
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
 });
 interface MapProps {
-  item: ICategoryDataType;
+  item: IOrdersLoad;
 }
 
 export const OrderMap = ({item}: MapProps) => {
