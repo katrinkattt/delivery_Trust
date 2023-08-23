@@ -10,22 +10,30 @@ import TextAreaInput from '../../components/common/TextAreaInput';
 import {useNavigation} from '@react-navigation/native';
 import {Space} from '../../components/common/Space';
 import R from '../../res';
+import {useDispatch} from 'react-redux';
+import {
+  setNewOrderCategory,
+  setNewOrderDoorToDoor,
+} from '../../state/orders/slice';
 
 export default function OrderParametrs() {
   const navigate = useNavigation();
+  const dispatch = useDispatch();
 
   const [data, setData] = useState([
-    {id: 1, title: 'Документы', select: false},
-    {id: 2, title: 'Груз', select: true},
+    {id: 1, title: 'Документы', select: true},
+    {id: 2, title: 'Груз', select: false},
   ]);
   const [typeDoc, setTypeDoc] = useState('Выберите тип документа');
   const [typePac, setTypePac] = useState('Выберите тип посылки');
   const [isDoor, setIsDoor] = useState(false);
+  const [err, setErr] = useState('');
 
   const docTypeArr = [
     {val: 'dogovor', label: 'Договор'},
     {val: 'snils', label: 'СНИЛС'},
     {val: 'vartiket', label: 'Военный билет'},
+    {val: 'nalog', label: 'Налоговые отчеты'},
   ];
   const packetTypeArr = [
     {val: 'packet', label: 'Пакет'},
@@ -37,9 +45,9 @@ export default function OrderParametrs() {
   const pressButton = (id: number) => {
     const newData = data.map(i => {
       if (i.id === id) {
-        return {...i, select: (i.select = false)};
-      } else {
         return {...i, select: (i.select = true)};
+      } else {
+        return {...i, select: (i.select = false)};
       }
     });
     setData(newData);
@@ -54,8 +62,21 @@ export default function OrderParametrs() {
   }, [typeOrderNum]);
 
   const goRate = () => {
-    //@ts-ignore
-    navigate.navigate(R.routes.CLIENT_ORDER_CONTACT);
+    dispatch(setNewOrderDoorToDoor({doorToDoor: isDoor}));
+    if (data[0].select && typeDoc !== 'Выберите тип документа') {
+      setErr('');
+      dispatch(setNewOrderCategory({category: typeDoc}));
+      //@ts-ignore
+      navigate.navigate(R.routes.CLIENT_ORDER_CONTACT);
+    }
+    if (data[1].select && typePac !== 'Выберите тип посылки') {
+      setErr('');
+      dispatch(setNewOrderCategory({category: typePac}));
+      //@ts-ignore
+      navigate.navigate(R.routes.CLIENT_ORDER_CONTACT);
+    } else {
+      setErr('Выберите тип');
+    }
   };
   const setDropdown = (item: (typeof docTypeArr)[0]) => {
     if (typeOrderNum == 1) {
@@ -83,12 +104,12 @@ export default function OrderParametrs() {
               <TouchableOpacity
                 key={item.id}
                 style={
-                  item.select ? styles.senderSecondItem : styles.senderItem
+                  item.select ? styles.senderItem : styles.senderSecondItem
                 }
                 onPress={() => pressButton(item.id)}>
                 <View>
                   <Body
-                    color={item.select ? 'black' : 'white'}
+                    color={item.select ? 'white' : 'black'}
                     style={{marginRight: 10}}>
                     {item.title}
                   </Body>
@@ -96,7 +117,7 @@ export default function OrderParametrs() {
                 </View>
                 <View style={{marginTop: 3}}>
                   <Ellipses
-                    color={item.select ? 'rgba(160, 172, 190, 1)' : '#333'}
+                    color={item.select ? '#333' : 'rgba(160, 172, 190, 1)'}
                   />
                 </View>
               </TouchableOpacity>
@@ -131,7 +152,9 @@ export default function OrderParametrs() {
             placeholder="Введите комментарий для заказа"
             position="center"
           />
-
+          <Body color="#a22" size={12}>
+            {err}
+          </Body>
           <CustomCheckbox
             label="От двери до двери"
             style={{marginTop: 16}}
@@ -142,7 +165,6 @@ export default function OrderParametrs() {
           <View style={{alignItems: 'center'}}>
             <Button
               buttonType={3}
-              text="Скачать договор"
               onPress={goRate}
               containerStyle={{width: 259, marginTop: 20}}
               renderContent={() => (

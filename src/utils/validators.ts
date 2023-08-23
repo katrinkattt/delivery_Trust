@@ -36,6 +36,11 @@ export function requir(value: string) {
     return 'Пароль должен быть не менее 8 символов';
   }
 }
+export function req(value: string) {
+  if (value.length < 3) {
+    return 'Это поле обязательно к заполнению';
+  }
+}
 
 export function tel(value: string) {
   if (value.length < 11) {

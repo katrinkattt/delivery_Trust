@@ -106,6 +106,9 @@ export default function OrderDetail({route}: IProps) {
               ×
             </Text>
           </TouchableOpacity>
+          <Body color="#243757" bold style={{marginBottom: 20}}>
+            Изименить адрес доставки
+          </Body>
 
           {!delOrder && (
             <>
@@ -161,6 +164,7 @@ export default function OrderDetail({route}: IProps) {
         user && ( //пока кнопка не для курьеров
           <View style={styles.dotMenu}>
             <TouchableOpacity
+              onPress={() => setModalVisible(true)}
               style={[
                 styles.dotMenuItem,
                 {

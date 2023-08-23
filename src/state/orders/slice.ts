@@ -7,6 +7,10 @@ import {loadOrder} from './action';
 export const initialOrdersState: OrderState = {
   orders: [],
   loading: false,
+  categoryDoc: [],
+  categoryPack: [],
+  tariffs: [],
+  senders: [],
   newOrder: {
     id: 0,
     category: '',
@@ -15,14 +19,17 @@ export const initialOrdersState: OrderState = {
     activeMinute: 0,
     courierCoord: {latitude: 0, longitude: 0},
     finishCoord: {latitude: 0, longitude: 0},
-    price: 100,
+    startCoord: {latitude: 0, longitude: 0},
+    price: 0,
     date: '',
     typeTarif: 0,
     address: '',
     orderTime: '',
     addressTo: '',
     recipient: '',
-    sender: ',',
+    sender: '',
+    doorToDoor: false,
+    comment: '',
   },
 };
 // export const initialStateOrder = initialOrder[]
@@ -43,6 +50,63 @@ const ordersSlice = createSlice({
         current.completle = true;
         current.active = false;
       }
+      return state;
+    },
+    setNewOrderCategory: (state, action) => {
+      const {category} = action.payload;
+      state.newOrder.category = category;
+      return state;
+    },
+    setNewOrderDoorToDoor: (state, action) => {
+      const {doorToDoor} = action.payload;
+      state.newOrder.doorToDoor = doorToDoor;
+      return state;
+    },
+    setNewOrderTariff: (state, action) => {
+      const {typeTarif} = action.payload;
+      state.newOrder.typeTarif = typeTarif;
+      return state;
+    },
+    setNewOrderStartCoord: (state, action) => {
+      const {coord} = action.payload;
+      state.newOrder.startCoord = coord;
+      return state;
+    },
+    setNewOrderFinishCoord: (state, action) => {
+      const {coord} = action.payload;
+      state.newOrder.finishCoord = coord;
+      return state;
+    },
+    setNewOrderAddress: (state, action) => {
+      const {address} = action.payload;
+      state.newOrder.address = address;
+      return state;
+    },
+    setNewOrderAddressTo: (state, action) => {
+      const {addressTo} = action.payload;
+      state.newOrder.addressTo = addressTo;
+      return state;
+    },
+    setNewOrderComment: (state, action) => {
+      const {comment} = action.payload;
+      state.newOrder.comment = comment;
+      return state;
+    },
+    setNewOrderSender: (state, action) => {
+      const {sender} = action.payload;
+      state.newOrder.sender = sender;
+      return state;
+    },
+    setNewOrderRecipient: (state, action) => {
+      const {recipient} = action.payload;
+      state.newOrder.recipient = recipient;
+      return state;
+    },
+    addSenders: (state, action) => {
+      const {sender} = action.payload;
+      console.log('sender in payload::', sender);
+
+      state.senders.push(sender);
       return state;
     },
   },
@@ -67,5 +131,19 @@ const persistConfig: PersistConfig<OrderState> = {
   storage: AsyncStorage,
   whitelist: ['load', 'setState'],
 };
-export const {loadOrders, setCompletlyOrders} = ordersSlice.actions;
+export const {
+  loadOrders,
+  setCompletlyOrders,
+  setNewOrderCategory,
+  setNewOrderTariff,
+  addSenders,
+  setNewOrderFinishCoord,
+  setNewOrderStartCoord,
+  setNewOrderAddress,
+  setNewOrderAddressTo,
+  setNewOrderRecipient,
+  setNewOrderSender,
+  setNewOrderDoorToDoor,
+  setNewOrderComment,
+} = ordersSlice.actions;
 export const orderReducer = persistReducer(persistConfig, ordersSlice.reducer);

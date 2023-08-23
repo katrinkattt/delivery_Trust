@@ -25,7 +25,7 @@ export default function Rate() {
       text: 'Срок доставки: до 24 часов',
       txtOutput: 'До 24 часов',
       price: '189',
-      select: false,
+      select: true,
     },
     {
       id: 2,
@@ -34,7 +34,7 @@ export default function Rate() {
       text: 'Срок доставки: до 6 часов',
       txtOutput: 'До 6 часов',
       price: '489',
-      select: true,
+      select: false,
     },
     {
       id: 3,
@@ -43,7 +43,7 @@ export default function Rate() {
       text: 'Срок доставки: до 1 часа',
       txtOutput: 'До 1 часа',
       price: '889',
-      select: true,
+      select: false,
     },
   ]);
   const [curTarif, setCurTarif] = useState(0);
@@ -52,9 +52,9 @@ export default function Rate() {
   const pressButton = (id: number) => {
     const newData = data.map(i => {
       if (i.id === id) {
-        return {...i, select: (i.select = false)};
-      } else {
         return {...i, select: (i.select = true)};
+      } else {
+        return {...i, select: (i.select = false)};
       }
     });
     setData(newData);
@@ -83,25 +83,25 @@ export default function Rate() {
               <TouchableOpacity
                 key={item.id}
                 style={
-                  item.select ? styles.senderSecondItem : styles.senderItem
+                  item.select ? styles.senderItem : styles.senderSecondItem
                 }
                 onPress={() => pressButton(item.id)}>
                 <View style={{marginTop: 3}}>
                   <Ellipses
-                    color={item.select ? 'rgba(160, 172, 190, 1)' : 'white'}
+                    color={item.select ? 'white' : 'rgba(160, 172, 190, 1)'}
                   />
                 </View>
 
                 <Space width={18} />
                 <View>
                   <Body
-                    color={item.select ? 'black' : 'white'}
+                    color={item.select ? 'white' : 'black'}
                     style={{marginRight: 10}}>
                     {item.title}
                   </Body>
                   <Space height={4} />
                   <Body
-                    color={item.select ? 'black' : 'white'}
+                    color={item.select ? 'white' : 'black'}
                     size={13}
                     style={{marginRight: 10}}>
                     {item.text}
@@ -109,7 +109,7 @@ export default function Rate() {
                 </View>
 
                 <View style={{position: 'absolute', right: 23, top: 25}}>
-                  <Body size={18} color={item.select ? 'black' : 'white'}>
+                  <Body size={18} color={item.select ? 'white' : 'black'}>
                     {item.price} ₽
                   </Body>
                 </View>

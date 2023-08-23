@@ -66,7 +66,7 @@ export interface ICotactDetailsOrder {
   phone: string;
   city: string;
   street: string;
-  home: string;
+  house: string;
   apartment: string | undefined;
   entrance: string | undefined;
   doorCode: string | undefined;

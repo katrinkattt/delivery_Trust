@@ -4,7 +4,6 @@ import Header from '../../components/Header';
 import Body from '../../components/common/Body';
 import {ArrowRight, Ellipses} from '../../components/common/Svgs';
 import AuthInput from '../../components/common/AuthInput';
-import SecondAuthInput from '../../components/common/SecondAutInput';
 import CustomCheckbox from '../../components/common/CustomCheckbox';
 import Button from '../../components/common/Button';
 import {useNavigation} from '@react-navigation/native';
@@ -12,10 +11,61 @@ import {Space} from '../../components/common/Space';
 import R from '../../res';
 import {Formik} from 'formik';
 import {ICotactDetailsOrder} from '../../types/data';
-import {validator, tel, requir} from '../../utils/validators';
+import {validator, tel, req, minLength} from '../../utils/validators';
+import {useDispatch, useSelector} from 'react-redux';
+import axios from 'axios';
+import {GOOGLE_API_KEY_A} from '../../api/googleApi';
+import {FormButton} from '../../components/common/FormButton/FormButton';
+import {
+  setNewOrderStartCoord,
+  setNewOrderFinishCoord,
+  setNewOrderAddress,
+  setNewOrderAddressTo,
+  setNewOrderRecipient,
+  setNewOrderSender,
+} from '../../state/orders/slice';
 
 export default function ContactDetails() {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const {loading} = useSelector(state => state.order);
+  const user = useSelector(state => state.user);
+  const [coordSender, setCoordSender] = useState({latitude: 0, longitude: 0});
+  const [coordRecipient, setCoordRecipient] = useState({
+    latitude: 0,
+    longitude: 0,
+  });
+
+  //@ts-ignore
+  const getCoord = async (add, user: string) => {
+    const strAddress = `${add?.city}+${add?.street}+${add?.house}`;
+    const stringAdd = `г. ${add?.city} ул.${add?.street} д.${add?.house} ${
+      !!add?.apartment ? add?.apartment + 'кв' : ''
+    }`;
+    const {
+      data: {results},
+    } = await axios.get(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${strAddress}&language=ru&key=${GOOGLE_API_KEY_A}`,
+    );
+    if (user === 'sender') {
+      setCoordSender({
+        latitude: results[0]?.geometry.location.lat,
+        longitude: results[0]?.geometry.location.lng,
+      });
+      dispatch(setNewOrderStartCoord({coord: coordSender}));
+      dispatch(setNewOrderAddress({address: stringAdd}));
+      dispatch(setNewOrderSender({sender: add?.full_name}));
+    }
+    if (user === 'recipient') {
+      setCoordRecipient({
+        latitude: results[0]?.geometry.location.lat,
+        longitude: results[0]?.geometry.location.lng,
+      });
+      dispatch(setNewOrderFinishCoord({coord: coordRecipient}));
+      dispatch(setNewOrderAddressTo({addressTo: stringAdd}));
+      dispatch(setNewOrderRecipient({recipient: add.fio}));
+    }
+  };
 
   const [data, setData] = useState([
     {id: 1, title: 'Я', select: false},
@@ -26,12 +76,12 @@ export default function ContactDetails() {
     phone: '',
     city: '',
     street: '',
-    home: '',
+    house: '',
     apartment: '',
     entrance: '',
     doorCode: '',
   };
-  const [state, setState] = useState(initialValues);
+  // const [state, setState] = useState(initialValues);
   const [agre, setAgre] = useState(false);
 
   const pressButton = (id: number) => {
@@ -45,14 +95,13 @@ export default function ContactDetails() {
     setData(newData);
   };
 
-  const goOrderParams = () => {
+  const goOrderParams = (formData: ICotactDetailsOrder) => {
+    console.log(formData.city, formData.street, formData.house);
+    getCoord(formData, 'recipient');
+    getCoord(user, 'sender');
     //@ts-ignore
     navigation.navigate(R.routes.CLIENT_ORDER_RATE);
-    console.warn('initialValues', state);
   };
-  useEffect(() => {
-    console.warn('initialValues', state);
-  }, [state]);
 
   return (
     <View style={{flex: 1}}>
@@ -115,6 +164,7 @@ export default function ContactDetails() {
               placeholder="Введите фамилию имя отчество"
               position="top"
               name="fio"
+              validate={validator(req)}
             />
             <AuthInput
               label="Телефон*"
@@ -130,12 +180,14 @@ export default function ContactDetails() {
               placeholder="Введите название"
               position="center"
               name="city"
+              validate={validator(req)}
             />
             <AuthInput
               label="Улица*"
               placeholder="Введите название"
               position="center"
               name="street"
+              validate={validator(req)}
             />
 
             <View style={styles.row}>
@@ -144,7 +196,8 @@ export default function ContactDetails() {
                 label="Дом*"
                 placeholder="Введите номер"
                 position="center"
-                name="home"
+                name="house"
+                validate={validator(minLength(1))}
               />
               <AuthInput
                 containerStyle={styles.rowInput}
@@ -173,32 +226,13 @@ export default function ContactDetails() {
             </View>
 
             <CustomCheckbox
-              label="Согласие на обработку персональных данных"
-              style={{marginTop: 16}}
+              label={`Согласие на обработку персональных \nданных`}
+              style={{marginTop: 10}}
               onChange={() => setAgre(!agre)}
               val={agre}
             />
-
-            <View style={{alignItems: 'center'}}>
-              <Button
-                renderContent={() => (
-                  <>
-                    <Body
-                      style={{marginRight: 80}}
-                      semiBold
-                      color="rgba(255, 255, 255, 1)"
-                      size={15}>
-                      ДАЛЕЕ
-                    </Body>
-
-                    <ArrowRight />
-                  </>
-                )}
-                buttonType={3}
-                text="Скачать договор"
-                containerStyle={{width: 259, marginTop: 20}}
-                onPress={goOrderParams}
-              />
+            <View style={{alignItems: 'center', marginVertical: 20}}>
+              <FormButton text="ДАЛЕЕ   ➤" onPress={loading} />
             </View>
           </View>
         </Formik>
