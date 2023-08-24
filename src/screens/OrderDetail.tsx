@@ -20,7 +20,7 @@ import Button from '../components/common/Button';
 import {OrderMap} from '../components/OrderMap';
 import {Slider} from 'react-native-awesome-slider';
 import {useSharedValue} from 'react-native-reanimated';
-import {ICategoryDataType} from '../api/OrdersData';
+import {IOrder} from '../state/orders/types';
 import {ModalCustom} from '../components/ModalCustom';
 import {useNavigation} from '@react-navigation/native';
 import R from '../res';
@@ -28,7 +28,7 @@ import R from '../res';
 interface IProps {
   route: {
     params: {
-      item: ICategoryDataType;
+      item: IOrder;
       user?: boolean;
     };
   };
@@ -48,6 +48,7 @@ export default function OrderDetail({route}: IProps) {
   const [isOpenDot, setIsOpenDot] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [delOrder, setDelOrder] = useState(false);
+  console.log('item', item);
 
   async function onDisplayNotification() {
     // Request permissions (required for iOS)
@@ -196,7 +197,7 @@ export default function OrderDetail({route}: IProps) {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{paddingBottom: 130}}>
-        {(item?.completle || item.active) && user ? (
+        {(item?.complete || item.active) && user ? (
           <View style={{marginBottom: 20}}>
             <Body center bold semiBold>
               {item?.activeMinute
@@ -320,7 +321,7 @@ export default function OrderDetail({route}: IProps) {
             text={
               item.active
                 ? 'ПОДТВЕРДИТЬ ДОСТАВКУ'
-                : item?.completle
+                : item?.complete
                 ? 'ЗАБРАЛ ПОСЫЛКУ'
                 : 'ЗАКАЗ ОТМЕНЕН'
             }

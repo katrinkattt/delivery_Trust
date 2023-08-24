@@ -23,7 +23,10 @@ export const API_PATH_CLIENT_SETTING = 'api/v1/customer/settings';
 export const API_GET_RATING = '/rating';
 // orders
 // пока так назвала
+export const API_CR_ORDER = '/order';
 export const API_GET_ORDERS = '/orders';
+export const API_GET_CATEGORY = '/api/categories';
+export const API_GET_TARIFF = 'api/tariff';
 
 //Device
 export const IS_ANDROID = Platform.OS === 'android';

@@ -10,13 +10,15 @@ import TextAreaInput from '../../components/common/TextAreaInput';
 import {useNavigation} from '@react-navigation/native';
 import {Space} from '../../components/common/Space';
 import R from '../../res';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   setNewOrderCategory,
   setNewOrderDoorToDoor,
+  setNewOrderComment,
 } from '../../state/orders/slice';
 
 export default function OrderParametrs() {
+  const order = useSelector(state => state.order);
   const navigate = useNavigation();
   const dispatch = useDispatch();
 
@@ -28,17 +30,19 @@ export default function OrderParametrs() {
   const [typePac, setTypePac] = useState('Выберите тип посылки');
   const [isDoor, setIsDoor] = useState(false);
   const [err, setErr] = useState('');
+  const [comm, setComm] = useState('');
 
-  const docTypeArr = [
-    {val: 'dogovor', label: 'Договор'},
-    {val: 'snils', label: 'СНИЛС'},
-    {val: 'vartiket', label: 'Военный билет'},
-    {val: 'nalog', label: 'Налоговые отчеты'},
+  const docTypeArr = order?.categoryDoc || [
+    {name: 'СНИЛС'},
+    {name: 'Военный билет'},
+    {name: 'Договор'},
+    {name: 'Налоговые отчеты'},
   ];
-  const packetTypeArr = [
-    {val: 'packet', label: 'Пакет'},
-    {val: 'box', label: 'Коробка'},
-  ];
+  const packetTypeArr = order?.categoryPack;
+  // [
+  //   {val: 'packet', label: 'Пакет'},
+  //   {val: 'box', label: 'Коробка'},
+  // ];
   const [typeOrderNum, setTypeOrderNum] = useState(1);
   const [currArr, setCurrArr] = useState(docTypeArr);
 
@@ -63,6 +67,7 @@ export default function OrderParametrs() {
 
   const goRate = () => {
     dispatch(setNewOrderDoorToDoor({doorToDoor: isDoor}));
+    dispatch(setNewOrderComment({comment: comm}));
     if (data[0].select && typeDoc !== 'Выберите тип документа') {
       setErr('');
       dispatch(setNewOrderCategory({category: typeDoc}));
@@ -80,9 +85,9 @@ export default function OrderParametrs() {
   };
   const setDropdown = (item: (typeof docTypeArr)[0]) => {
     if (typeOrderNum == 1) {
-      setTypeDoc(item.label);
+      setTypeDoc(item.name);
     } else {
-      setTypePac(item.label);
+      setTypePac(item.name);
     }
   };
 
@@ -140,7 +145,7 @@ export default function OrderParametrs() {
                     color="rgba(0, 0, 0, 0.46)"
                     size={15}
                     style={{paddingHorizontal: 28, paddingBottom: 10}}>
-                    {item.label}
+                    {item.name}
                   </Body>
                 </TouchableOpacity>
               ))}
@@ -151,6 +156,8 @@ export default function OrderParametrs() {
             label="Комментарий"
             placeholder="Введите комментарий для заказа"
             position="center"
+            value={comm}
+            setValue={setComm}
           />
           <Body color="#a22" size={12}>
             {err}

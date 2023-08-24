@@ -10,7 +10,7 @@ import {
 } from '../../assets/icons/MapIcons';
 import {GOOGLE_API_KEY_A} from '../api/googleApi';
 import {colors} from '../theme/themes';
-import {IOrdersLoad} from '../types/data';
+import {IOrder} from '../state/orders/types';
 
 const styles = StyleSheet.create({
   container: {
@@ -23,37 +23,20 @@ const styles = StyleSheet.create({
   },
 });
 interface MapProps {
-  item: IOrdersLoad;
+  item: IOrder;
 }
 
 export const OrderMap = ({item}: MapProps) => {
   const [config, setConfig] = useState({
     coords: {latitude: 55.7422, longitude: 37.6325},
   });
-  Geolocation.getCurrentPosition(config => setConfig(config));
-
   const [curCoord, setCurCoord] = useState({
     latitude: 55.7482,
     longitude: 37.6345,
   });
-
-  const coordArr = [
-    {
-      key: 1,
-      title: 'Текущее местоположение',
-      coord: curCoord,
-    },
-    {
-      key: 2,
-      title: 'Финиш',
-      coord: item?.finishCoord || {latitude: 55.7422, longitude: 37.6325},
-    },
-    {
-      key: 3,
-      title: item?.active ? 'Курьер' : 'От',
-      coord: item?.courierCoord || {latitude: 55.7539, longitude: 37.6212},
-    },
-  ];
+  setInterval(() => {
+    Geolocation.getCurrentPosition(config => setConfig(config));
+  }, 10000);
   useEffect(() => {
     const curr = {
       latitude: config?.coords?.latitude,
@@ -65,6 +48,26 @@ export const OrderMap = ({item}: MapProps) => {
     }
   }, [config]);
 
+  console.log('item?.courierCoord', item?.courierCoordinates);
+
+  const coordArr = [
+    {
+      key: 1,
+      title: 'Текущее местоположение',
+      coord: curCoord,
+    },
+    {
+      key: 2,
+      title: 'Финиш',
+      coord: item?.finishCoordinates || {latitude: 55.7422, longitude: 37.6325},
+    },
+    {
+      key: 3,
+      title: 'Старт',
+      coord: item?.startCoordinates || {latitude: 55.7539, longitude: 37.6212},
+    },
+  ];
+
   return (
     <>
       <View style={styles.container}>
@@ -72,8 +75,8 @@ export const OrderMap = ({item}: MapProps) => {
           provider={PROVIDER_GOOGLE} // remove if not using Google Maps
           style={styles.map}
           region={{
-            latitude: item?.finishCoord?.latitude || 55.74825,
-            longitude: item?.finishCoord?.longitude || 37.6324,
+            latitude: item?.finishCoordinates?.latitude || 55.74825,
+            longitude: item?.finishCoordinates?.longitude || 37.6324,
             latitudeDelta: 0.045,
             longitudeDelta: 0.0321,
           }}>

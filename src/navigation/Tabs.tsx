@@ -22,9 +22,9 @@ import OrdersClientStack from './clientStack/OrdersClientStack';
 import {useDispatch, useSelector} from 'react-redux';
 import {getUser} from '../state/user/selectors';
 import HomeClientStack from './clientStack/HomeClientStack';
-import {loadOrders} from '../state/orders/slice';
-import OrdersData from '../api/OrdersData';
-import OrdersDataCourier from '../api/OrdersDataCourier';
+// import {loadOrders} from '../state/orders/slice';
+// import OrdersData from '../api/OrdersData';
+// import OrdersDataCourier from '../api/OrdersDataCourier';
 
 const Tab = createBottomTabNavigator();
 
@@ -33,14 +33,14 @@ export function TabScreen() {
   const isTypeInUser = user?.role;
   console.log('ROLEE', isTypeInUser);
 
-  const dispatch = useDispatch();
-  useEffect(() => {
-    if (!user?.typeInUser) {
-      dispatch(loadOrders({arr: OrdersData}));
-    } else {
-      dispatch(loadOrders({arr: OrdersDataCourier}));
-    }
-  }, []);
+  // const dispatch = useDispatch();
+  // useEffect(() => {
+  //   if (!user?.typeInUser) {
+  //     dispatch(loadOrders({arr: OrdersData}));
+  //   } else {
+  //     dispatch(loadOrders({arr: OrdersDataCourier}));
+  //   }
+  // }, []);
   return (
     <>
       {!user?.typeInUser ? (

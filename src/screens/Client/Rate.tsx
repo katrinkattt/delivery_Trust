@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Header from '../../components/Header';
 import Body from '../../components/common/Body';
@@ -13,52 +13,28 @@ import FastImage from 'react-native-fast-image';
 import Button from '../../components/common/Button';
 import {useNavigation} from '@react-navigation/native';
 import R from '../../res';
+import {useDispatch, useSelector} from 'react-redux';
+import {setNewOrderTariff} from '../../state/orders/slice';
 
 export default function Rate() {
-  const [order] = useState(false);
-
-  const [data, setData] = useState([
-    {
-      id: 1,
-      tarifId: 24,
-      title: 'Суточный',
-      text: 'Срок доставки: до 24 часов',
-      txtOutput: 'До 24 часов',
-      price: '189',
-      select: true,
-    },
-    {
-      id: 2,
-      tarifId: 6,
-      title: 'Срочный',
-      text: 'Срок доставки: до 6 часов',
-      txtOutput: 'До 6 часов',
-      price: '489',
-      select: false,
-    },
-    {
-      id: 3,
-      tarifId: 1,
-      title: 'Сверхсрочный',
-      text: 'Срок доставки: до 1 часа',
-      txtOutput: 'До 1 часа',
-      price: '889',
-      select: false,
-    },
-  ]);
+  const [isOrder] = useState(false);
+  const order = useSelector(state => state.order);
+  const newOrder = order?.newOrder;
+  const disp = useDispatch();
   const [curTarif, setCurTarif] = useState(0);
-  const typeOrder = 'Документ';
 
-  const pressButton = (id: number) => {
-    const newData = data.map(i => {
-      if (i.id === id) {
-        return {...i, select: (i.select = true)};
-      } else {
-        return {...i, select: (i.select = false)};
-      }
-    });
-    setData(newData);
-    setCurTarif(id - 1);
+  useEffect(() => {
+    disp(
+      setNewOrderTariff({
+        typeTarif: order?.tariffs[0].tariffid,
+        price: order?.tariffs[0].price,
+      }),
+    );
+  }, []);
+
+  const pressButton = (id: number, tariff: number, price: number) => {
+    setCurTarif(id);
+    disp(setNewOrderTariff({typeTarif: tariff, price: price}));
   };
 
   const navigation = useNavigation();
@@ -79,37 +55,37 @@ export default function Rate() {
 
         <View style={{marginHorizontal: 15}}>
           <View style={{flexDirection: 'column'}}>
-            {data.map(item => (
+            {order?.tariffs.map((item, num: number) => (
               <TouchableOpacity
-                key={item.id}
+                key={num}
                 style={
-                  item.select ? styles.senderItem : styles.senderSecondItem
+                  curTarif == num ? styles.senderItem : styles.senderSecondItem
                 }
-                onPress={() => pressButton(item.id)}>
+                onPress={() => pressButton(num, item.tariffid, item.price)}>
                 <View style={{marginTop: 3}}>
                   <Ellipses
-                    color={item.select ? 'white' : 'rgba(160, 172, 190, 1)'}
+                    color={curTarif == num ? 'white' : 'rgba(160, 172, 190, 1)'}
                   />
                 </View>
 
                 <Space width={18} />
                 <View>
                   <Body
-                    color={item.select ? 'white' : 'black'}
+                    color={curTarif == num ? 'white' : 'black'}
                     style={{marginRight: 10}}>
                     {item.title}
                   </Body>
                   <Space height={4} />
                   <Body
-                    color={item.select ? 'white' : 'black'}
+                    color={curTarif == num ? 'white' : 'black'}
                     size={13}
                     style={{marginRight: 10}}>
-                    {item.text}
+                    {item.description}
                   </Body>
                 </View>
 
                 <View style={{position: 'absolute', right: 23, top: 25}}>
-                  <Body size={18} color={item.select ? 'white' : 'black'}>
+                  <Body size={18} color={curTarif == num ? 'white' : 'black'}>
                     {item.price} ₽
                   </Body>
                 </View>
@@ -118,7 +94,7 @@ export default function Rate() {
           </View>
 
           <View style={styles.orderDetailBox}>
-            {!order && (
+            {!isOrder && (
               <View>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <OrderIconActive width={25} height={25} />
@@ -133,19 +109,19 @@ export default function Rate() {
                 <Body
                   color="rgba(0, 0, 0, 0.36)"
                   style={styles.orderDetailDescription}>
-                  Антонов Власий Борисович
+                  {newOrder?.sender}
                 </Body>
 
                 <Body
                   color="#243757"
                   style={[styles.orderDetailText, {marginTop: 3}]}>
-                  Москва, Малая Юшуньская улица, 1к1
+                  {newOrder?.address}
                 </Body>
               </View>
             )}
 
             <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
-              <View style={!order ? {marginTop: 30} : {marginTop: 9}}>
+              <View style={!isOrder ? {marginTop: 30} : {marginTop: 9}}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <OrderIconActive width={25} height={25} />
 
@@ -159,17 +135,17 @@ export default function Rate() {
                 <Body
                   color="rgba(0, 0, 0, 0.36)"
                   style={styles.orderDetailDescription}>
-                  Орехов Вадим Агафонович
+                  {newOrder?.recipient}
                 </Body>
 
                 <Body
                   color="#243757"
                   style={[styles.orderDetailText, {marginTop: 3}]}>
-                  Москва, Малая Юшуньская улица, 15к1
+                  {newOrder?.addressTo}
                 </Body>
               </View>
 
-              {order && (
+              {isOrder && (
                 <View style={{marginBottom: 30}}>
                   <FlagIcon width={20} height={20} />
                 </View>
@@ -189,7 +165,7 @@ export default function Rate() {
                   styles.orderDetailText,
                   {marginTop: 3, width: '37%', textAlign: 'right'},
                 ]}>
-                {typeOrder}
+                {newOrder?.category}
               </Body>
             </View>
 
@@ -206,7 +182,7 @@ export default function Rate() {
                   styles.orderDetailText,
                   {marginTop: 3, textAlign: 'right', width: '72%'},
                 ]}>
-                {data[curTarif]?.title}
+                {order?.tariffs[curTarif]?.title}
               </Body>
             </View>
 
@@ -227,7 +203,7 @@ export default function Rate() {
                     textAlign: 'right',
                   },
                 ]}>
-                {data[curTarif]?.txtOutput}
+                {order?.tariffs[curTarif]?.txtOutput}
               </Body>
             </View>
 
@@ -241,7 +217,7 @@ export default function Rate() {
 
         <View style={{marginHorizontal: 15, paddingTop: 18}}>
           <Body center semiBold size={36}>
-            {data[curTarif].price} ₽
+            {order?.tariffs[curTarif]?.price} ₽
           </Body>
 
           <Body center size={11} light>

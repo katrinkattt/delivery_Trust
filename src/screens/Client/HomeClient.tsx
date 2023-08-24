@@ -28,6 +28,13 @@ import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {getUser} from '../../state/user/selectors';
 import R from '../../res';
+import {useAppDispatch} from '../../hooks/redux';
+import {
+  loadCategory,
+  createOrder,
+  loadTariffs,
+  loadOrder,
+} from '../../state/orders/action';
 
 const {width} = Dimensions.get('window');
 
@@ -46,13 +53,61 @@ export default function HomeClient() {
   const [text, setText] = useState<string>('');
   const safeAreaInsets = useSafeAreaInsets();
   const navigation = useNavigation();
+  const dispatch = useAppDispatch();
+  const order = useSelector(state => state.order);
 
   const pressNewOreder = () => {
+    dispatch(
+      loadCategory({
+        onSuccess: () => {
+          console.log('good loadCategory');
+        },
+        onError: async () => {
+          console.log('ERR loadCategory');
+        },
+      }),
+    );
+    dispatch(
+      loadTariffs({
+        onSuccess: () => {
+          console.log('good loadTariff');
+        },
+        onError: async () => {
+          console.log('ERR loadTariff');
+        },
+      }),
+    );
     //@ts-ignore
     navigation.navigate(R.routes.CLIENT_ORDER_PARAM);
   };
 
+  const NewOreder = () => {
+    console.log(' data: order.newOrder', order.newOrder);
+
+    dispatch(
+      createOrder({
+        data: order.newOrder,
+        onSuccess: () => {
+          //@ts-ignore
+          navigation.navigate('TabScreen');
+        },
+        onError: async () => {
+          console.log('Ошибка сервера, попробуйте позже');
+        },
+      }),
+    );
+  };
   useEffect(() => {
+    dispatch(
+      loadOrder({
+        onSuccess: () => {
+          console.log('good loadOrders');
+        },
+        onError: async () => {
+          console.log('ERR loadOrders');
+        },
+      }),
+    );
     return notifee.onForegroundEvent(({type, detail}) => {
       switch (type) {
         case EventType.DISMISSED:
@@ -105,7 +160,6 @@ export default function HomeClient() {
           </View>
         </View>
       </View>
-
       <View style={{paddingHorizontal: 16, marginTop: -88}}>
         <DropShadow style={styles.orderBox}>
           <View style={styles.orderBoxContainer}>
@@ -191,6 +245,12 @@ export default function HomeClient() {
             <Body size={20} bold>
               Документы
             </Body>
+            {/* <Button
+              buttonType={2}
+              text="заказ"
+              style={styles.btn}
+              onPress={NewOreder}
+            /> */}
           </View>
         )}
       />

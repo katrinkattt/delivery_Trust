@@ -7,18 +7,20 @@ export interface IOrdersLoad {
   id?: number;
   category?: string;
   active?: boolean;
-  completle?: boolean;
+  complete?: boolean;
   activeMinute?: number;
-  courierCoord: {latitude: number; longitude: number} | {};
-  finishCoord: {latitude: number; longitude: number};
+  courierCoordinates: {latitude: number; longitude: number};
+  finishCoordinates: {latitude: number; longitude: number};
+  startCoordinates: {latitude: number; longitude: number};
   price?: number;
-  date: string;
+  date?: string;
   typeTarif: number;
   address: string;
   orderTime: string;
   addressTo: string;
   recipient: string;
   sender: string;
+  tariff: number;
 }
 export interface IRatingLoad {
   id: number;
@@ -27,7 +29,10 @@ export interface IRatingLoad {
   order_count: number;
   dynamic: number;
 }
-
+export interface ILoadCategory {
+  categoryDoc: [];
+  categoryPack: [];
+}
 export interface IMessage {
   _id: string | number;
   text: string;

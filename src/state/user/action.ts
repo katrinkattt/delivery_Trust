@@ -79,7 +79,6 @@ export const createUserAction = createAsyncThunk<
   }
 >('api/create-user', async arg => {
   console.log('DATA IN createUserAction', arg.data);
-  console.log('createUserAction');
   try {
     const {data: response} = await apiClient.post<ICreateUser>(
       R.consts.API_CREATE_USER,

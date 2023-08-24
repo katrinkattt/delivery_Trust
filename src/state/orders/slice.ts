@@ -1,10 +1,10 @@
 import {createAction, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {PersistConfig, persistReducer} from 'redux-persist';
 import AsyncStorage from '@react-native-community/async-storage';
-import {OrderState, OrdersState} from './types';
-import {loadOrder} from './action';
+import {IOrder, OrdersState, TariffOrder, CategoryOrder} from './types';
+import {loadOrder, createOrder, loadCategory, loadTariffs} from './action';
 
-export const initialOrdersState: OrderState = {
+export const initialOrdersState: OrdersState = {
   orders: [],
   loading: false,
   categoryDoc: [],
@@ -15,11 +15,11 @@ export const initialOrdersState: OrderState = {
     id: 0,
     category: '',
     active: true,
-    completle: false,
+    complete: false,
     activeMinute: 0,
-    courierCoord: {latitude: 0, longitude: 0},
-    finishCoord: {latitude: 0, longitude: 0},
-    startCoord: {latitude: 0, longitude: 0},
+    courierCoordinates: {latitude: 0, longitude: 0},
+    finishCoordinates: {latitude: 0, longitude: 0},
+    startCoordinates: {latitude: 0, longitude: 0},
     price: 0,
     date: '',
     typeTarif: 0,
@@ -30,6 +30,7 @@ export const initialOrdersState: OrderState = {
     sender: '',
     doorToDoor: false,
     comment: '',
+    paymentType: '',
   },
 };
 // export const initialStateOrder = initialOrder[]
@@ -47,7 +48,7 @@ const ordersSlice = createSlice({
       const {id} = action.payload;
       const current = state.orders.find(obj => obj.id === id);
       if (current) {
-        current.completle = true;
+        current.complete = true;
         current.active = false;
       }
       return state;
@@ -63,18 +64,19 @@ const ordersSlice = createSlice({
       return state;
     },
     setNewOrderTariff: (state, action) => {
-      const {typeTarif} = action.payload;
+      const {typeTarif, price} = action.payload;
       state.newOrder.typeTarif = typeTarif;
+      state.newOrder.price = price;
       return state;
     },
     setNewOrderStartCoord: (state, action) => {
       const {coord} = action.payload;
-      state.newOrder.startCoord = coord;
+      state.newOrder.startCoordinates = coord;
       return state;
     },
     setNewOrderFinishCoord: (state, action) => {
       const {coord} = action.payload;
-      state.newOrder.finishCoord = coord;
+      state.newOrder.finishCoordinates = coord;
       return state;
     },
     setNewOrderAddress: (state, action) => {
@@ -112,8 +114,20 @@ const ordersSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(
+      createOrder.fulfilled.type,
+      (state, action: PayloadAction<IOrder[]>) => {
+        state.loading = false;
+      },
+    ),
+      builder.addCase(createOrder.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(createOrder.rejected.type, state => {
+        state.loading = false;
+      });
+    builder.addCase(
       loadOrder.fulfilled.type,
-      (state, action: PayloadAction<OrdersState[]>) => {
+      (state, action: PayloadAction<IOrder[]>) => {
         state.loading = false;
         state.orders = action.payload;
       },
@@ -122,6 +136,33 @@ const ordersSlice = createSlice({
         state.loading = true;
       }),
       builder.addCase(loadOrder.rejected.type, state => {
+        state.loading = false;
+      });
+    builder.addCase(
+      loadTariffs.fulfilled.type,
+      (state, action: PayloadAction<TariffOrder>) => {
+        state.loading = false;
+        state.tariffs = action.payload.tariffs;
+      },
+    ),
+      builder.addCase(loadTariffs.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(loadTariffs.rejected.type, state => {
+        state.loading = false;
+      });
+    builder.addCase(
+      loadCategory.fulfilled.type,
+      (state, action: PayloadAction<CategoryOrder>) => {
+        state.loading = false;
+        state.categoryDoc = action.payload.documents;
+        state.categoryPack = action.payload.packs;
+      },
+    ),
+      builder.addCase(loadCategory.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(loadCategory.rejected.type, state => {
         state.loading = false;
       });
   },

@@ -2,7 +2,7 @@ const OrdersDataCourier = [
   {
     id: 2394619,
     category: 'Военный билет',
-    completle: false,
+    complete: false,
     active: true,
     activeMinute: 10,
     courierCoord: {latitude: 55.7422, longitude: 37.6325},
@@ -19,7 +19,7 @@ const OrdersDataCourier = [
   {
     id: 2394619,
     category: 'Паспорт',
-    completle: false,
+    complete: false,
     active: true,
     activeMinute: 36,
     courierCoord: {latitude: 55.7422, longitude: 37.6325},
@@ -36,7 +36,7 @@ const OrdersDataCourier = [
   {
     id: 1984912,
     category: 'Налоговые отчеты',
-    completle: true,
+    complete: true,
     active: false,
     activeMinute: 15,
     courierCoord: {latitude: 55.7422, longitude: 37.6325},
@@ -53,7 +53,7 @@ const OrdersDataCourier = [
   {
     id: 2394619,
     category: 'Военный билет',
-    completle: false,
+    complete: false,
     active: false,
     activeMinute: 0,
     courierCoord: {latitude: 55.7422, longitude: 37.6325},
@@ -70,7 +70,7 @@ const OrdersDataCourier = [
   {
     id: 3321073,
     category: 'СНИЛС',
-    completle: true,
+    complete: true,
     active: false,
     activeMinute: 0,
     courierCoord: {latitude: 55.6639, longitude: 37.44212},

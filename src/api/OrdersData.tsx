@@ -2,10 +2,11 @@ export interface ICategoryDataType {
   id?: number;
   category?: string;
   active?: boolean;
-  completle?: boolean;
+  complete?: boolean;
   activeMinute?: number;
-  courierCoord: {latitude: number; longitude: number} | {};
-  finishCoord: {latitude: number; longitude: number};
+  courierCoordinates: {latitude: number; longitude: number};
+  finishCoordinates: {latitude: number; longitude: number};
+  startCoordinates: {latitude: number; longitude: number};
   price?: number;
   date: string;
   typeTarif: number;
@@ -20,7 +21,7 @@ const OrdersData = [
   {
     id: 1984912,
     category: 'Налоговые отчеты',
-    completle: false,
+    complete: false,
     active: true,
     activeMinute: 15,
     courierCoord: {latitude: 55.7422, longitude: 37.6325},
@@ -37,7 +38,7 @@ const OrdersData = [
   {
     id: 2394619,
     category: 'Военный билет',
-    completle: true,
+    complete: true,
     active: false,
     activeMinute: 14,
     courierCoord: {latitude: 55.7422, longitude: 37.6325},
@@ -54,7 +55,7 @@ const OrdersData = [
   {
     id: 3321073,
     category: 'СНИЛС',
-    completle: false,
+    complete: false,
     active: false,
     activeMinute: 0,
     courierCoord: {latitude: 55.6639, longitude: 37.44212},
@@ -71,7 +72,7 @@ const OrdersData = [
   {
     id: 4329402,
     category: 'Налоговые отчеты',
-    completle: true,
+    complete: true,
     active: true,
     activeMinute: 12,
     courierCoord: {latitude: 55.7239, longitude: 37.5812},
@@ -88,7 +89,7 @@ const OrdersData = [
   {
     id: 5343924,
     category: 'Налоговые отчеты',
-    completle: true,
+    complete: true,
     active: false,
     activeMinute: 0,
     courierCoord: {latitude: 55.7239, longitude: 37.5812},

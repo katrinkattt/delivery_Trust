@@ -40,7 +40,7 @@ export default function OrdersITEM({item}: IProps) {
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           {item.active ? (
             <SoatIcon />
-          ) : item.completle ? (
+          ) : item.complete ? (
             <ApplyIcon />
           ) : (
             <CanceledIcon />
@@ -59,12 +59,8 @@ export default function OrdersITEM({item}: IProps) {
       <Space height={5} />
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <Body>{item.date}</Body>
-        <Body color={item.completle || item.active ? '#888' : '#d55'} size={14}>
-          {item.active
-            ? 'В доставке'
-            : item.completle
-            ? 'Доставлен'
-            : 'Отменен'}
+        <Body color={item.complete || item.active ? '#888' : '#d55'} size={14}>
+          {item.active ? 'В доставке' : item.complete ? 'Доставлен' : 'Отменен'}
         </Body>
       </View>
 

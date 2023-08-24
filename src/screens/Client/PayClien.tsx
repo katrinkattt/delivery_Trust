@@ -14,6 +14,9 @@ import {Space} from '../../components/common/Space';
 import Button from '../../components/common/Button';
 import {useNavigation} from '@react-navigation/native';
 import R from '../../res';
+import {useAppDispatch} from '../../hooks/redux';
+import {createOrder} from '../../state/orders/action';
+import {useSelector} from 'react-redux';
 
 export default function PayClient() {
   const [data, setData] = useState([
@@ -23,6 +26,9 @@ export default function PayClient() {
   ]);
   const [currMethod, setCurrMethod] = useState(1);
   const navigation = useNavigation();
+  const dispatch = useAppDispatch();
+  const order = useSelector(state => state.order);
+  const [err, setErr] = useState('');
 
   const pressButton = (id: number) => {
     const newData = data.map(i => {
@@ -35,6 +41,22 @@ export default function PayClient() {
     setData(newData);
     setCurrMethod(id);
     // setCheck(!check)
+  };
+  const crOrder = () => {
+    console.log(order.newOrder);
+
+    dispatch(
+      createOrder({
+        data: order.newOrder,
+        onSuccess: () => {
+          //@ts-ignore
+          navigation.navigate('TabScreen');
+        },
+        onError: async () => {
+          setErr('Ошибка сервера, попробуйте позже');
+        },
+      }),
+    );
   };
 
   return (
@@ -75,17 +97,20 @@ export default function PayClient() {
               </TouchableOpacity>
             ))}
           </View>
-
+          <Body size={12} color="#a22">
+            {err}
+          </Body>
           <Space height={20} />
 
           <Button
             text="ОПЛАТИТЬ"
-            onPress={() =>
+            onPress={
+              () => crOrder()
               //@ts-ignore
-              navigation.navigate(R.routes.PAYMENT_ORDER, {
-                id_method: currMethod,
-                price: 23,
-              })
+              // navigation.navigate(R.routes.PAYMENT_ORDER, {
+              //   id_method: currMethod,
+              //   price: 23,
+              // })
             }
             buttonType={2}
           />
