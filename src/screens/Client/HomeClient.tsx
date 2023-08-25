@@ -91,8 +91,8 @@ export default function HomeClient() {
           //@ts-ignore
           navigation.navigate('TabScreen');
         },
-        onError: async () => {
-          console.log('Ошибка сервера, попробуйте позже');
+        onError: async e => {
+          console.log('Ошибка сервера', e);
         },
       }),
     );

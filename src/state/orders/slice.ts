@@ -16,13 +16,13 @@ export const initialOrdersState: OrdersState = {
     category: '',
     active: true,
     complete: false,
-    activeMinute: 0,
+    activeMinute: 60,
     courierCoordinates: {latitude: 0, longitude: 0},
     finishCoordinates: {latitude: 0, longitude: 0},
     startCoordinates: {latitude: 0, longitude: 0},
     price: 0,
     date: '',
-    typeTarif: 0,
+    typeTarif: 24,
     address: '',
     orderTime: '',
     addressTo: '',
@@ -30,7 +30,8 @@ export const initialOrdersState: OrdersState = {
     sender: '',
     doorToDoor: false,
     comment: '',
-    paymentType: '',
+    paymentType: 1,
+    payment_id: 1,
   },
 };
 // export const initialStateOrder = initialOrder[]
@@ -67,6 +68,7 @@ const ordersSlice = createSlice({
       const {typeTarif, price} = action.payload;
       state.newOrder.typeTarif = typeTarif;
       state.newOrder.price = price;
+      state.newOrder.activeMinute = typeTarif * 60;
       return state;
     },
     setNewOrderStartCoord: (state, action) => {
@@ -102,6 +104,11 @@ const ordersSlice = createSlice({
     setNewOrderRecipient: (state, action) => {
       const {recipient} = action.payload;
       state.newOrder.recipient = recipient;
+      return state;
+    },
+    setNewOrderPaymentType: (state, action) => {
+      const {paymentType} = action.payload;
+      state.newOrder.paymentType = paymentType;
       return state;
     },
     addSenders: (state, action) => {
@@ -155,8 +162,8 @@ const ordersSlice = createSlice({
       loadCategory.fulfilled.type,
       (state, action: PayloadAction<CategoryOrder>) => {
         state.loading = false;
-        state.categoryDoc = action.payload.documents;
-        state.categoryPack = action.payload.packs;
+        state.categoryDoc = action.payload.doc;
+        state.categoryPack = action.payload.pack;
       },
     ),
       builder.addCase(loadCategory.pending.type, state => {
@@ -186,5 +193,6 @@ export const {
   setNewOrderSender,
   setNewOrderDoorToDoor,
   setNewOrderComment,
+  setNewOrderPaymentType,
 } = ordersSlice.actions;
 export const orderReducer = persistReducer(persistConfig, ordersSlice.reducer);

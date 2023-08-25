@@ -16,7 +16,8 @@ import {useNavigation} from '@react-navigation/native';
 import R from '../../res';
 import {useAppDispatch} from '../../hooks/redux';
 import {createOrder} from '../../state/orders/action';
-import {useSelector} from 'react-redux';
+import {setNewOrderPaymentType} from '../../state/orders/slice';
+import {useDispatch, useSelector} from 'react-redux';
 
 export default function PayClient() {
   const [data, setData] = useState([
@@ -27,6 +28,7 @@ export default function PayClient() {
   const [currMethod, setCurrMethod] = useState(1);
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
+  const disp = useDispatch();
   const order = useSelector(state => state.order);
   const [err, setErr] = useState('');
 
@@ -40,19 +42,27 @@ export default function PayClient() {
     });
     setData(newData);
     setCurrMethod(id);
+    disp(setNewOrderPaymentType({paymentType: id}));
     // setCheck(!check)
   };
   const crOrder = () => {
-    console.log(order.newOrder);
-
+    console.log('order.newOrder', order.newOrder);
+    const price = order?.newOrder?.price;
+    // @ts-ignore
+    navigation.navigate(R.routes.PAYMENT_ORDER, {
+      id_method: currMethod,
+      price: price,
+    });
     dispatch(
       createOrder({
         data: order.newOrder,
         onSuccess: () => {
-          //@ts-ignore
-          navigation.navigate('TabScreen');
+          // @ts-ignore
+          // navigation.navigate('TabScreen');
         },
-        onError: async () => {
+        onError: async e => {
+          console.log('Ошибка сервера', e);
+
           setErr('Ошибка сервера, попробуйте позже');
         },
       }),

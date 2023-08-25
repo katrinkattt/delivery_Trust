@@ -68,7 +68,9 @@ export default function OrdersITEM({item}: IProps) {
         <View>
           <Space height={18} />
           <Body center semiBold>
-            Еще {item.activeMinute} минут
+            {item.activeMinute < 90
+              ? `Еще ${item.activeMinute} минут`
+              : `Еще ${item.activeMinute / 60} часа`}
           </Body>
           <Space height={3} />
           <View>

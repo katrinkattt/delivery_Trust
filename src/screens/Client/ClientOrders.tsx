@@ -1,20 +1,33 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {TextInput, TouchableOpacity, View} from 'react-native';
 import {SearchIcon} from '../../components/common/Svgs';
 import {ScaledSheet} from 'react-native-size-matters/extend';
 import TabViewExample from '../../components/TabView';
 import Header from '../../components/Header';
+import {useAppDispatch} from '../../hooks/redux';
+import {loadOrder} from '../../state/orders/action';
 
 export default function ClientOrder() {
   const [text, setText] = useState<string>('');
   const [index, setIndex] = useState(0);
-
+  const dispatch = useAppDispatch();
   const routes = [
     {key: 'all', title: 'Все'},
     {key: 'active', title: 'Активные'},
     {key: 'complete', title: 'Завершеные'},
   ];
-
+  useEffect(() => {
+    dispatch(
+      loadOrder({
+        onSuccess: () => {
+          console.log('good loadOrders');
+        },
+        onError: async e => {
+          console.log('ERR loadOrders =>>', e);
+        },
+      }),
+    );
+  }, []);
   async function handleChange(e: string) {
     setText(e);
   }

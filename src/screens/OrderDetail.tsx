@@ -201,7 +201,9 @@ export default function OrderDetail({route}: IProps) {
           <View style={{marginBottom: 20}}>
             <Body center bold semiBold>
               {item?.activeMinute
-                ? 'Еще ' + item?.activeMinute + ' минут'
+                ? item.activeMinute < 90
+                  ? `Еще ${item.activeMinute} минут`
+                  : `Еще ${item.activeMinute / 60} часа`
                 : 'Заказ доставлен'}
             </Body>
             <View style={{position: 'absolute', right: 0, bottom: 15}}>

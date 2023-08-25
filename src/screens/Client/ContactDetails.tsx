@@ -96,11 +96,16 @@ export default function ContactDetails() {
   };
 
   const goOrderParams = (formData: ICotactDetailsOrder) => {
-    console.log(formData.city, formData.street, formData.house);
-    getCoord(formData, 'recipient');
-    getCoord(user, 'sender');
-    //@ts-ignore
-    navigation.navigate(R.routes.CLIENT_ORDER_RATE);
+    if (agre) {
+      console.log(formData.city, formData.street, formData.house);
+      getCoord(user, 'sender');
+      getCoord(formData, 'recipient').then(() => {
+        if (coordRecipient.latitude !== 0) {
+          //@ts-ignore
+          navigation.navigate(R.routes.CLIENT_ORDER_RATE);
+        }
+      });
+    }
   };
 
   return (

@@ -37,7 +37,8 @@ export type IOrder = {
   sender?: string;
   doorToDoor?: boolean;
   comment?: string;
-  paymentType?: string;
+  paymentType?: number;
+  payment_id?: number;
 };
 export type TariffOrder = {
   tariffs: Tariff[];
@@ -50,8 +51,8 @@ export type Tariff = {
   price: number;
 };
 export type CategoryOrder = {
-  documents: Category[];
-  packs: Category[];
+  doc: Category[];
+  pack: Category[];
 };
 export type Category = {
   id: number;
