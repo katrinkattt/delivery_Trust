@@ -48,6 +48,7 @@ export const MessageScreen = ({route}: IProps) => {
   const [messages, setMessages] = useState([]);
 
   const onSend = useCallback((messages = []) => {
+    console.log('messages', messages);
     setMessages(previousMessages =>
       GiftedChat.append(previousMessages, messages),
     );

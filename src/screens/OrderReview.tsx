@@ -1,27 +1,35 @@
 import React, {useState} from 'react';
 import {ScaledSheet} from 'react-native-size-matters/extend';
 import {TouchableOpacity, View, Text} from 'react-native';
-import {Formik} from 'formik';
 import {useNavigation} from '@react-navigation/native';
-import AuthInput from '../components/common/AuthInput';
+import TextAreaInput from '../components/common/TextAreaInput';
 import Header from '../components/Header';
 import Body from '../components/common/Body';
 import Button from '../components/common/Button';
 import {colors} from '../theme/themes';
 import R from '../res';
+import {useDispatch} from 'react-redux';
+import {setDonut} from '../state/orders/slice';
 
 export default function OrderReview() {
   const navigation = useNavigation();
   const [isOpenDonut, setIsOpenDonut] = useState(false);
-  const [initialValue, setInitialValue] = useState({donut: 0});
+  const [don, setDon] = useState(0);
+  const disp = useDispatch();
 
   const donutSend = () => {
     if (isOpenDonut) {
-      navigation.goBack();
-      //@ts-ignore
-      navigation.navigate(R.routes.CLIENT_HOME);
-      if (initialValue.donut > 0) {
-        //когда будет храниться в стейте
+      console.log('donut', don);
+
+      if (don > 0) {
+        disp(setDonut({donut: don}));
+        //@ts-ignore
+        navigation.navigate(R.routes.CLIENT_ORDER_PAY);
+      } else {
+        navigation.goBack();
+        navigation.goBack();
+        //@ts-ignore
+        navigation.navigate(R.routes.CLIENT_HOME);
       }
     } else setIsOpenDonut(true);
   };
@@ -49,15 +57,15 @@ export default function OrderReview() {
 
         <Button text="ОСТАВИТЬ ЧАЕВЫЕ" onPress={donutSend} buttonType={2} />
         {isOpenDonut && (
-          <Formik initialValues={initialValue} onSubmit={() => {}}>
-            <AuthInput
-              label="Сумма чаевых, ₽"
-              placeholder="Введите сумму чаевых"
-              position="top"
-              name="donut"
-              keyboardType="number-pad"
-            />
-          </Formik>
+          <TextAreaInput
+            label="Чаевые"
+            placeholder="Введите сумму"
+            position="center"
+            value={don}
+            setValue={setDon}
+            custom={true}
+            keyboardType="numeric"
+          />
         )}
       </View>
       <TouchableOpacity

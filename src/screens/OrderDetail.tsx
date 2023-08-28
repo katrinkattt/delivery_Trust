@@ -6,7 +6,7 @@ import notifee from '@notifee/react-native';
 import Body from '../components/common/Body';
 import BackButton from '../components/common/BackButton';
 import {useDispatch} from 'react-redux';
-import {setCompletlyOrders} from '../state/orders/slice';
+import {setCompletlyOrders, setCurrPaymentId} from '../state/orders/slice';
 import {
   FlagIcon,
   MessageIcon,
@@ -77,6 +77,7 @@ export default function OrderDetail({route}: IProps) {
   const confirmDelivery = () => {
     if (item.active) {
       dispatch(setCompletlyOrders({id: item.id}));
+      dispatch(setCurrPaymentId({id: item.payment}));
       setOrder(false);
       if (user) {
         //@ts-ignore

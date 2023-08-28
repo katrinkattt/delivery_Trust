@@ -2,6 +2,8 @@ export type OrdersState = {
   orders: IOrder[];
   newOrder: IOrder;
   loading: boolean;
+  donut: number;
+  currPaymentId: number;
   categoryDoc: Category[];
   categoryPack: Category[];
   tariffs: Tariff[];
@@ -38,6 +40,8 @@ export type IOrder = {
   doorToDoor?: boolean;
   comment?: string;
   paymentType?: number;
+  payment?: number;
+  sender_id?: number;
   payment_id?: number;
 };
 export type TariffOrder = {
@@ -57,4 +61,13 @@ export type CategoryOrder = {
 export type Category = {
   id: number;
   name: string;
+};
+export type Payment = {
+  id?: number;
+  type?: number;
+  total?: number;
+  status?: boolean;
+  tip?: string;
+  created_at?: string;
+  updated_at?: string;
 };

@@ -11,6 +11,8 @@ export const initialOrdersState: OrdersState = {
   categoryPack: [],
   tariffs: [],
   senders: [],
+  donut: 0,
+  currPaymentId: 0,
   newOrder: {
     id: 0,
     category: '',
@@ -28,6 +30,7 @@ export const initialOrdersState: OrdersState = {
     addressTo: '',
     recipient: '',
     sender: '',
+    sender_id: 0,
     doorToDoor: false,
     comment: '',
     paymentType: 1,
@@ -111,6 +114,16 @@ const ordersSlice = createSlice({
       state.newOrder.paymentType = paymentType;
       return state;
     },
+    setDonut: (state, action) => {
+      const {donut} = action.payload;
+      state.donut = donut;
+      return state;
+    },
+    setCurrPaymentId: (state, action) => {
+      const {id} = action.payload;
+      state.currPaymentId = id;
+      return state;
+    },
     addSenders: (state, action) => {
       const {sender} = action.payload;
       console.log('sender in payload::', sender);
@@ -137,6 +150,8 @@ const ordersSlice = createSlice({
       (state, action: PayloadAction<IOrder[]>) => {
         state.loading = false;
         state.orders = action.payload;
+        state.donut = 0;
+        state.currPaymentId = 0;
       },
     ),
       builder.addCase(loadOrder.pending.type, state => {
@@ -164,6 +179,8 @@ const ordersSlice = createSlice({
         state.loading = false;
         state.categoryDoc = action.payload.doc;
         state.categoryPack = action.payload.pack;
+        state.donut = 0;
+        state.currPaymentId = 0;
       },
     ),
       builder.addCase(loadCategory.pending.type, state => {
@@ -194,5 +211,7 @@ export const {
   setNewOrderDoorToDoor,
   setNewOrderComment,
   setNewOrderPaymentType,
+  setDonut,
+  setCurrPaymentId,
 } = ordersSlice.actions;
 export const orderReducer = persistReducer(persistConfig, ordersSlice.reducer);

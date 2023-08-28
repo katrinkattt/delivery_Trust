@@ -31,6 +31,8 @@ export const registerAction = createAsyncThunk<
   }
 >('register/sendcode', async arg => {
   try {
+    console.log('API_PATH_REGISTER');
+
     const {data: response} = await apiClient.post<IRegistr>(
       R.consts.API_PATH_REGISTER,
       arg.data,
@@ -54,6 +56,8 @@ export const regConfirmCodeAction = createAsyncThunk<
   }
 >('register', async arg => {
   try {
+    console.log('API_PATH_CONFIRM_CODE');
+
     const {data: response} = await apiClient.post<IConfirmCode>(
       R.consts.API_PATH_CONFIRM_CODE,
       {
@@ -77,7 +81,7 @@ export const createUserAction = createAsyncThunk<
     onSuccess?: (response: ICreateUser) => void;
     onError?: (e: any) => void;
   }
->('api/create-user', async arg => {
+>('api/createuser', async arg => {
   console.log('DATA IN createUserAction', arg.data);
   try {
     const {data: response} = await apiClient.post<ICreateUser>(
@@ -105,6 +109,8 @@ export const loginAction = createAsyncThunk<
   }
 >('auth', async arg => {
   try {
+    console.log('API_PATH_LOGIN');
+
     const {data: response} = await apiClient.post<ILogin>(
       R.consts.API_PATH_LOGIN,
       {
@@ -117,7 +123,7 @@ export const loginAction = createAsyncThunk<
 
     arg.onSuccess?.(response);
 
-    console.warn('resp', response);
+    console.log('resp', response);
 
     return response;
   } catch (e: any) {

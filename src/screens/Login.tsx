@@ -61,8 +61,9 @@ export default function Login() {
               : // @ts-ignore
                 navigation.navigate('TabScreen');
           },
-          onError: async () => {
+          onError: async e => {
             setError('Неверный логин или пароль');
+            console.log('API_PATH_LOGIN', e);
           },
         }),
       );
@@ -83,7 +84,6 @@ export default function Login() {
       );
     }
   };
-  console.log('jsdbjd');
 
   const recovery = () => {
     setRecov(true);

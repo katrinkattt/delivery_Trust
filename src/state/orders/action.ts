@@ -2,7 +2,7 @@ import {createAction, createAsyncThunk} from '@reduxjs/toolkit';
 import {IOrdersLoad, ILoadCategory} from '../../types/data';
 import apiClient from '../../api/instance';
 import R from '../../res';
-import {CategoryOrder, IOrder, TariffOrder} from './types';
+import {CategoryOrder, IOrder, TariffOrder, Payment} from './types';
 
 export const loadOrder = createAsyncThunk<
   IOrder[],
@@ -58,7 +58,7 @@ export const loadCategory = createAsyncThunk<
       R.consts.API_GET_CATEGORY,
     );
     arg.onSuccess?.(response);
-    console.log('response in API_GET_CATEGORY', response);
+
     return response;
   } catch (e: any) {
     arg.onError?.(e.response);
@@ -76,8 +76,35 @@ export const loadTariffs = createAsyncThunk<
     const {data: response} = await apiClient.get<TariffOrder[]>(
       R.consts.API_GET_TARIFF,
     );
-    console.log('response in API_GET_TARIFF', response);
+    console.log('API_GET_TARIFF', response);
+
     arg.onSuccess?.(response);
+    return response;
+  } catch (e: any) {
+    arg.onError?.(e.response);
+    throw e;
+  }
+});
+
+export const paymentFunc = createAsyncThunk<
+  Payment,
+  {
+    data: Payment;
+    onSuccess?: (response: Payment) => void;
+    onError?: (e: any) => void;
+  }
+>('payment', async arg => {
+  try {
+    console.log('DATA API_PAYMENT::', arg.data);
+
+    const {data: response} = await apiClient.put<Payment>(
+      R.consts.API_PAYMENT,
+      arg.data,
+    );
+    console.log('response API_PAYMENT', response);
+
+    arg.onSuccess?.(response);
+
     return response;
   } catch (e: any) {
     arg.onError?.(e.response);

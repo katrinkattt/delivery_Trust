@@ -67,10 +67,7 @@ export function email(value: string) {
 export function minLength(size: number) {
   return (value: string) => {
     if (value.length < size) {
-      return 'must be at least {size} characters'.replace(
-        '{size}',
-        String(size),
-      );
+      return 'поле обязательно'.replace('{size}', String(size));
     }
   };
 }

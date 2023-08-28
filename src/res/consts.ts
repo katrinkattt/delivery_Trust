@@ -10,7 +10,7 @@ export const BASE_URL = Config.BASE_URL || 'http://92.51.39.155:5000/';
 
 export const API_PATH_REGISTER = '/register/sendcode';
 export const API_PATH_CONFIRM_CODE = '/register';
-export const API_CREATE_USER = '/api/create-user';
+export const API_CREATE_USER = '/api/createuser';
 export const API_PATH_LOGIN = '/auth';
 export const API_REFRESH_TOKEN = '/auth/refresh';
 export const API_RESET_PASS_CODE = '/resetpassword/sendcode';
@@ -27,6 +27,7 @@ export const API_CR_ORDER = '/order';
 export const API_GET_ORDERS = '/orders';
 export const API_GET_CATEGORY = '/api/categories';
 export const API_GET_TARIFF = 'api/tariff';
+export const API_PAYMENT = '/payment';
 
 //Device
 export const IS_ANDROID = Platform.OS === 'android';

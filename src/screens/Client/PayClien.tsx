@@ -15,7 +15,7 @@ import Button from '../../components/common/Button';
 import {useNavigation} from '@react-navigation/native';
 import R from '../../res';
 import {useAppDispatch} from '../../hooks/redux';
-import {createOrder} from '../../state/orders/action';
+import {createOrder, paymentFunc} from '../../state/orders/action';
 import {setNewOrderPaymentType} from '../../state/orders/slice';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -30,6 +30,7 @@ export default function PayClient() {
   const dispatch = useAppDispatch();
   const disp = useDispatch();
   const order = useSelector(state => state.order);
+  const donut = order.donut;
   const [err, setErr] = useState('');
 
   const pressButton = (id: number) => {
@@ -46,27 +47,49 @@ export default function PayClient() {
     // setCheck(!check)
   };
   const crOrder = () => {
-    console.log('order.newOrder', order.newOrder);
-    const price = order?.newOrder?.price;
+    const price = donut > 0 ? donut : order?.newOrder?.price;
     // @ts-ignore
     navigation.navigate(R.routes.PAYMENT_ORDER, {
       id_method: currMethod,
       price: price,
     });
-    dispatch(
-      createOrder({
-        data: order.newOrder,
-        onSuccess: () => {
-          // @ts-ignore
-          // navigation.navigate('TabScreen');
-        },
-        onError: async e => {
-          console.log('Ошибка сервера', e);
+    if (donut > 0) {
+      console.log('===>paymentFunc');
 
-          setErr('Ошибка сервера, попробуйте позже');
-        },
-      }),
-    );
+      dispatch(
+        paymentFunc({
+          data: {
+            id: order.currPaymentId,
+            type: currMethod,
+            total: price,
+          },
+          onSuccess: () => {
+            // @ts-ignore
+            // navigation.navigate('TabScreen');
+            console.log('paymentFunc OK');
+          },
+          onError: async e => {
+            console.log('Ошибка сервера', e);
+          },
+        }),
+      );
+    }
+    if (donut == 0) {
+      dispatch(
+        createOrder({
+          data: order.newOrder,
+          onSuccess: () => {
+            // @ts-ignore
+            // navigation.navigate('TabScreen');
+          },
+          onError: async e => {
+            console.log('Ошибка сервера', e);
+
+            setErr('Ошибка сервера, попробуйте позже');
+          },
+        }),
+      );
+    }
   };
 
   return (

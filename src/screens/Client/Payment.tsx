@@ -7,20 +7,23 @@ import Body from '../../components/common/Body';
 import Button from '../../components/common/Button';
 import {CopyIcon} from '../../../assets/icons/CopyIcon';
 import {ModalCustom} from '../../components/ModalCustom';
+import {useDispatch} from 'react-redux';
 
 interface PeymentProps {
   route: {
     params: {
-      id_method: number;
+      id_method?: number;
+      price?: number;
     };
   };
 }
 export default function Payment({route}: PeymentProps) {
   const id_method = route.params?.id_method;
+  const price = route.params?.price;
   const title =
     (id_method === 1 ? 'QR-код' : id_method === 2 ? 'Карта' : 'Криптовалюта') ||
     'Pay';
-  const price = 489; //from state
+  const disp = useDispatch();
   const linkOR = 'https://www.youtube.com/watch?v=KLxNkEN-2Uc'; //from back
   const linkBank = 'https://sbp.nspk.ru/';
   const CryptoKey = '18wCxszZc8mZk7smgfv5Gp4eCNACHYq6Q';
@@ -85,7 +88,7 @@ export default function Payment({route}: PeymentProps) {
           />
         )}
         {id_method === 1 && (
-          <TouchableOpacity onLongPress={() => Linking.openURL(linkOR)}>
+          <TouchableOpacity onLongPress={pay}>
             <QRCode value={linkOR} size={230} />
           </TouchableOpacity>
         )}

@@ -20,6 +20,7 @@ interface IProps extends TextProps {
   position?: 'top' | 'center' | 'bottom';
   value?: '';
   setValue?: () => {};
+  custom?: boolean;
 }
 
 const TextAreaInput: React.FC<IProps> = ({
@@ -32,11 +33,12 @@ const TextAreaInput: React.FC<IProps> = ({
   position = '',
   value,
   setValue,
+  custom,
   ...attributes
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const containerStyles = [
-    styles.inputBox,
+    custom ? styles.inputBox2 : styles.inputBox,
     {
       backgroundColor: !isFocused ? '#FAFAFA' : 'transparent',
       borderTopLeftRadius: ['bottom', 'center'].includes(position) ? 0 : 10,
@@ -104,7 +106,7 @@ const styles = StyleSheet.create({
     height: 76,
     borderWidth: 0.5,
     borderRadius: 10,
-    borderColor: 'gray',
+    borderColor: '#E8E8F0',
   },
   input: {
     fontSize: 15,
