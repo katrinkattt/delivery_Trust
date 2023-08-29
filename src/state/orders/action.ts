@@ -7,13 +7,20 @@ import {CategoryOrder, IOrder, TariffOrder, Payment} from './types';
 export const loadOrder = createAsyncThunk<
   IOrder[],
   {
+    link?: string;
     onSuccess?: (response: IOrder[]) => void;
     onError?: (e: any) => void;
   }
 >('orders', async arg => {
   try {
+    const add = arg.link || '';
+    console.log(
+      'R.consts.API_GET_ORDERS+add===',
+      R.consts.API_GET_ORDERS + add,
+    );
+
     const {data: response} = await apiClient.get<IOrder[]>(
-      R.consts.API_GET_ORDERS,
+      R.consts.API_GET_ORDERS + add,
     );
     arg.onSuccess?.(response);
     console.log('response in API_GET_ORDERS', response);
@@ -37,6 +44,36 @@ export const createOrder = createAsyncThunk<
       arg.data,
     );
     console.log('response API_CR_ORDER', response);
+
+    arg.onSuccess?.(response);
+
+    return response;
+  } catch (e: any) {
+    arg.onError?.(e.response);
+    throw e;
+  }
+});
+export const editOrder = createAsyncThunk<
+  IOrder,
+  {
+    id: number;
+    data: IOrder;
+    onSuccess?: (response: IOrder) => void;
+    onError?: (e: any) => void;
+  }
+>('order/put', async arg => {
+  try {
+    const idOrder = `?order_id=${arg.id}`;
+    const {data: response} = await apiClient.put<IOrder>(
+      R.consts.API_CR_ORDER + idOrder,
+      arg.data,
+    );
+    console.log(
+      ' R.consts.API_CR_ORDER + idOrder',
+      R.consts.API_CR_ORDER + idOrder,
+    );
+
+    console.log('response editOrder', response);
 
     arg.onSuccess?.(response);
 

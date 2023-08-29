@@ -20,13 +20,13 @@ export type UserState = {
   // removeAccount: boolean
   // referral: string | null
   // subscriptionInfoLoading: boolean
-
+  id: number;
   typeInUser: boolean;
   searchInput: boolean;
   loading?: boolean;
   access_token?: string | null;
   refresh_token?: string | null;
-  role?: string;
+  role?: number;
   code?: string | null;
   valid_code?: boolean;
   email?: string | null;

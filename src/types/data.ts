@@ -96,7 +96,7 @@ export interface IConfirmCode {
 
 export interface ICreateUser {
   email?: string;
-  user_type?: string;
+  user_type?: number;
   full_name?: string;
   region?: string;
   city?: string;
@@ -113,6 +113,22 @@ export interface ILogin {
   refresh_token?: string;
   accessToken?: string;
   refreshToken?: string;
+  id?: number;
+  userType?: number;
+  userData?: UserLoginData;
+}
+export interface UserLoginData {
+  apartment?: string;
+  city?: string;
+  confirmation?: boolean;
+  documentsId?: number;
+  fullName?: string;
+  house?: string;
+  id?: number;
+  region?: string;
+  signing?: boolean;
+  street?: string;
+  userId?: number;
 }
 export interface IResetPassCode {
   email?: string;

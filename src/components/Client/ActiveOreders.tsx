@@ -50,6 +50,7 @@ export default function ActiveOrders() {
       <FlatList
         data={activeOrder}
         keyExtractor={item => item.id.toString()}
+        inverted
         //@ts-ignore
         style={{marginBottom: 35}}
         renderItem={({item}) => <OrdersITEM item={item} />}

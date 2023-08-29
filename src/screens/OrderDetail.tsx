@@ -5,7 +5,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import notifee from '@notifee/react-native';
 import Body from '../components/common/Body';
 import BackButton from '../components/common/BackButton';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {setCompletlyOrders, setCurrPaymentId} from '../state/orders/slice';
 import {
   FlagIcon,
@@ -24,6 +24,8 @@ import {IOrder} from '../state/orders/types';
 import {ModalCustom} from '../components/ModalCustom';
 import {useNavigation} from '@react-navigation/native';
 import R from '../res';
+import {useAppDispatch} from '../hooks/redux';
+import {editOrder, loadOrder} from '../state/orders/action';
 
 interface IProps {
   route: {
@@ -34,7 +36,8 @@ interface IProps {
   };
 }
 export default function OrderDetail({route}: IProps) {
-  const dispatch = useDispatch();
+  const disp = useDispatch();
+  const dispatch = useAppDispatch();
   const {item} = route.params;
   const {user} = route.params;
   const safeAreaInsets = useSafeAreaInsets();
@@ -48,6 +51,7 @@ export default function OrderDetail({route}: IProps) {
   const [isOpenDot, setIsOpenDot] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [delOrder, setDelOrder] = useState(false);
+  const {id} = useSelector(state => state.user);
   console.log('item', item);
 
   async function onDisplayNotification() {
@@ -73,13 +77,63 @@ export default function OrderDetail({route}: IProps) {
       },
     });
   }
+  const reload = () => {
+    dispatch(
+      loadOrder({
+        link: `/client//${id}`,
+        onSuccess: () => {
+          console.log('good loadOrders');
+        },
+        onError: async e => {
+          console.log('ERR loadOrders =>>', e);
+        },
+      }),
+    );
+  };
+  const cancelOrder = () => {
+    setDelOrder(true);
+    dispatch(
+      editOrder({
+        id: item?.id || 0,
+        data: {
+          complete: false,
+          active: false,
+        },
+        onSuccess: () => {
+          console.log('order del');
+        },
+        onError: async e => {
+          console.log('ERR del order', e);
+        },
+      }),
+    ).then(() => {
+      reload();
+      navigation.goBack();
+    });
+  };
 
   const confirmDelivery = () => {
     if (item.active) {
-      dispatch(setCompletlyOrders({id: item.id}));
-      dispatch(setCurrPaymentId({id: item.payment}));
+      disp(setCurrPaymentId({id: item.payment}));
       setOrder(false);
       if (user) {
+        dispatch(
+          editOrder({
+            id: item?.id || 0,
+            data: {
+              complete: true,
+              active: false,
+            },
+            onSuccess: () => {
+              console.log('good edit order');
+            },
+            onError: async e => {
+              console.log('ERR edit order', e);
+            },
+          }),
+        );
+        reload();
+        navigation.goBack();
         //@ts-ignore
         navigation.navigate(R.routes.ORDER_REVIEW);
       }
@@ -108,17 +162,18 @@ export default function OrderDetail({route}: IProps) {
               ×
             </Text>
           </TouchableOpacity>
-          <Body color="#243757" bold style={{marginBottom: 20}}>
-            Изименить адрес доставки
-          </Body>
-
+          {!delOrder && (
+            <Body color="#243757" bold style={{marginBottom: 20}}>
+              Изименить адрес доставки
+            </Body>
+          )}
           {!delOrder && (
             <>
               <Body color="#243757" bold style={{marginBottom: 20}}>
                 Вы уверены, что хотите отменить доставку?
               </Body>
               <Button
-                onPress={() => setDelOrder(true)} //link to next
+                onPress={cancelOrder} //link to next
                 buttonType={1}
                 text="ОТМЕНИТЬ"
               />
@@ -204,7 +259,9 @@ export default function OrderDetail({route}: IProps) {
               {item?.activeMinute
                 ? item.activeMinute < 90
                   ? `Еще ${item.activeMinute} минут`
-                  : `Еще ${item.activeMinute / 60} часа`
+                  : `Еще ${item.activeMinute / 60} ${
+                      item?.activeMinute / 60 > 4 ? 'часов' : 'часа'
+                    }`
                 : 'Заказ доставлен'}
             </Body>
             <View style={{position: 'absolute', right: 0, bottom: 15}}>

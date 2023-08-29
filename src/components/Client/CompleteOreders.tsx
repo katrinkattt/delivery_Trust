@@ -51,6 +51,7 @@ export default function CompleteOrders() {
         data={completeOrder}
         keyExtractor={item => item.id.toString()}
         style={{marginBottom: 35}}
+        inverted
         //@ts-ignore
         renderItem={({item}) => <OrdersITEM item={item} />}
       />

@@ -15,7 +15,7 @@ import Button from '../../components/common/Button';
 import {useNavigation} from '@react-navigation/native';
 import R from '../../res';
 import {useAppDispatch} from '../../hooks/redux';
-import {createOrder, paymentFunc} from '../../state/orders/action';
+import {createOrder, paymentFunc, loadOrder} from '../../state/orders/action';
 import {setNewOrderPaymentType} from '../../state/orders/slice';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -32,6 +32,7 @@ export default function PayClient() {
   const order = useSelector(state => state.order);
   const donut = order.donut;
   const [err, setErr] = useState('');
+  const user = useSelector(state => state.user);
 
   const pressButton = (id: number) => {
     const newData = data.map(i => {
@@ -45,6 +46,19 @@ export default function PayClient() {
     setCurrMethod(id);
     disp(setNewOrderPaymentType({paymentType: id}));
     // setCheck(!check)
+  };
+  const reloadOrders = () => {
+    dispatch(
+      loadOrder({
+        link: `/client/${user.id}`,
+        onSuccess: () => {
+          console.log('good loadOrders');
+        },
+        onError: async e => {
+          console.log('ERR loadOrders =>>', e);
+        },
+      }),
+    );
   };
   const crOrder = () => {
     const price = donut > 0 ? donut : order?.newOrder?.price;
@@ -64,6 +78,7 @@ export default function PayClient() {
             total: price,
           },
           onSuccess: () => {
+            reloadOrders();
             // @ts-ignore
             // navigation.navigate('TabScreen');
             console.log('paymentFunc OK');

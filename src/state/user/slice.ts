@@ -348,12 +348,13 @@ import {
 import {UserState} from './types';
 
 export const initialStateUser: UserState = {
+  id: 0,
   typeInUser: false,
   searchInput: false,
   loading: false,
   access_token: null,
   refresh_token: null,
-  role: userTypeEnum.COURIER,
+  role: userTypeEnum.NO,
   code: null,
   email: null,
   valid_code: false,
@@ -461,11 +462,18 @@ const userSlice = createSlice({
     builder.addCase(
       loginAction.fulfilled.type,
       (state, action: PayloadAction<ILogin>) => {
-        console.log('IN SLISE:action.payload', action.payload);
-
+        console.log('loginAction IN SLISE:action.payload', action.payload);
         state.loading = false;
         state.access_token = action.payload.accessToken;
         state.refresh_token = action.payload.refreshToken;
+        state.id = action.payload?.userData?.userId || 0;
+        state.role = action.payload.userType;
+        state.typeInUser = action.payload.userType === 2;
+        state.region = action.payload?.userData?.region;
+        state.city = action.payload?.userData?.city;
+        state.street = action.payload?.userData?.street;
+        state.house = action.payload?.userData?.house;
+        state.full_name = action.payload.userData?.fullName;
       },
     ),
       builder.addCase(loginAction.pending.type, state => {

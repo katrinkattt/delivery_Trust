@@ -1,5 +1,6 @@
 export type OrdersState = {
   orders: IOrder[];
+  findOrders: IOrder[];
   newOrder: IOrder;
   loading: boolean;
   donut: number;
@@ -31,7 +32,9 @@ export type IOrder = {
   startCoordinates?: {latitude: number; longitude: number};
   price?: number;
   date?: string;
+  createdAt?: string;
   typeTarif?: number;
+  tariff?: number;
   address?: string;
   orderTime?: string;
   addressTo?: string;
@@ -43,6 +46,7 @@ export type IOrder = {
   payment?: number;
   sender_id?: number;
   payment_id?: number;
+  order_id?: number;
 };
 export type TariffOrder = {
   tariffs: Tariff[];

@@ -62,7 +62,7 @@ export default function Register() {
     <Formik initialValues={initialValues} onSubmit={submit}>
       {() => (
         <View style={styles.container}>
-          <Header title={'Регистрация' + user?.email} />
+          <Header title="Регистрация" />
           <AuthInput
             label="E-mail*"
             placeholder="Введите e-mail"

@@ -2,10 +2,17 @@ import {createAction, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {PersistConfig, persistReducer} from 'redux-persist';
 import AsyncStorage from '@react-native-community/async-storage';
 import {IOrder, OrdersState, TariffOrder, CategoryOrder} from './types';
-import {loadOrder, createOrder, loadCategory, loadTariffs} from './action';
+import {
+  loadOrder,
+  editOrder,
+  createOrder,
+  loadCategory,
+  loadTariffs,
+} from './action';
 
 export const initialOrdersState: OrdersState = {
   orders: [],
+  findOrders: [],
   loading: false,
   categoryDoc: [],
   categoryPack: [],
@@ -25,6 +32,7 @@ export const initialOrdersState: OrdersState = {
     price: 0,
     date: '',
     typeTarif: 24,
+    tariff: 1,
     address: '',
     orderTime: '',
     addressTo: '',
@@ -70,6 +78,7 @@ const ordersSlice = createSlice({
     setNewOrderTariff: (state, action) => {
       const {typeTarif, price} = action.payload;
       state.newOrder.typeTarif = typeTarif;
+      state.newOrder.tariff = typeTarif;
       state.newOrder.price = price;
       state.newOrder.activeMinute = typeTarif * 60;
       return state;
@@ -100,8 +109,9 @@ const ordersSlice = createSlice({
       return state;
     },
     setNewOrderSender: (state, action) => {
-      const {sender} = action.payload;
+      const {sender, sender_id} = action.payload;
       state.newOrder.sender = sender;
+      state.newOrder.sender_id = sender_id;
       return state;
     },
     setNewOrderRecipient: (state, action) => {
@@ -158,6 +168,18 @@ const ordersSlice = createSlice({
         state.loading = true;
       }),
       builder.addCase(loadOrder.rejected.type, state => {
+        state.loading = false;
+      });
+    builder.addCase(
+      editOrder.fulfilled.type,
+      (state, action: PayloadAction<IOrder[]>) => {
+        state.loading = false;
+      },
+    ),
+      builder.addCase(editOrder.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(editOrder.rejected.type, state => {
         state.loading = false;
       });
     builder.addCase(

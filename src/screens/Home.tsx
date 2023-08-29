@@ -22,11 +22,15 @@ import sliderData from '../api/SliderData';
 import R from '../res';
 import {useSelector} from 'react-redux';
 import {getUser} from '../state/user/selectors';
+import {IOrder} from '../state/orders/types';
+import {useAppDispatch} from '../hooks/redux';
+import {loadOrder} from '../state/orders/action';
 const {width} = Dimensions.get('window');
 const userImg = require('../assets/user.png');
 const header = require('../assets/header.png');
 
 export default function Home() {
+  const dispatch = useAppDispatch();
   const [overallBalance, setOverallBalance] = useState(false);
   const [tips, setTips] = useState(false);
   const [fines, setFines] = useState(false);
@@ -34,6 +38,9 @@ export default function Home() {
   const safeAreaInsets = useSafeAreaInsets();
   const navigation = useNavigation();
   const user = useSelector(getUser);
+  const order = useSelector(state => state.order);
+  const activeOrder = order.orders.filter((obj: IOrder) => obj.active);
+  const orderCount = activeOrder.length;
   async function handleChange(e: string) {
     setText(e);
   }
@@ -52,6 +59,17 @@ export default function Home() {
       }
     });
   }, []);
+  dispatch(
+    loadOrder({
+      link: `/courier/${user.id}`,
+      onSuccess: () => {
+        console.log('good loadOrders');
+      },
+      onError: async () => {
+        console.log('ERR loadOrders');
+      },
+    }),
+  );
 
   return (
     <ScrollView
@@ -147,24 +165,30 @@ export default function Home() {
 
       <View style={{paddingHorizontal: 16, marginTop: -58}}>
         <DropShadow style={styles.orderBox}>
-          <View style={styles.orderBoxContainer}>
-            <View>
-              <Body color="#243757" style={styles.currentOrdersText}>
-                Текущие заказы
-              </Body>
-              <Body color="#A1ADBF" style={styles.openOrdersText}>
-                Открыть заказы
-              </Body>
-            </View>
+          <TouchableOpacity
+            onPress={() => {
+              //@ts-ignore
+              navigation.navigate(R.routes.OREDERS);
+            }}>
+            <View style={styles.orderBoxContainer}>
+              <View>
+                <Body color="#243757" style={styles.currentOrdersText}>
+                  Текущие заказы
+                </Body>
+                <Body color="#A1ADBF" style={styles.openOrdersText}>
+                  Открыть заказы
+                </Body>
+              </View>
 
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <OrderIcon width={24} height={24} color="#A0ACBE" />
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <OrderIcon width={24} height={24} color="#A0ACBE" />
 
-              <Body color="#243757" style={styles.count}>
-                2
-              </Body>
+                <Body color="#243757" style={styles.count}>
+                  {orderCount || 0}
+                </Body>
+              </View>
             </View>
-          </View>
+          </TouchableOpacity>
         </DropShadow>
 
         <View style={styles.inputBox}>

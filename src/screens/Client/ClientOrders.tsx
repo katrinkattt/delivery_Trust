@@ -6,11 +6,14 @@ import TabViewExample from '../../components/TabView';
 import Header from '../../components/Header';
 import {useAppDispatch} from '../../hooks/redux';
 import {loadOrder} from '../../state/orders/action';
+import {useSelector} from 'react-redux';
 
 export default function ClientOrder() {
   const [text, setText] = useState<string>('');
   const [index, setIndex] = useState(0);
   const dispatch = useAppDispatch();
+  const user = useSelector(state => state.user);
+  const order = useSelector(state => state.order);
   const routes = [
     {key: 'all', title: 'Все'},
     {key: 'active', title: 'Активные'},
@@ -19,6 +22,7 @@ export default function ClientOrder() {
   useEffect(() => {
     dispatch(
       loadOrder({
+        link: `/client/${user.id}`,
         onSuccess: () => {
           console.log('good loadOrders');
         },

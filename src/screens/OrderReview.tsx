@@ -72,7 +72,7 @@ export default function OrderReview() {
         style={styles.bottom}
         onPress={() => {
           isOpenDonut ? setIsOpenDonut(false) : navigation.goBack(); //@ts-ignore
-          navigation.navigate(R.routes.CLIENT_HOME);
+          navigation.goBack();
         }}>
         <Body semiBold size={16} center>
           БЕЗ ЧАЕВЫХ

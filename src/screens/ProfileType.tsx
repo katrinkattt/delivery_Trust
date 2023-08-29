@@ -48,7 +48,7 @@ export default function ProfileType() {
             : navigation.navigate('ClientRegistrArgumet');
         },
         onError: async e => {
-          console.log('ERR:', e);
+          console.log('role ERR:', e);
           setError('Ошибка соеденения с сервером');
         },
       }),

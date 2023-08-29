@@ -52,6 +52,7 @@ export default function AllOrders() {
           keyExtractor={item => item.id.toString()}
           //@ts-ignore
           renderItem={({item}) => <OrdersITEM item={item} />}
+          inverted
         />
       ) : (
         <View style={styles.titlebox}>

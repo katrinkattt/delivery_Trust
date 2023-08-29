@@ -55,7 +55,9 @@ export default function Login() {
           data,
           onSuccess: () => {
             disp(setEmail({email: data.email}));
-            !!user?.role
+            console.log('user?.role', user?.role);
+
+            user?.role == 0
               ? //@ts-ignore
                 navigation.navigate('ProfileType')
               : // @ts-ignore

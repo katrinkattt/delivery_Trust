@@ -123,7 +123,7 @@ export const loginAction = createAsyncThunk<
 
     arg.onSuccess?.(response);
 
-    console.log('resp', response);
+    console.log('resp login', response);
 
     return response;
   } catch (e: any) {

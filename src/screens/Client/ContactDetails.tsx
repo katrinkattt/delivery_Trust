@@ -35,6 +35,7 @@ export default function ContactDetails() {
     latitude: 0,
     longitude: 0,
   });
+  const sender_id = user?.id;
 
   //@ts-ignore
   const getCoord = async (add, user: string) => {
@@ -54,7 +55,9 @@ export default function ContactDetails() {
       });
       dispatch(setNewOrderStartCoord({coord: coordSender}));
       dispatch(setNewOrderAddress({address: stringAdd}));
-      dispatch(setNewOrderSender({sender: add?.full_name}));
+      dispatch(
+        setNewOrderSender({sender: add?.full_name, sender_id: sender_id}),
+      );
     }
     if (user === 'recipient') {
       setCoordRecipient({

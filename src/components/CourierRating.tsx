@@ -38,8 +38,8 @@ export default function CourierRating({full}: ICourierRating) {
         onSuccess: () => {
           console.log('good');
         },
-        onError: async () => {
-          console.log('ERR');
+        onError: async e => {
+          console.log('ERR', e);
         },
       }),
     );

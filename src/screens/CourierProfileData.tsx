@@ -71,7 +71,8 @@ export default function CourierProfileData() {
       const data = {
         ...dataForm,
         email: email || 'sixrosesg@gmail.com',
-        user_type: 'Courier',
+        user_type: 1,
+        userType: 1,
         file: document,
       };
       // console.log('submit data::::', data);

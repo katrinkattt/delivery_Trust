@@ -35,6 +35,7 @@ import {
   loadTariffs,
   loadOrder,
 } from '../../state/orders/action';
+import {IOrder} from '../../state/orders/types';
 
 const {width} = Dimensions.get('window');
 
@@ -44,17 +45,22 @@ export default interface IData {
 }
 
 export default function HomeClient() {
-  const progress = useSharedValue(3);
-  const min = useSharedValue(0);
-  const max = useSharedValue(100);
-  const user = useSelector(getUser);
-
   const [tips, setTips] = useState(false);
   const [text, setText] = useState<string>('');
   const safeAreaInsets = useSafeAreaInsets();
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const order = useSelector(state => state.order);
+  const activeOrder = order.orders.filter((obj: IOrder) => obj.active);
+  const lastOrder = activeOrder.length > 0 ? activeOrder.length - 1 : 0;
+
+  const time = (activeOrder[lastOrder]?.typeTarif * 60) | 60;
+  let curTime = (time - activeOrder[lastOrder]?.activeMinute) | 1;
+  const progress = useSharedValue(curTime);
+  const min = useSharedValue(0);
+  const max = useSharedValue(time);
+  const user = useSelector(getUser);
+  console.log('activeOrder', activeOrder);
 
   const pressNewOreder = () => {
     dispatch(
@@ -100,6 +106,7 @@ export default function HomeClient() {
   useEffect(() => {
     dispatch(
       loadOrder({
+        link: `/client/${user.id}`,
         onSuccess: () => {
           console.log('good loadOrders');
         },
@@ -163,50 +170,57 @@ export default function HomeClient() {
       <View style={{paddingHorizontal: 16, marginTop: -88}}>
         <DropShadow style={styles.orderBox}>
           <View style={styles.orderBoxContainer}>
-            <View>
-              <Body color="#243757" bold style={styles.currentOrdersText}>
-                Заказ в процессе!
-              </Body>
-            </View>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
+            <TouchableOpacity
+              onPress={() => {
+                console.log('click');
+                //@ts-ignore
+                navigation.navigate(R.routes.CLIENT_OREDERS);
               }}>
-              <Body color="#A1ADBF" style={styles.openOrdersText}>
-                Посмотреть детали
-              </Body>
-              <View style={{position: 'absolute', right: 0, top: 8}}>
-                <FlagIcon width={24} height={24} color="#A0ACBE" />
+              <View>
+                <Body color="#243757" bold style={styles.currentOrdersText}>
+                  {!lastOrder ? 'Заказ в процессе!' : 'Еще нет заказов 0_0'}
+                </Body>
               </View>
-            </View>
 
-            <Slider
-              style={styles.tabbar}
-              progress={progress}
-              minimumValue={min}
-              maximumValue={max}
-              bubbleMaxWidth={3}
-              bubbleWidth={0}
-              disableTrackFollow
-              bubbleTranslateY={3}
-              disable
-              sliderHeight={10}
-              renderThumb={() => (
-                <View style={styles.dotCard}>
-                  <View style={styles.dot} />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}>
+                <Body color="#A1ADBF" style={styles.openOrdersText}>
+                  Посмотреть детали
+                </Body>
+                <View style={{position: 'absolute', right: 0, top: 8}}>
+                  <FlagIcon width={24} height={24} color="#A0ACBE" />
                 </View>
-              )}
-              theme={{
-                disableMinTrackTintColor: 'rgba(147, 122, 234, 1)',
-                maximumTrackTintColor: 'rgba(235, 235, 236, 1)',
-                minimumTrackTintColor: '#000',
-                cacheTrackTintColor: '#333',
-                bubbleBackgroundColor: '#666',
-              }}
-            />
+              </View>
+
+              <Slider
+                style={styles.tabbar}
+                progress={progress}
+                minimumValue={min}
+                maximumValue={max}
+                bubbleMaxWidth={3}
+                bubbleWidth={0}
+                disableTrackFollow
+                bubbleTranslateY={3}
+                disable
+                sliderHeight={10}
+                renderThumb={() => (
+                  <View style={styles.dotCard}>
+                    <View style={styles.dot} />
+                  </View>
+                )}
+                theme={{
+                  disableMinTrackTintColor: 'rgba(147, 122, 234, 1)',
+                  maximumTrackTintColor: 'rgba(235, 235, 236, 1)',
+                  minimumTrackTintColor: '#000',
+                  cacheTrackTintColor: '#333',
+                  bubbleBackgroundColor: '#666',
+                }}
+              />
+            </TouchableOpacity>
           </View>
         </DropShadow>
       </View>

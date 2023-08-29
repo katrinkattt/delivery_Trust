@@ -43,7 +43,8 @@ export default function ClientRegistrArgumet() {
     const data = {
       ...dataForm,
       email: email || 'sixrosesg@gmail.com',
-      user_type: 'Client',
+      user_type: 2,
+      userType: 2,
     };
     dispatch(
       createUserAction({

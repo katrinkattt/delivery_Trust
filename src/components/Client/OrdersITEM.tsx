@@ -5,8 +5,7 @@ import {Flag} from '.././common/Svgs';
 import {useNavigation} from '@react-navigation/native';
 import R from '../../res';
 // import OrdersData from '../../api/OrdersData'
-
-import {ICategoryDataType} from '../../api/OrdersData';
+import {IOrder} from '../../state/orders/types';
 import SoatIcon from '../../assets/icons/SoatIcom';
 import {Space} from '../common/Space';
 import {Slider} from 'react-native-awesome-slider';
@@ -15,7 +14,7 @@ import ApplyIcon from '../../assets/icons/ApplyIcon';
 import CanceledIcon from '../../assets/icons/CanceledIcon';
 
 interface IProps {
-  item: ICategoryDataType;
+  item: IOrder;
 }
 
 export default function OrdersITEM({item}: IProps) {
@@ -58,7 +57,7 @@ export default function OrdersITEM({item}: IProps) {
       </View>
       <Space height={5} />
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <Body>{item.date}</Body>
+        <Body>{item?.createdAt}</Body>
         <Body color={item.complete || item.active ? '#888' : '#d55'} size={14}>
           {item.active ? 'В доставке' : item.complete ? 'Доставлен' : 'Отменен'}
         </Body>
@@ -70,7 +69,9 @@ export default function OrdersITEM({item}: IProps) {
           <Body center semiBold>
             {item.activeMinute < 90
               ? `Еще ${item.activeMinute} минут`
-              : `Еще ${item.activeMinute / 60} часа`}
+              : `Еще ${item.activeMinute / 60} ${
+                  item?.activeMinute / 60 > 4 ? 'часов' : 'часа'
+                }`}
           </Body>
           <Space height={3} />
           <View>

@@ -22,6 +22,8 @@ import OrdersClientStack from './clientStack/OrdersClientStack';
 import {useDispatch, useSelector} from 'react-redux';
 import {getUser} from '../state/user/selectors';
 import HomeClientStack from './clientStack/HomeClientStack';
+import {getOrders} from '../state/orders/selectors';
+import {IOrder} from '../state/orders/types';
 // import {loadOrders} from '../state/orders/slice';
 // import OrdersData from '../api/OrdersData';
 // import OrdersDataCourier from '../api/OrdersDataCourier';
@@ -32,6 +34,10 @@ export function TabScreen() {
   const user = useSelector(getUser);
   const isTypeInUser = user?.role;
   console.log('ROLEE', isTypeInUser);
+
+  const order = useSelector(getOrders);
+  const activeOrder = order?.orders.filter((obj: IOrder) => obj.active) || [];
+  const orderList = activeOrder.length;
 
   // const dispatch = useDispatch();
   // useEffect(() => {
@@ -73,10 +79,12 @@ export function TabScreen() {
               headerShown: false,
               tabBarIcon: ({focused}) => (
                 <View style={{alignItems: 'flex-end', marginTop: -7}}>
-                  <View
-                    style={[styles.notificationBox, !focused && {right: -7}]}>
-                    <Text style={styles.notificationText}>2</Text>
-                  </View>
+                  {orderList > 0 && (
+                    <View
+                      style={[styles.notificationBox, !focused && {right: -7}]}>
+                      <Text style={styles.notificationText}>{orderList}</Text>
+                    </View>
+                  )}
 
                   {focused ? (
                     <OrderActive width={42} height={43} color={'#EEFFED'} />
@@ -152,10 +160,15 @@ export function TabScreen() {
               headerShown: false,
               tabBarIcon: ({focused}) => (
                 <View style={{alignItems: 'flex-end', marginTop: -7}}>
-                  <View
-                    style={[styless.notificationBox, !focused && {right: -7}]}>
-                    <Text style={styless.notificationText}>2</Text>
-                  </View>
+                  {orderList > 0 && (
+                    <View
+                      style={[
+                        styless.notificationBox,
+                        !focused && {right: -7},
+                      ]}>
+                      <Text style={styless.notificationText}>{orderList}</Text>
+                    </View>
+                  )}
 
                   {focused ? (
                     <OrderActive width={42} height={43} color={'#EEFFED'} />

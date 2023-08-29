@@ -10,7 +10,7 @@ import {useAppDispatch} from '../hooks/redux';
 import {loadOrder} from '../state/orders/action';
 
 export default function Orders() {
-  const {searchInput} = useSelector(getUser);
+  const {searchInput, id} = useSelector(getUser);
   const [text, setText] = useState<string>('');
   const [index, setIndex] = useState(0);
   const dispatch = useAppDispatch();
@@ -22,6 +22,7 @@ export default function Orders() {
   useEffect(() => {
     dispatch(
       loadOrder({
+        link: `/courier/${id}`,
         onSuccess: () => {
           console.log('good loadOrders');
         },
