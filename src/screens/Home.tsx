@@ -44,8 +44,31 @@ export default function Home() {
   async function handleChange(e: string) {
     setText(e);
   }
+  const loadOrders = () => {
+    if (user.id !== 0) {
+      dispatch(
+        loadOrder({
+          link: `/courier/${user.id}`,
+          onSuccess: () => {
+            console.log('good loadOrders');
+          },
+          onError: async () => {
+            console.log('ERR loadOrders');
+          },
+        }),
+      );
+    }
+  };
+  // console.log('user?.role in Home', user?.role);
+  // setTimeout(() => {
+  //   if (user.role === 0) {
+  //     //@ts-ignore
+  //     navigation.navigate('ProfileType');
+  //   }
+  // }, 5000);
 
   useEffect(() => {
+    loadOrders();
     return notifee.onForegroundEvent(({type, detail}) => {
       switch (type) {
         case EventType.DISMISSED:
@@ -59,17 +82,6 @@ export default function Home() {
       }
     });
   }, []);
-  dispatch(
-    loadOrder({
-      link: `/courier/${user.id}`,
-      onSuccess: () => {
-        console.log('good loadOrders');
-      },
-      onError: async () => {
-        console.log('ERR loadOrders');
-      },
-    }),
-  );
 
   return (
     <ScrollView
@@ -205,39 +217,6 @@ export default function Home() {
           />
         </View>
       </View>
-
-      {/* <ScrollView
-                contentContainerStyle={{ paddingRight: 15 }}
-                showsHorizontalScrollIndicator={false}
-                style={{ flexDirection: 'row', paddingLeft: 15, marginTop: 17 }}
-                horizontal>
-                <FastImage source={sliderImage} style={styles.slider}>
-                    <Body color="#ecdffc" style={styles.freeCourseText}>
-                        Бесплатный мини курс
-                    </Body>
-                    <Body color={colors.white} style={styles.freeCourseDescription}>
-                        «Идеальный курьер»
-                    </Body>
-                </FastImage>
-
-                <FastImage source={sliderIm} style={styles.sliderIm}>
-                    <Body color="#ecdffc" style={styles.freeCourseText}>
-                        Бесплатный мини курс
-                    </Body>
-                    <Body color={colors.white} style={styles.freeCourseDescription}>
-                        «Идеальный курьер»
-                    </Body>
-                </FastImage>
-
-                <FastImage source={sliderImage} style={styles.slider}>
-                    <Body color="#ecdffc" style={styles.freeCourseText}>
-                        Бесплатный мини курс
-                    </Body>
-                    <Body color={colors.white} style={styles.freeCourseDescription}>
-                        «Идеальный курьер»
-                    </Body>
-                </FastImage>
-            </ScrollView> */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}

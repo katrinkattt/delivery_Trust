@@ -1,12 +1,19 @@
-import React from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useState} from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  RefreshControl,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {useSelector} from 'react-redux';
 import Body from './common/Body';
 import {CheckIcon, Hourglass} from './common/Svgs';
 import {useNavigation} from '@react-navigation/native';
 import R from '../res';
-import {ICategoryDataType} from '../api/OrdersData';
-
+import {IOrder} from '../state/orders/types';
+import {useAppDispatch} from '../hooks/redux';
+import {loadOrder} from '../state/orders/action';
 const data = [
   {id: 1, name: 'Все', active: true},
   {id: 2, name: 'Паспорт', active: false},
@@ -17,8 +24,29 @@ const data = [
 
 export default function MyOrders() {
   const navigation = useNavigation();
-  // const dataOrders = OrdersData; //from back
+  const dispatch = useAppDispatch();
+  const [refreshing, setRefreshing] = useState(false);
   const {orders} = useSelector(state => state.order);
+  const user = useSelector(state => state.user);
+
+  const reload = () => {
+    dispatch(
+      loadOrder({
+        link: `/courier/${user.id}`,
+        onSuccess: () => {
+          setRefreshing(false);
+        },
+        onError: async () => {
+          setRefreshing(false);
+        },
+      }),
+    );
+  };
+  const onRefresh = useCallback(() => {
+    console.log('refresh');
+    setRefreshing(true);
+    reload();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -45,47 +73,67 @@ export default function MyOrders() {
       </ScrollView>
 
       <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         contentContainerStyle={{paddingBottom: 100}}
         showsVerticalScrollIndicator={false}
         style={{marginHorizontal: 15, marginTop: 23}}>
-        {orders.map((order: ICategoryDataType) => (
-          <TouchableOpacity
-            onPress={() =>
-              //@ts-ignore
-              navigation.navigate(R.routes.ORDER_DETAIL_MAP, {item: order})
-            }
-            activeOpacity={0.7}
-            style={order?.active ? styles.cardOneBox : styles.cardTwoBox}>
-            <View>
-              <Body color="#243757" style={[styles.cardTitle, {marginTop: 12}]}>
-                {order?.category}
-              </Body>
+        {orders[0] ? (
+          orders.map((order: IOrder) => (
+            <TouchableOpacity
+              onPress={() =>
+                //@ts-ignore
+                navigation.navigate(R.routes.ORDER_DETAIL_MAP, {item: order})
+              }
+              activeOpacity={0.7}
+              style={order?.active ? styles.cardOneBox : styles.cardTwoBox}>
+              <View>
+                <Body
+                  color="#243757"
+                  style={[styles.cardTitle, {marginTop: 12}]}>
+                  {order?.category}
+                </Body>
 
-              <Body color="#243757" style={styles.cardOneDescription}>
-                {order?.address}
-              </Body>
-            </View>
-            {order?.active ? (
-              <View style={styles.cardRightBox}>
-                <Hourglass width={15} height={15} />
-
-                <Body color="#243757" style={styles.clock}>
-                  {order?.orderTime}
+                <Body color="#243757" style={styles.cardOneDescription}>
+                  {order?.address}
                 </Body>
               </View>
-            ) : (
-              <View style={{marginRight: 18, marginTop: 15}}>
-                <Body color="#243757" style={styles.price}>
-                  {order?.price} ₽
-                </Body>
+              {order?.active ? (
+                <View style={styles.cardRightBox}>
+                  <Hourglass width={15} height={15} />
 
-                <Body color="#243757" style={styles.deliveredText}>
-                  Доставлен
-                </Body>
-              </View>
-            )}
-          </TouchableOpacity>
-        ))}
+                  <Body color="#243757" size={14} style={styles.clock}>
+                    {order.activeMinute > 90
+                      ? order.activeMinute / 60 + ' час'
+                      : order.activeMinute + ' мин.'}
+                  </Body>
+                </View>
+              ) : (
+                <View style={{marginRight: 18, marginTop: 15}}>
+                  <Body color="#243757" style={styles.price}>
+                    {order?.price} ₽
+                  </Body>
+                  {order?.complete ? (
+                    <Body color="#243757" style={styles.deliveredText}>
+                      Доставлен
+                    </Body>
+                  ) : (
+                    <Body color="#a22" style={styles.deliveredText}>
+                      Отменен
+                    </Body>
+                  )}
+                </View>
+              )}
+            </TouchableOpacity>
+          ))
+        ) : (
+          <View style={styles.titlebox}>
+            <Body bold semiBold color="#A1ADBF">
+              Заказов еще нет
+            </Body>
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -101,6 +149,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 24,
     marginRight: 8,
+  },
+  titlebox: {
+    alignItems: 'center',
+    marginTop: 32,
   },
   text: {
     fontSize: 14,
@@ -128,7 +180,6 @@ const styles = StyleSheet.create({
   },
   clock: {
     marginTop: 7,
-    fontSize: 17,
     fontWeight: '600',
     lineHeight: 20.83,
   },

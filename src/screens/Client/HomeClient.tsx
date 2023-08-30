@@ -178,7 +178,7 @@ export default function HomeClient() {
               }}>
               <View>
                 <Body color="#243757" bold style={styles.currentOrdersText}>
-                  {!lastOrder ? 'Заказ в процессе!' : 'Еще нет заказов 0_0'}
+                  {lastOrder ? 'Заказ в процессе!' : 'Еще нет заказов 0_0'}
                 </Body>
               </View>
 

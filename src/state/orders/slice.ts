@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {IOrder, OrdersState, TariffOrder, CategoryOrder} from './types';
 import {
   loadOrder,
+  freeOrders,
   editOrder,
   createOrder,
   loadCategory,
@@ -168,6 +169,21 @@ const ordersSlice = createSlice({
         state.loading = true;
       }),
       builder.addCase(loadOrder.rejected.type, state => {
+        state.loading = false;
+      });
+    builder.addCase(
+      freeOrders.fulfilled.type,
+      (state, action: PayloadAction<IOrder[]>) => {
+        state.loading = false;
+        state.findOrders = action.payload;
+        state.donut = 0;
+        state.currPaymentId = 0;
+      },
+    ),
+      builder.addCase(freeOrders.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(freeOrders.rejected.type, state => {
         state.loading = false;
       });
     builder.addCase(

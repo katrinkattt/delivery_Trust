@@ -59,8 +59,11 @@ export default function DataProfile() {
         <Button
           text="РЕДАКТИРОВАТЬ"
           onPress={() => {
-            //@ts-ignore 'ClientRegistrArgumet'
-            navigation.navigate('ProfileType');
+            user?.typeInUser
+              ? //@ts-ignore 'ClientRegistrArgumet'
+                navigation.navigate('ClientRegistrArgumet')
+              : //@ts-ignore
+                navigation.navigate('CourierProfileData');
           }}
         />
       </View>

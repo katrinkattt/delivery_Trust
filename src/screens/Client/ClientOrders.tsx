@@ -20,17 +20,19 @@ export default function ClientOrder() {
     {key: 'complete', title: 'Завершеные'},
   ];
   useEffect(() => {
-    dispatch(
-      loadOrder({
-        link: `/client/${user.id}`,
-        onSuccess: () => {
-          console.log('good loadOrders');
-        },
-        onError: async e => {
-          console.log('ERR loadOrders =>>', e);
-        },
-      }),
-    );
+    if (user.id !== 0) {
+      dispatch(
+        loadOrder({
+          link: `/client/${user.id}`,
+          onSuccess: () => {
+            console.log('good loadOrders');
+          },
+          onError: async e => {
+            console.log('ERR loadOrders =>>', e);
+          },
+        }),
+      );
+    }
   }, []);
   async function handleChange(e: string) {
     setText(e);

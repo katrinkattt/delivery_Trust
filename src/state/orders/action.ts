@@ -30,6 +30,33 @@ export const loadOrder = createAsyncThunk<
     throw e;
   }
 });
+export const freeOrders = createAsyncThunk<
+  IOrder[],
+  {
+    // link?: string;
+    onSuccess?: (response: IOrder[]) => void;
+    onError?: (e: any) => void;
+  }
+>('orders/free', async arg => {
+  try {
+    const free = '?active=true&courier=none';
+    console.log(
+      'R.consts.API_GET_FREE_ORDERS+add=',
+      R.consts.API_GET_ORDERS + free,
+    );
+
+    const {data: response} = await apiClient.get<IOrder[]>(
+      R.consts.API_GET_ORDERS + free,
+    );
+    arg.onSuccess?.(response);
+    console.log('response in GET_FREE_ORDERS', response);
+    return response;
+  } catch (e: any) {
+    arg.onError?.(e.response);
+    throw e;
+  }
+});
+
 export const createOrder = createAsyncThunk<
   IOrder,
   {

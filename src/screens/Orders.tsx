@@ -20,17 +20,19 @@ export default function Orders() {
     {key: 'second', title: 'Найти заказ'},
   ];
   useEffect(() => {
-    dispatch(
-      loadOrder({
-        link: `/courier/${id}`,
-        onSuccess: () => {
-          console.log('good loadOrders');
-        },
-        onError: async e => {
-          console.log('ERR loadOrders =>>', e);
-        },
-      }),
-    );
+    if (id !== 0) {
+      dispatch(
+        loadOrder({
+          link: `/courier/${id}`,
+          onSuccess: () => {
+            console.log('good loadOrders');
+          },
+          onError: async e => {
+            console.log('ERR loadOrders =>>', e);
+          },
+        }),
+      );
+    }
   }, []);
 
   async function handleChange(e: string) {

@@ -21,6 +21,7 @@ export type UserState = {
   // referral: string | null
   // subscriptionInfoLoading: boolean
   id: number;
+  user_id: number;
   typeInUser: boolean;
   searchInput: boolean;
   loading?: boolean;

@@ -34,7 +34,6 @@ export function TabScreen() {
   const user = useSelector(getUser);
   const isTypeInUser = user?.role;
   console.log('ROLEE', isTypeInUser);
-
   const order = useSelector(getOrders);
   const activeOrder = order?.orders.filter((obj: IOrder) => obj.active) || [];
   const orderList = activeOrder.length;

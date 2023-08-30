@@ -62,11 +62,14 @@ export default function OrderDetail({route}: IProps) {
       id: 'defaul',
       name: 'Default Channel',
     });
+    const strBody = user
+      ? `Заказ  ${item?.category} закрыт`
+      : `Заказ  ${item?.category} закрыт, дождитесь подтверждения заказчика`;
     // Display a notification
     await notifee.displayNotification({
       id: 'default',
       title: 'Заказ закрыт',
-      body: `Заказ  ${item?.category} закрыт`,
+      body: strBody,
       android: {
         channelId,
         smallIcon: 'ic_launcher', // optional, defaults to 'ic_launcher'.
@@ -80,7 +83,7 @@ export default function OrderDetail({route}: IProps) {
   const reload = () => {
     dispatch(
       loadOrder({
-        link: `/client//${id}`,
+        link: `/client/${id}`,
         onSuccess: () => {
           console.log('good loadOrders');
         },
@@ -301,15 +304,19 @@ export default function OrderDetail({route}: IProps) {
         ) : (
           <View style={{marginBottom: 20, paddingLeft: 40}}>
             <View style={{flexDirection: 'row'}}>
-              <Body>Время доставки</Body>
+              <Body>Время заказа</Body>
               <Body bold style={{fontWeight: 'bold', paddingLeft: 40}}>
-                {item?.orderTime}
+                {item?.createdAt}
               </Body>
             </View>
             <View style={{flexDirection: 'row'}}>
               <Body>Осталось времени</Body>
               <Body bold style={{fontWeight: 'bold', paddingLeft: 26}}>
-                {item?.activeMinute}
+                {item?.activeMinute
+                  ? item.activeMinute < 90
+                    ? `Еще ${item.activeMinute} минут`
+                    : `Еще ${item.activeMinute / 60} час.`
+                  : 'Заказ доставлен'}
               </Body>
             </View>
           </View>

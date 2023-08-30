@@ -55,13 +55,8 @@ export default function Login() {
           data,
           onSuccess: () => {
             disp(setEmail({email: data.email}));
-            console.log('user?.role', user?.role);
-
-            user?.role == 0
-              ? //@ts-ignore
-                navigation.navigate('ProfileType')
-              : // @ts-ignore
-                navigation.navigate('TabScreen');
+            console.log('user?.role', user?.role); // @ts-ignore
+            navigation.navigate('TabScreen');
           },
           onError: async e => {
             setError('Неверный логин или пароль');

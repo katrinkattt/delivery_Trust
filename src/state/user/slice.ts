@@ -349,6 +349,7 @@ import {UserState} from './types';
 
 export const initialStateUser: UserState = {
   id: 0,
+  user_id: 0,
   typeInUser: false,
   searchInput: false,
   loading: false,
@@ -466,7 +467,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.access_token = action.payload.accessToken;
         state.refresh_token = action.payload.refreshToken;
-        state.id = action.payload?.userData?.userId || 0;
+        state.id = action.payload?.userData?.id || 0;
         state.role = action.payload.userType;
         state.typeInUser = action.payload.userType === 2;
         state.region = action.payload?.userData?.region;
@@ -474,6 +475,7 @@ const userSlice = createSlice({
         state.street = action.payload?.userData?.street;
         state.house = action.payload?.userData?.house;
         state.full_name = action.payload.userData?.fullName;
+        state.user_id = action.payload?.userData?.userId || 0;
       },
     ),
       builder.addCase(loginAction.pending.type, state => {

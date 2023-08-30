@@ -41,6 +41,7 @@ export type IOrder = {
   recipient?: string;
   sender?: string;
   doorToDoor?: boolean;
+  courierId?: number;
   comment?: string;
   paymentType?: number;
   payment?: number;

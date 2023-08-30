@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {
   FlatList,
@@ -6,10 +6,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  RefreshControl,
 } from 'react-native';
 import Body from '../common/Body';
 import OrdersData from '../../api/OrdersData';
 import OrdersITEM from './OrdersITEM';
+import {useAppDispatch} from '../../hooks/redux';
+import {loadOrder} from '../../state/orders/action';
 
 const data = [
   {id: 1, name: 'Все', active: true},
@@ -21,7 +24,30 @@ const data = [
 
 export default function AllOrders() {
   const {orders} = useSelector(state => state.order);
+  const {id} = useSelector(state => state.user);
+  const [refreshing, setRefreshing] = useState(false);
+  const dispatch = useAppDispatch();
 
+  const reload = () => {
+    dispatch(
+      loadOrder({
+        link: `/client/${id}`,
+        onSuccess: () => {
+          setRefreshing(false);
+        },
+        onError: async e => {
+          setRefreshing(false);
+          console.log('ERR loadOrders =>>', e);
+        },
+      }),
+    );
+  };
+
+  const onRefresh = useCallback(() => {
+    console.log('refresh');
+    setRefreshing(true);
+    reload();
+  }, []);
   return (
     <View style={styles.container}>
       <ScrollView
@@ -45,22 +71,27 @@ export default function AllOrders() {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      {orders[0] ? (
-        <FlatList
-          data={orders}
-          style={{marginBottom: 35}}
-          keyExtractor={item => item.id.toString()}
-          //@ts-ignore
-          renderItem={({item}) => <OrdersITEM item={item} />}
-          inverted
-        />
-      ) : (
-        <View style={styles.titlebox}>
-          <Body bold semiBold color="#A1ADBF">
-            Заказов еще нет
-          </Body>
-        </View>
-      )}
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        {orders[0] ? (
+          <FlatList
+            data={orders}
+            style={{marginBottom: 35}}
+            keyExtractor={item => item.id.toString()}
+            //@ts-ignore
+            renderItem={({item}) => <OrdersITEM item={item} />}
+            inverted
+          />
+        ) : (
+          <View style={styles.titlebox}>
+            <Body bold semiBold color="#A1ADBF">
+              Заказов еще нет
+            </Body>
+          </View>
+        )}
+      </ScrollView>
     </View>
   );
 }
