@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StatusBar} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
+import notifee from '@notifee/react-native';
 
 import {colors} from '.././theme/themes';
 import AuthNavigator from '.././screens/AuthNavigator';
@@ -24,19 +25,75 @@ import CardEditor from '../screens/CardEditor';
 import {MessageScreen} from '../components/messages/MessageScreen';
 import R from '../res';
 import {TabScreen} from './Tabs';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {getUser} from '../state/user/selectors';
+import socket from '../socket';
+import {setLastMsg, addMsgChat} from '../state/chat/slice';
 
 const Stack = createStackNavigator();
 
 export const Navigation = () => {
   const user = useSelector(getUser);
   const state = useSelector(state => state);
+  const dispatch = useDispatch();
   console.log('STATE==>', state);
   const theme = {
     ...DefaultTheme,
     colors: {...DefaultTheme.colors, background: colors.white},
   };
+  async function onDisplayNotification(text: string) {
+    await notifee.requestPermission();
+    // console.log('title, msg', title, msg);
+    console.log('onDisplayNotification WORKKK');
+
+    const channelId = await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel Chat',
+    });
+    const strBody = text;
+    // Display a notification
+    await notifee.displayNotification({
+      id: 'defaultMsg',
+      title: 'Сообщение из чата',
+      body: strBody,
+      android: {
+        channelId,
+        smallIcon: 'ic_launcher',
+        pressAction: {
+          id: 'default',
+        },
+      },
+    });
+  }
+  useEffect(() => {
+    socket.on('connect', () => {
+      console.log('Подключение к серверу Socket.IO установлено');
+    });
+    socket.on('receive_message', data => {
+      console.log('receive_message =>DATA:', data);
+      if (data) {
+        dispatch(setLastMsg({msg: data.text}));
+        const msg = {
+          chatId: data.chat_id,
+          text: data.text,
+          createdAt: data.createdAt,
+          id: data.message_id,
+          _id: data.message_id,
+          user: {
+            avatar: data.user_avatar,
+            name: data.user_name,
+            _id: data.user_id,
+          },
+        };
+        dispatch(addMsgChat({msg: msg}));
+        console.log('data.user_id ', data.user_i, 'user.user_id', user.user_id);
+
+        if (data.user_id !== user.user_id) {
+          onDisplayNotification(data.text);
+        }
+      }
+    });
+  }, []);
 
   return (
     <>

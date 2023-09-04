@@ -25,6 +25,7 @@ import {getUser} from '../state/user/selectors';
 import {IOrder} from '../state/orders/types';
 import {useAppDispatch} from '../hooks/redux';
 import {loadOrder} from '../state/orders/action';
+import {loadChat} from '../state/chat/action';
 const {width} = Dimensions.get('window');
 const userImg = require('../assets/user.png');
 const header = require('../assets/header.png');
@@ -54,6 +55,17 @@ export default function Home() {
           },
           onError: async () => {
             console.log('ERR loadOrders');
+          },
+        }),
+      );
+      dispatch(
+        loadChat({
+          id: user.id,
+          onSuccess: () => {
+            console.log('good loadChat');
+          },
+          onError: async e => {
+            console.log('ERR loadChat', e);
           },
         }),
       );

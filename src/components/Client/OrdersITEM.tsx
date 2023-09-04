@@ -4,7 +4,6 @@ import Body from '../common/Body';
 import {Flag} from '.././common/Svgs';
 import {useNavigation} from '@react-navigation/native';
 import R from '../../res';
-// import OrdersData from '../../api/OrdersData'
 import {IOrder} from '../../state/orders/types';
 import SoatIcon from '../../assets/icons/SoatIcom';
 import {Space} from '../common/Space';

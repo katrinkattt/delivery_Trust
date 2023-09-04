@@ -2,6 +2,7 @@ import {combineReducers, configureStore, PayloadAction} from '@reduxjs/toolkit';
 import Reactotron from '../reactotron';
 import {userReducer} from './user/slice';
 import {ratingReducer} from './rating/slice';
+import {chatReducer} from './chat/slice';
 import {persistStore} from 'redux-persist';
 import {orderReducer} from './orders/slice';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -11,6 +12,7 @@ const combinedReducer = combineReducers({
   user: userReducer,
   order: orderReducer,
   rating: ratingReducer,
+  chats: chatReducer,
 });
 
 //TODO: find how to give type for function

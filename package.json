@@ -85,6 +85,7 @@
     "redux-persist": "^6.0.0",
     "redux-saga": "^1.2.3",
     "redux-thunk": "^2.4.2",
+    "socket.io-client": "^4.7.2",
     "styled-components": "^6.0.0-rc.2",
     "toggle-switch-react-native": "^3.3.0"
   },

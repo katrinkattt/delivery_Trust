@@ -48,6 +48,7 @@ export type IOrder = {
   sender_id?: number;
   payment_id?: number;
   order_id?: number;
+  courier_id?: number;
 };
 export type TariffOrder = {
   tariffs: Tariff[];

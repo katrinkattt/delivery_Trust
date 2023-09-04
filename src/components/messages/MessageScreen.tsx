@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {StyleSheet, View, Linking, Platform, Image, Text} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import {
@@ -14,7 +14,11 @@ import Body from '../common/Body';
 import Header from '../Header';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {colors} from '../../theme/themes';
-
+import {useDispatch, useSelector} from 'react-redux';
+import {getUser} from '../../state/user/selectors';
+import socket from '../../socket';
+import {useNavigation} from '@react-navigation/native';
+import R from '../../res';
 const addDocImg = '../../assets/addDoc.png';
 const microImg = '../../assets/microChat.png';
 
@@ -38,20 +42,61 @@ const customtInputToolbar = props => {
   );
 };
 
-export const MessageScreen = ({route}: IProps) => {
+export const MessageScreen = () => {
+  const navigation = useNavigation();
+  const userState = useSelector(getUser);
+  const {chats} = useSelector(state => state.chats);
+  const {currentChat} = useSelector(state => state.chats);
   const user = {
-    _id: 1,
-    name: 'Jacky',
-    avatar: require('../../assets/use.png'),
+    _id: userState.user_id,
+    name: userState.full_name,
+    avatar: 10,
   };
-  const {item} = route.params;
-  const [messages, setMessages] = useState([]);
+
+  const item = chats[currentChat];
+  console.log('user===>', user);
+
+  console.log('chat in page', item);
+  const generateID = () => Math.random().toString(36).substring(2, 10);
+
+  const messages = item?.messages;
+  console.log('mesages in curr chat', messages);
+  useEffect(() => {
+    socket.emit('join_chat', {
+      user_id: userState.user_id,
+      chat_id: item?.chatId,
+    });
+  }, []);
 
   const onSend = useCallback((messages = []) => {
-    console.log('messages', messages);
-    setMessages(previousMessages =>
-      GiftedChat.append(previousMessages, messages),
-    );
+    console.log('messages in onSend', messages);
+
+    socket.emit('send_message', {
+      chat_id: item?.chatId,
+      room_id: item?.chatId,
+      user_id: user?._id,
+      user_name: user?.name,
+      user_avatar: user.avatar,
+      text: messages[0]?.text,
+      createdAt: messages[0]?.createdAt,
+      user: {avatar: user.avatar, name: user?.name, id: user?._id},
+    });
+  }, []);
+  const onSendImg = useCallback((messages = []) => {
+    console.log('messages in onSend', messages);
+
+    socket.emit('send_message', {
+      chat_id: item?.chatId,
+      room_id: item?.chatId,
+      user_id: user?._id,
+      user_name: user?.name,
+      user_avatar: user.avatar,
+      text: messages[0]?.text,
+      createdAt: messages[0]?.createdAt,
+      user: {avatar: user.avatar, name: user?.name, id: user?._id},
+      file: messages[0]?.file,
+      image: messages[0]?.image,
+    });
   }, []);
 
   const renderSend = props => (
@@ -72,7 +117,7 @@ export const MessageScreen = ({route}: IProps) => {
       if (str?.match(imgRegex)) {
         let sendObjPict = {
           createdAt,
-          _id: messages.length + 1,
+          _id: generateID,
           text: '',
           user,
           file: response[0]?.uri,
@@ -80,10 +125,10 @@ export const MessageScreen = ({route}: IProps) => {
         };
         console.log('obj IMG', sendObjPict);
         // @ts-ignore
-        onSend([sendObjPict]);
+        onSendImg([sendObjPict]);
       } else {
         let sendObjDoc = {
-          _id: messages.length + 1,
+          _id: generateID,
           text: '',
           createdAt: new Date(),
           user,
@@ -168,7 +213,7 @@ export const MessageScreen = ({route}: IProps) => {
     // };
 
     const audioMessage = {
-      _id: messages.length + 1,
+      _id: generateID,
       audio: voiceUri,
       duration: voiceDuration,
       createdAt: new Date(),
@@ -234,19 +279,26 @@ export const MessageScreen = ({route}: IProps) => {
 
   return (
     <View style={styles.content}>
-      <Header title="Егор Т." icon={true} style={styles.header} />
+      <Header title={item?.name || ''} icon={true} style={styles.header} />
       <Body center light color="rgba(0, 0, 0, 0.44)">
-        Офлайн: 3 часа
+        {item?.name == 'Служба поддержки' ? 'Онлайн' : 'Недавно'}
       </Body>
       <View style={{paddingHorizontal: 30}}>
         <TouchableOpacity
+          onPress={() =>
+            userState.typeInUser
+              ? //@ts-ignore
+                navigation.navigate(R.routes.CLIENT_OREDERS)
+              : //@ts-ignore
+                navigation.navigate(R.routes.OREDERS)
+          }
           style={{
             paddingVertical: 20,
             paddingHorizontal: 8,
             backgroundColor: '#F7F9FD',
           }}>
           <Body size={16} color="rgba(85, 85, 85, 1)" center>
-            Перейти в заказ Доставка письма...
+            Перейти в заказ Доставка...
           </Body>
         </TouchableOpacity>
       </View>

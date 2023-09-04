@@ -9,7 +9,6 @@ import {
   RefreshControl,
 } from 'react-native';
 import Body from '../common/Body';
-import OrdersData from '../../api/OrdersData';
 import OrdersITEM from './OrdersITEM';
 import {useAppDispatch} from '../../hooks/redux';
 import {loadOrder} from '../../state/orders/action';

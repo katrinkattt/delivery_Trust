@@ -29,6 +29,9 @@ export const API_GET_CATEGORY = '/api/categories';
 export const API_GET_TARIFF = 'api/tariff';
 export const API_PAYMENT = '/payment';
 
+//chat
+export const API_GET_CHAT_H = '/get_chat_history/';
+
 //Device
 export const IS_ANDROID = Platform.OS === 'android';
 export const IS_IOS = !IS_ANDROID;

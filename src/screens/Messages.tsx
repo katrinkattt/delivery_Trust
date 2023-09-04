@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -6,73 +6,69 @@ import {
   ImageSourcePropType,
   TouchableOpacity,
   TextInput,
+  RefreshControl,
 } from 'react-native';
 import Header from '../components/Header';
 import {Space} from '../components/common/Space';
 import ChatItem from '../components/ChatItem';
 import {SearchIcon} from '../components/common/Svgs';
+import Body from '../components/common/Body';
+import {colors} from '../theme/themes';
+import {useSelector} from 'react-redux';
+import {ScrollView} from 'react-native-gesture-handler';
+import {getUser} from '../state/user/selectors';
+import {loadChat} from '../state/chat/action';
+import {useAppDispatch} from '../hooks/redux';
 
 export interface IChatData {
   id?: string | number;
   name?: string;
-  message?: string;
+  messageLast?: string;
   image?: ImageSourcePropType;
   read?: boolean;
   messenger?: boolean;
+  messages?: IMsg[];
+}
+export interface IMsg {
+  createdAt?: string;
+  text?: string | undefined;
+  user?: {avatar: number; name: string; _id: number};
+  _id?: number;
 }
 
 export default function Messages() {
   const [text, setText] = useState<string>('');
-
+  const dispatch = useAppDispatch();
+  const user = useSelector(getUser);
+  const {chats} = useSelector(state => state.chats);
   async function handleChange(e: string) {
     setText(e);
   }
+  console.log('chats in Messages', chats);
+  const chatRooms = chats || [];
 
-  const [data] = useState([
-    {
-      id: 0,
-      name: 'Служба поддержки',
-      message: 'Здравствуйте, обращайтесь',
-      image: require('../assets/messenger.png'),
-      read: false,
-      messenger: true,
-    },
-    {
-      id: 1,
-      name: 'Jone',
-      message: 'Здравствуйте, вы скоро там?',
-      image: require('../assets/jon.png'),
-      read: true,
-    },
-    {
-      id: 2,
-      name: 'Jone',
-      message: 'Здравствуйте, вы скоро там?',
-      image: require('../assets/masse.png'),
-      read: false,
-    },
-    {
-      id: 3,
-      name: 'Jone',
-      message: 'Здравствуйте, вы скоро там?',
-      image: require('../assets/jon.png'),
-      read: false,
-    },
-    {
-      id: 4,
-      name: 'Jone',
-      message: 'Здравствуйте, вы скоро там?',
-      image: require('../assets/jon.png'),
-      read: false,
-    },
-    {
-      id: 6,
-      name: 'Jone',
-      message: 'Здравствуйте, вы скоро там?',
-      image: require('../assets/jon.png'),
-      read: false,
-    },
-  ]);
+  const [refreshing, setRefreshing] = useState(false);
+  const reload = () => {
+    dispatch(
+      loadChat({
+        id: user.id,
+        onSuccess: () => {
+          console.log('good loadChat');
+          setRefreshing(false);
+        },
+        onError: async e => {
+          console.log('ERR loadChat', e);
+          setRefreshing(false);
+        },
+      }),
+    );
+  };
+  const onRefresh = useCallback(() => {
+    console.log('refresh');
+    setRefreshing(true);
+    reload();
+  }, []);
+
   return (
     <View style={{flex: 1}}>
       <Header
@@ -80,23 +76,6 @@ export default function Messages() {
         icon={true}
         style={{paddingRight: 40, marginBottom: 0}}
       />
-      {/* <Body center style={styles.offLine} size={14} color="gba(0, 0, 0, 0.44)" light>
-                Офлайн: 3 часа
-            </Body>
-
-            <Space height={19} />
-
-            <Body light center>
-                Перейти в закал Доставка письма...
-            </Body>
-
-            <Space height={19} />
-
-            <Body size={15} bold center>
-                31 марта
-            </Body>
-
-            <Space height={19} /> */}
       <Space height={27} />
       <View style={styles.inputBox}>
         <TouchableOpacity activeOpacity={0.8}>
@@ -111,18 +90,21 @@ export default function Messages() {
           placeholderTextColor="#A1ADBF"
         />
       </View>
-
-      <FlatList
-        // scrollEventThrottle={16}
-        alwaysBounceHorizontal={false}
-        alwaysBounceVertical={false}
-        data={data}
-        // overScrollMode="never"
-        // onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollA } } }])}
-        keyExtractor={(item, index) => index.toString()}
-        //@ts-ignore
-        renderItem={({item}) => <ChatItem item={item} key={item.id} />}
-      />
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        showsVerticalScrollIndicator={false}>
+        {chatRooms?.length > 0 ? (
+          chatRooms.map((item, keyChat) => (
+            <ChatItem item={item} keyChat={keyChat} key={item.chatId} />
+          ))
+        ) : (
+          <View style={styles.nonChats}>
+            <Body color={colors.darkBlue}>Сообщений пока нет</Body>
+          </View>
+        )}
+      </ScrollView>
     </View>
   );
 }
@@ -185,5 +167,12 @@ const styles = StyleSheet.create({
   image: {
     width: 25,
     height: 25,
+  },
+  nonChats: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 100,
+    width: '100%',
   },
 });

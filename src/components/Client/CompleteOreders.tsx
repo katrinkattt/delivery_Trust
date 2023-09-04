@@ -9,8 +9,7 @@ import {
 import {useSelector} from 'react-redux';
 import Body from '../common/Body';
 import OrdersITEM from './OrdersITEM';
-import {OrderState} from '../../state/orders/types';
-
+import {IOrder} from '../../state/orders/types';
 const data = [
   {id: 1, name: 'Все', active: true},
   {id: 2, name: 'Паспорт', active: false},
@@ -21,7 +20,7 @@ const data = [
 
 export default function CompleteOrders() {
   const {orders} = useSelector(state => state.order);
-  const completeOrder = orders.filter((obj: OrderState) => !obj.active);
+  const completeOrder = orders.filter((obj: IOrder) => !obj.active);
 
   return (
     <View style={styles.container}>

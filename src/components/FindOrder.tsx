@@ -58,7 +58,8 @@ export default function FindOrder() {
       editOrder({
         id: id,
         data: {
-          courierId: user.id,
+          order_id: id,
+          courier_id: user.id,
         },
         onSuccess: () => {
           console.log('good freeOrders');

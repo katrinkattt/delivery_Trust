@@ -50,6 +50,8 @@ export default function Login() {
       setError('Введите почту');
     }
     if (!recov) {
+      console.log('data: Login', data);
+
       dispatch(
         loginAction({
           data,

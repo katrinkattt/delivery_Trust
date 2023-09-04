@@ -35,6 +35,7 @@ import {
   loadTariffs,
   loadOrder,
 } from '../../state/orders/action';
+import {loadChat} from '../../state/chat/action';
 import {IOrder} from '../../state/orders/types';
 
 const {width} = Dimensions.get('window');
@@ -60,7 +61,6 @@ export default function HomeClient() {
   const min = useSharedValue(0);
   const max = useSharedValue(time);
   const user = useSelector(getUser);
-  console.log('activeOrder', activeOrder);
 
   const pressNewOreder = () => {
     dispatch(
@@ -87,22 +87,6 @@ export default function HomeClient() {
     navigation.navigate(R.routes.CLIENT_ORDER_PARAM);
   };
 
-  const NewOreder = () => {
-    console.log(' data: order.newOrder', order.newOrder);
-
-    dispatch(
-      createOrder({
-        data: order.newOrder,
-        onSuccess: () => {
-          //@ts-ignore
-          navigation.navigate('TabScreen');
-        },
-        onError: async e => {
-          console.log('Ошибка сервера', e);
-        },
-      }),
-    );
-  };
   useEffect(() => {
     dispatch(
       loadOrder({
@@ -112,6 +96,17 @@ export default function HomeClient() {
         },
         onError: async () => {
           console.log('ERR loadOrders');
+        },
+      }),
+    );
+    dispatch(
+      loadChat({
+        id: user.id,
+        onSuccess: () => {
+          console.log('good loadChat');
+        },
+        onError: async e => {
+          console.log('ERR loadChat', e);
         },
       }),
     );

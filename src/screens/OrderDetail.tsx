@@ -379,6 +379,12 @@ export default function OrderDetail({route}: IProps) {
               </View>
             )}
           </View>
+          <View style={styles.commRow} />
+          <Body
+            color="#243757"
+            style={[styles.orderDetailText, {marginTop: 3}]}>
+            Комментарий: {item?.comment}
+          </Body>
         </View>
 
         <View style={{marginTop: 16}}>
@@ -417,6 +423,12 @@ const styles = ScaledSheet.create({
   description: {
     fontSize: 12,
     fontWeight: '400',
+  },
+  commRow: {
+    marginTop: 30,
+    height: 2,
+    width: '90%',
+    backgroundColor: colors.lavender,
   },
   tabbar: {
     borderWidth: 1,
