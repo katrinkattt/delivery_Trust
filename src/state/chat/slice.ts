@@ -1,8 +1,8 @@
 import {createAction, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {PersistConfig, persistReducer} from 'redux-persist';
 import AsyncStorage from '@react-native-community/async-storage';
-import {IChatsState, IChatState} from './types';
-import {loadChat} from './action';
+import {IChatsState, IChatState, IChatFile} from './types';
+import {loadChat, sendFileChat} from './action';
 
 export const initialRatingState: IChatsState = {
   chats: [],

@@ -1,12 +1,12 @@
 import {createAction, createAsyncThunk} from '@reduxjs/toolkit';
-import {IChatState} from './types';
+import {IChatState, IChatFile} from './types';
 import apiClient from '../../api/instance';
 import R from '../../res';
 
 export const loadChat = createAsyncThunk<
   IChatState[],
   {
-    id: number; //ЧТОБ ЭТО БЫЛ user_id
+    id: number;
     onSuccess?: (response: IChatState[]) => void;
     onError?: (e: any) => void;
   }

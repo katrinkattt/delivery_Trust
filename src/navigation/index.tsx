@@ -84,6 +84,8 @@ export const Navigation = () => {
             name: data.user_name,
             _id: data.user_id,
           },
+          image: data.image,
+          file: data.file,
         };
         dispatch(addMsgChat({msg: msg}));
         console.log('data.user_id ', data.user_i, 'user.user_id', user.user_id);

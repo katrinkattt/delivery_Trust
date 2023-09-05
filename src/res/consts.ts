@@ -31,6 +31,7 @@ export const API_PAYMENT = '/payment';
 
 //chat
 export const API_GET_CHAT_H = '/get_chat_history/';
+export const API_FILE_CHAT = '/upload';
 
 //Device
 export const IS_ANDROID = Platform.OS === 'android';

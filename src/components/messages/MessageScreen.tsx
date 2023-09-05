@@ -7,6 +7,7 @@ import {
   Actions,
   Send,
 } from 'react-native-gifted-chat';
+import {useNavigation} from '@react-navigation/native';
 import Sound from 'react-native-sound';
 import AudioRecord from 'react-native-audio-record';
 import {IChatData} from '../../screens/Messages';
@@ -14,11 +15,14 @@ import Body from '../common/Body';
 import Header from '../Header';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {colors} from '../../theme/themes';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {getUser} from '../../state/user/selectors';
 import socket from '../../socket';
-import {useNavigation} from '@react-navigation/native';
+import {sendFileChat} from '../../state/chat/action';
 import R from '../../res';
+import {useAppDispatch} from '../../hooks/redux';
+import axios from 'axios';
+import {API_BASE_URL} from '../../res/consts';
 const addDocImg = '../../assets/addDoc.png';
 const microImg = '../../assets/microChat.png';
 
@@ -44,6 +48,7 @@ const customtInputToolbar = props => {
 
 export const MessageScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useAppDispatch();
   const userState = useSelector(getUser);
   const {chats} = useSelector(state => state.chats);
   const {currentChat} = useSelector(state => state.chats);
@@ -82,20 +87,19 @@ export const MessageScreen = () => {
       user: {avatar: user.avatar, name: user?.name, id: user?._id},
     });
   }, []);
-  const onSendImg = useCallback((messages = []) => {
-    console.log('messages in onSend', messages);
 
+  const onSendImg = useCallback((url: string) => {
+    console.log('messages IMG in onSend', messages);
     socket.emit('send_message', {
       chat_id: item?.chatId,
       room_id: item?.chatId,
       user_id: user?._id,
       user_name: user?.name,
       user_avatar: user.avatar,
-      text: messages[0]?.text,
-      createdAt: messages[0]?.createdAt,
+      text: '',
       user: {avatar: user.avatar, name: user?.name, id: user?._id},
-      file: messages[0]?.file,
-      image: messages[0]?.image,
+      file: url,
+      image: url,
     });
   }, []);
 
@@ -107,44 +111,61 @@ export const MessageScreen = () => {
   const handleDocumentSelection = useCallback(async () => {
     const createdAt = new Date();
     try {
-      const response = await DocumentPicker.pick({
+      const response = await DocumentPicker.pickSingle({
         presentationStyle: 'fullScreen',
+        type: [DocumentPicker.types.images],
+        mode: 'import',
+        copyTo: 'documentDirectory',
       });
       let imgRegex = /image/g;
       console.log('FULL response', response);
-
-      let str = response[0]?.type;
-      if (str?.match(imgRegex)) {
-        let sendObjPict = {
-          createdAt,
-          _id: generateID,
-          text: '',
-          user,
-          file: response[0]?.uri,
-          image: response[0]?.uri,
-        };
-        console.log('obj IMG', sendObjPict);
-        // @ts-ignore
-        onSendImg([sendObjPict]);
-      } else {
-        let sendObjDoc = {
-          _id: generateID,
-          text: '',
-          createdAt: new Date(),
-          user,
-          name: response[0].name,
-          file: response[0]?.uri,
-          file_id: response[0]?.size,
-          file_type: response[0]?.type,
-          attachment: {
-            url: response[0].uri,
-            type: response[0]?.type,
+      // let str = response?.type;
+      // if (str?.match(imgRegex)) {
+      const formData = new FormData();
+      formData.append('image', {
+        uri:
+          Platform.OS === 'android'
+            ? response?.fileCopyUri
+            : response?.fileCopyUri.replace('file://', ''),
+        name: response?.name,
+        type: response?.type,
+      });
+      axios
+        .post(API_BASE_URL + '/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
           },
-        };
-        console.log('obj DOC', sendObjDoc);
-        // @ts-ignore
-        onSend([sendObjDoc]);
-      }
+        })
+        .then(response => {
+          console.log('response', response);
+
+          if (response.status == 200) {
+            const data = response.data;
+            console.log('URL загруженного изображения: ${data.imageUrl}', data);
+            onSendImg(data.file_url);
+          } else {
+            console.log('Ошибка при загрузке изображения: ${response.status}');
+          }
+        });
+      // } else {
+      //   let sendObjDoc = {
+      //     _id: generateID,
+      //     text: '',
+      //     createdAt: new Date(),
+      //     user,
+      //     name: response.name,
+      //     file: response?.uri,
+      //     file_id: response?.size,
+      //     file_type: response?.type,
+      //     attachment: {
+      //       url: response.uri,
+      //       type: response?.type,
+      //     },
+      //   };
+      //   console.log('obj DOC', sendObjDoc);
+      //   // @ts-ignore
+      //   onSend([sendObjDoc]);
+      // }
     } catch (err) {
       console.warn(err);
     }
