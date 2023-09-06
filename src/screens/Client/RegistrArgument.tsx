@@ -52,7 +52,6 @@ export default function ClientRegistrArgumet() {
         onSuccess: () => {
           //@ts-ignore
           navigation.navigate('TabScreen');
-          console.log('success');
         },
         onError: async () => {
           setError('Ошибка сервера, попробуйте позже');

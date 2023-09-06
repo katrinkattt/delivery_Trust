@@ -66,8 +66,6 @@ export default function CourierProfileData() {
       disp(setAddress({address: dataForm}));
       disp(setFullName({full_name: dataForm.full_name}));
 
-      //@ts-ignore
-      navigation.navigate('TabScreen'); // удалить когда бек норм ответит
       const data = {
         ...dataForm,
         email: email || 'sixrosesg@gmail.com',
@@ -81,7 +79,8 @@ export default function CourierProfileData() {
           data,
           onSuccess: () => {
             //@ts-ignore
-            navigation.navigate('TabScreen');
+            navigation.navigate('SigningAnAgreement');
+            // navigation.navigate('TabScreen');
           },
           onError: async () => {
             setError('Ошибка сервера, попробуйте позже');

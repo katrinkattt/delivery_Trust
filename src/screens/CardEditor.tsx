@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ScaledSheet} from 'react-native-size-matters/extend';
 import {TouchableOpacity, View, ImageBackground, Text} from 'react-native';
 import {s, vs} from 'react-native-size-matters';
@@ -14,11 +14,16 @@ import {Formik} from 'formik';
 import {validator, required} from '../utils/validators';
 import {ICardData} from '../types/data';
 import {Space} from '../components/common/Space';
+import {useDispatch, useSelector} from 'react-redux';
+import {loadCards, setCards} from '../state/user/slice';
+import {ICard} from '../state/user/types';
 
 const masterCardImg = require('../assets/bank.png');
 
 export default function CardEditor() {
-  const [cardArr, setCardArr] = useState([
+  const dispatch = useDispatch();
+  const {cards} = useSelector(state => state.user);
+  const cardArr = [
     {
       id: 1,
       select: true,
@@ -40,7 +45,13 @@ export default function CardEditor() {
       number: '**** **** **** 4256',
       recToken: '',
     },
-  ]);
+  ];
+
+  useEffect(() => {
+    dispatch(loadCards({cards: cardArr}));
+  }, []);
+  console.log('cards::', cards);
+
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [delModalVisible, setDelModalVisible] = useState(false);
   const addCard = () => {
@@ -59,14 +70,23 @@ export default function CardEditor() {
   };
 
   const pressButton = (id: number) => {
-    const newData = cardArr.map(i => {
-      if (i.id === id) {
-        return {...i, select: (i.select = true)};
-      } else {
-        return {...i, select: (i.select = false)};
-      }
-    });
-    setCardArr(newData);
+    console.log('ID', id);
+
+    let cardsArr = cards;
+    console.log(cardsArr);
+    if (cardsArr.length > 1) {
+      const newData = cardsArr.map((i: ICard) => {
+        console.log('itemmmm', i);
+
+        if (i.id === id) {
+          return {...i, select: (i.select = true)};
+        } else {
+          return {...i, select: (i.select = false)};
+        }
+      });
+      console.log('reWrite', newData);
+      // dispatch(setCards({Cards: newData}));
+    }
   };
   return (
     <View style={{flex: 1}}>
@@ -171,43 +191,53 @@ export default function CardEditor() {
           style={{marginTop: 20, fontWeight: 'bold'}}>
           Мои карты
         </Body>
-        {cardArr.map(card => (
-          <View style={{flexDirection: 'row'}}>
-            <TouchableOpacity
-              key={card.id}
-              style={{flexDirection: 'row'}}
-              onPress={() => {
-                card?.recToken && pressButton(card.id);
-              }}>
-              <View style={{marginTop: 40, marginRight: 14}}>
-                <Ellipses color={card?.select ? colors.lavender : '#ccc'} />
-              </View>
-              <ImageBackground
-                source={masterCardImg}
-                style={styles.back}
-                resizeMode="stretch">
-                <Body size={11} color="white">
-                  {card?.system}
-                </Body>
-                <Body size={18} bold color="white">
-                  {card?.number}
-                </Body>
-                {!card?.recToken && (
-                  <Body size={12} bold color="white">
-                    Карта недействительна
+        {cards.length > 1 ? (
+          cards.map(card => (
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity
+                key={card.id}
+                style={{flexDirection: 'row'}}
+                onPress={() => {
+                  card?.recToken && pressButton(card.id);
+                }}>
+                <View style={{marginTop: 40, marginRight: 14}}>
+                  <Ellipses color={card?.select ? colors.lavender : '#ccc'} />
+                </View>
+                <ImageBackground
+                  source={masterCardImg}
+                  style={styles.back}
+                  resizeMode="stretch">
+                  <Body size={11} color="white">
+                    {card?.system}
                   </Body>
-                )}
-              </ImageBackground>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setDelModalVisible(true)}
-              style={{marginTop: 24, marginLeft: 10}}>
-              <Body size={40} color={colors.ligthBorder}>
-                ×
-              </Body>
-            </TouchableOpacity>
-          </View>
-        ))}
+                  <Body size={18} bold color="white">
+                    {card?.number}
+                  </Body>
+                  {!card?.recToken && (
+                    <Body size={12} bold color="white">
+                      Карта недействительна
+                    </Body>
+                  )}
+                </ImageBackground>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setDelModalVisible(true)}
+                style={{marginTop: 24, marginLeft: 10}}>
+                <Body size={40} color={colors.ligthBorder}>
+                  ×
+                </Body>
+              </TouchableOpacity>
+            </View>
+          ))
+        ) : (
+          <Body
+            bold
+            semiBold
+            size={16}
+            style={{marginTop: 40, textAlign: 'center'}}>
+            Добавленых карт нет
+          </Body>
+        )}
       </View>
       <View style={styles.bottom}>
         <Button

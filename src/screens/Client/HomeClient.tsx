@@ -37,6 +37,7 @@ import {
 } from '../../state/orders/action';
 import {loadChat} from '../../state/chat/action';
 import {IOrder} from '../../state/orders/types';
+import {loadUserData} from '../../state/user/action';
 
 const {width} = Dimensions.get('window');
 
@@ -96,6 +97,17 @@ export default function HomeClient() {
         },
         onError: async () => {
           console.log('ERR loadOrders');
+        },
+      }),
+    );
+    dispatch(
+      loadUserData({
+        user_id: user.id,
+        onSuccess: () => {
+          console.log('good loadDataUser');
+        },
+        onError: async e => {
+          console.log('ERR loadDataUser', e);
         },
       }),
     );
@@ -173,7 +185,7 @@ export default function HomeClient() {
               }}>
               <View>
                 <Body color="#243757" bold style={styles.currentOrdersText}>
-                  {lastOrder ? 'Заказ в процессе!' : 'Еще нет заказов 0_0'}
+                  {lastOrder ? 'Заказ в процессе!' : 'Еще нет заказов'}
                 </Body>
               </View>
 

@@ -9,6 +9,7 @@ import {
   IResetPass,
   ICreateUser,
 } from '../../types/data';
+import {OrderSender, UserDataAddit} from './types';
 import R from '../../res';
 import apiClient from '../../api/instance';
 export const signOutUser = createAction('user/signOut');
@@ -109,8 +110,6 @@ export const loginAction = createAsyncThunk<
   }
 >('auth', async arg => {
   try {
-    console.log('API_PATH_LOGIN');
-
     const {data: response} = await apiClient.post<ILogin>(
       R.consts.API_PATH_LOGIN,
       {
@@ -245,6 +244,52 @@ export const postRole = createAsyncThunk<
     console.log('role resp', response);
 
     arg.onSuccess?.(response);
+    return response;
+  } catch (e: any) {
+    arg.onError?.(e.response);
+    throw e;
+  }
+});
+type typeSender = {sender: OrderSender[]};
+
+export const editSenders = createAsyncThunk<
+  OrderSender[],
+  {
+    id: number;
+    data: typeSender;
+    onSuccess?: (response: OrderSender[]) => void;
+    onError?: (e: any) => void;
+  }
+>('order/put', async arg => {
+  try {
+    const id = arg.id;
+    const {data: response} = await apiClient.put<OrderSender[]>(
+      R.consts.API_SENDERS + id,
+      arg.data,
+    );
+    console.log('response editSender', response);
+    arg.onSuccess?.(response);
+    return response;
+  } catch (e: any) {
+    arg.onError?.(e.response);
+    throw e;
+  }
+});
+export const loadUserData = createAsyncThunk<
+  UserDataAddit,
+  {
+    user_id?: number;
+    onSuccess?: (response: UserDataAddit) => void;
+    onError?: (e: any) => void;
+  }
+>('orders/free', async arg => {
+  try {
+    const id = arg.user_id;
+    const {data: response} = await apiClient.get<UserDataAddit>(
+      R.consts.API_USER_DATA + id,
+    );
+    arg.onSuccess?.(response);
+    console.log('response in API_USER_DATA', response);
     return response;
   } catch (e: any) {
     arg.onError?.(e.response);

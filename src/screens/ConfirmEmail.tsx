@@ -20,7 +20,7 @@ export default function ConfirmEmail({route}) {
         size={18}
         center
         style={{marginVertical: 18}}>
-        Ваш адрес:{' '}
+        Ваш адрес:
         <Text style={{color: 'rgba(47, 128, 237, 1)'}}>{data?.email}</Text>
       </Body>
       <ConfirmCodeField data={data} />

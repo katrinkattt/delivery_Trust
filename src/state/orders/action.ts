@@ -33,18 +33,13 @@ export const loadOrder = createAsyncThunk<
 export const freeOrders = createAsyncThunk<
   IOrder[],
   {
-    // link?: string;
     onSuccess?: (response: IOrder[]) => void;
     onError?: (e: any) => void;
   }
 >('orders/free', async arg => {
   try {
     const free = '?active=true&courier=none';
-    console.log(
-      'R.consts.API_GET_FREE_ORDERS+add=',
-      R.consts.API_GET_ORDERS + free,
-    );
-
+    console.log('FREE_ORDERS+add=', R.consts.API_GET_ORDERS + free);
     const {data: response} = await apiClient.get<IOrder[]>(
       R.consts.API_GET_ORDERS + free,
     );

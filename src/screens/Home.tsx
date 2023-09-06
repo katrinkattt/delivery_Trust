@@ -26,6 +26,7 @@ import {IOrder} from '../state/orders/types';
 import {useAppDispatch} from '../hooks/redux';
 import {loadOrder} from '../state/orders/action';
 import {loadChat} from '../state/chat/action';
+import {loadUserData} from '../state/user/action';
 const {width} = Dimensions.get('window');
 const userImg = require('../assets/user.png');
 const header = require('../assets/header.png');
@@ -45,32 +46,6 @@ export default function Home() {
   async function handleChange(e: string) {
     setText(e);
   }
-  const loadOrders = () => {
-    if (user.id !== 0) {
-      dispatch(
-        loadOrder({
-          link: `/courier/${user.id}`,
-          onSuccess: () => {
-            console.log('good loadOrders');
-          },
-          onError: async () => {
-            console.log('ERR loadOrders');
-          },
-        }),
-      );
-      dispatch(
-        loadChat({
-          id: user.id,
-          onSuccess: () => {
-            console.log('good loadChat');
-          },
-          onError: async e => {
-            console.log('ERR loadChat', e);
-          },
-        }),
-      );
-    }
-  };
   // console.log('user?.role in Home', user?.role);
   // setTimeout(() => {
   //   if (user.role === 0) {
@@ -80,7 +55,39 @@ export default function Home() {
   // }, 5000);
 
   useEffect(() => {
-    loadOrders();
+    dispatch(
+      loadOrder({
+        link: `/courier/${user.id}`,
+        onSuccess: () => {
+          console.log('good loadOrders');
+        },
+        onError: async () => {
+          console.log('ERR loadOrders');
+        },
+      }),
+    );
+    dispatch(
+      loadUserData({
+        user_id: user.id,
+        onSuccess: () => {
+          console.log('good loadDataUser');
+        },
+        onError: async e => {
+          console.log('ERR loadDataUser', e);
+        },
+      }),
+    );
+    dispatch(
+      loadChat({
+        id: user.id,
+        onSuccess: () => {
+          console.log('good loadChat');
+        },
+        onError: async e => {
+          console.log('ERR loadChat', e);
+        },
+      }),
+    );
     return notifee.onForegroundEvent(({type, detail}) => {
       switch (type) {
         case EventType.DISMISSED:
@@ -127,7 +134,7 @@ export default function Home() {
 
                 {!tips ? (
                   <Body color="#243757" style={styles.priceOne}>
-                    187 ₽
+                    {user?.tea} ₽
                   </Body>
                 ) : (
                   <Body
@@ -153,7 +160,7 @@ export default function Home() {
 
               {!overallBalance ? (
                 <Body color="#243757" style={styles.priceTwo}>
-                  3 000 ₽
+                  {user?.ballance} ₽
                 </Body>
               ) : (
                 <Body color="#243757" style={[styles.priceTwo, {fontSize: 14}]}>
@@ -175,7 +182,7 @@ export default function Home() {
 
               {!fines ? (
                 <Body color="#243757" style={styles.priceOne}>
-                  0 ₽
+                  {user?.fines} ₽
                 </Body>
               ) : (
                 <Body color="#243757" style={[styles.priceOne, {fontSize: 10}]}>

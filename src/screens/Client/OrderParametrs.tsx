@@ -16,6 +16,7 @@ import {
   setNewOrderDoorToDoor,
   setNewOrderComment,
 } from '../../state/orders/slice';
+import {addSenders} from '../../state/user/slice';
 
 export default function OrderParametrs() {
   const order = useSelector(state => state.order);
@@ -39,10 +40,6 @@ export default function OrderParametrs() {
     {name: 'Налоговые отчеты'},
   ];
   const packetTypeArr = order?.categoryPack;
-  // [
-  //   {val: 'packet', label: 'Пакет'},
-  //   {val: 'box', label: 'Коробка'},
-  // ];
   const [typeOrderNum, setTypeOrderNum] = useState(1);
   const [currArr, setCurrArr] = useState(docTypeArr);
 
@@ -57,6 +54,9 @@ export default function OrderParametrs() {
     setData(newData);
     setTypeOrderNum(id);
   };
+  useEffect(() => {
+    pressButton(1);
+  }, []);
   useEffect(() => {
     if (typeOrderNum == 1) {
       setCurrArr(docTypeArr);

@@ -51,7 +51,7 @@ export default function Register() {
             navigation.navigate(R.routes.CONFIRM_EMAIL, {data: dataAcc});
           },
           onError: async () => {
-            setError('Пользователь 3 уже существует');
+            setError('Пользователь уже существует');
           },
         }),
       );

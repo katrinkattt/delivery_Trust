@@ -18,6 +18,8 @@ export const API_RESET_PASS_VERIFY = '/resetpassword/verifycode';
 export const API_RESET_PASS = '/resetpassword';
 export const API_PATH_ROLE = '/role/type';
 export const API_PATH_CLIENT_SETTING = 'api/v1/customer/settings';
+export const API_SENDERS = '/user/client/';
+export const API_USER_DATA = '/user_data/';
 
 //rating
 export const API_GET_RATING = '/rating';

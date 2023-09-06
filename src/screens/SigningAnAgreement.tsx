@@ -24,8 +24,8 @@ export default function SigningAnAgreement() {
 
   return (
     <>
-      <Header title="Персональные данные" />
-      <ModalCustom modalVisible={modalVisible} text="Доставка отменена">
+      <Header title="Подписание договора" />
+      <ModalCustom modalVisible={modalVisible} text="">
         <View style={{width: 290}}>
           <TouchableOpacity
             onPress={() => setModalVisible(!modalVisible)}

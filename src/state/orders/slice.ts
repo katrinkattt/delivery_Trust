@@ -18,7 +18,6 @@ export const initialOrdersState: OrdersState = {
   categoryDoc: [],
   categoryPack: [],
   tariffs: [],
-  senders: [],
   donut: 0,
   currPaymentId: 0,
   newOrder: {
@@ -44,6 +43,7 @@ export const initialOrdersState: OrdersState = {
     comment: '',
     paymentType: 1,
     payment_id: 1,
+    phone: '',
   },
 };
 // export const initialStateOrder = initialOrder[]
@@ -115,6 +115,13 @@ const ordersSlice = createSlice({
       state.newOrder.sender_id = sender_id;
       return state;
     },
+    setNewOrderAnySender: (state, action) => {
+      const {sender} = action.payload;
+      state.newOrder.sender = sender.fullName;
+      state.newOrder.address = sender.address;
+      state.newOrder.startCoordinates = sender.startCoordinates;
+      return state;
+    },
     setNewOrderRecipient: (state, action) => {
       const {recipient} = action.payload;
       state.newOrder.recipient = recipient;
@@ -133,13 +140,6 @@ const ordersSlice = createSlice({
     setCurrPaymentId: (state, action) => {
       const {id} = action.payload;
       state.currPaymentId = id;
-      return state;
-    },
-    addSenders: (state, action) => {
-      const {sender} = action.payload;
-      console.log('sender in payload::', sender);
-
-      state.senders.push(sender);
       return state;
     },
   },
@@ -239,7 +239,6 @@ export const {
   setCompletlyOrders,
   setNewOrderCategory,
   setNewOrderTariff,
-  addSenders,
   setNewOrderFinishCoord,
   setNewOrderStartCoord,
   setNewOrderAddress,
@@ -251,5 +250,6 @@ export const {
   setNewOrderPaymentType,
   setDonut,
   setCurrPaymentId,
+  setNewOrderAnySender,
 } = ordersSlice.actions;
 export const orderReducer = persistReducer(persistConfig, ordersSlice.reducer);

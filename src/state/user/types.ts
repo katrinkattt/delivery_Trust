@@ -37,4 +37,46 @@ export type UserState = {
   street?: string;
   house?: string;
   apartment?: string;
+  phone?: string;
+  ballance?: number;
+  fines?: number;
+  tea?: number;
+  cards?: ICard[];
+  senders?: OrderSender[];
+};
+
+export type ICard = {
+  id: number;
+  select: boolean;
+  system: string;
+  number: string;
+  recToken: string;
+};
+export type OrderSender = {
+  full_name?: string;
+  phone?: string;
+  city?: string;
+  street?: string;
+  house?: string;
+  apartment?: string;
+  entrance?: string;
+  houseCode?: string;
+  coord?: {latitude: number; longitude: number};
+};
+
+export type UserDataAddit = {
+  clientData: {
+    sender?: OrderSender[];
+    cards?: ICard[];
+    fines?: number;
+    tea?: number;
+    ballance?: number;
+    city?: string;
+    street?: string;
+    house?: string;
+    apartment?: string;
+    region?: string;
+  };
+  email?: string;
+  phone?: string;
 };

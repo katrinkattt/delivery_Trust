@@ -44,8 +44,9 @@ export default function Messages() {
   async function handleChange(e: string) {
     setText(e);
   }
-  console.log('chats in Messages', chats);
-  const chatRooms = chats || [];
+  const chatRooms = text
+    ? chats.filter(item => item.name.match(text))
+    : chats || [];
 
   const [refreshing, setRefreshing] = useState(false);
   const reload = () => {
@@ -71,22 +72,17 @@ export default function Messages() {
 
   return (
     <View style={{flex: 1}}>
-      <Header
-        title="Чат"
-        icon={true}
-        style={{paddingRight: 40, marginBottom: 0}}
-      />
+      <Header title="Чат" style={{paddingRight: 40, marginBottom: 0}} />
       <Space height={27} />
       <View style={styles.inputBox}>
         <TouchableOpacity activeOpacity={0.8}>
           <SearchIcon width={22} height={22} />
         </TouchableOpacity>
-
         <TextInput
           style={styles.input}
           onChangeText={handleChange}
           value={text}
-          placeholder="Поиск по всему сервису"
+          placeholder="Поиск по чату"
           placeholderTextColor="#A1ADBF"
         />
       </View>

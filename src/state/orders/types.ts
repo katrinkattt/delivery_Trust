@@ -8,18 +8,6 @@ export type OrdersState = {
   categoryDoc: Category[];
   categoryPack: Category[];
   tariffs: Tariff[];
-  senders: OrderSender[];
-};
-export type OrderSender = {
-  full_name?: string;
-  phone?: string;
-  city?: string;
-  street?: string;
-  house?: string;
-  apartment?: string;
-  entrance?: string;
-  houseCode?: string;
-  coord?: {latitude: number; longitude: number};
 };
 export type IOrder = {
   id?: number;
@@ -49,6 +37,7 @@ export type IOrder = {
   payment_id?: number;
   order_id?: number;
   courier_id?: number;
+  phone?: string;
 };
 export type TariffOrder = {
   tariffs: Tariff[];

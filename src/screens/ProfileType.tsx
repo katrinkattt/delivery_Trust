@@ -17,6 +17,7 @@ import Button from '../components/common/Button';
 import {ArrowRight} from '../components/common/Svgs';
 import {postRole} from '../state/user/action';
 import {useAppDispatch} from '../hooks/redux';
+import R from '../res';
 
 const {height} = Dimensions.get('window');
 
@@ -44,8 +45,10 @@ export default function ProfileType() {
         },
         onSuccess: async () => {
           type === 1
-            ? navigation.navigate('CourierProfileData')
-            : navigation.navigate('ClientRegistrArgumet');
+            ? //@ts-ignore
+              navigation.navigate(R.routes.COURIER_PROFILE_DATA)
+            : //@ts-ignore
+              navigation.navigate(R.routes.CLIENT_REGISTER_ARG);
         },
         onError: async e => {
           console.log('role ERR:', e);

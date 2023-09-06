@@ -23,8 +23,10 @@ import {
   signOutUser,
   userType,
   createUserAction,
+  editSenders,
+  loadUserData,
 } from './action';
-import {UserState} from './types';
+import {OrderSender, UserDataAddit, UserState} from './types';
 
 export const initialStateUser: UserState = {
   id: 0,
@@ -44,6 +46,12 @@ export const initialStateUser: UserState = {
   street: '',
   house: '',
   apartment: '',
+  phone: '',
+  ballance: 0,
+  fines: 0,
+  tea: 0,
+  cards: [],
+  senders: [],
 };
 
 const userSlice = createSlice({
@@ -78,6 +86,25 @@ const userSlice = createSlice({
     setRole: (state, action) => {
       const {role} = action.payload;
       state.role = role;
+    },
+    loadCards: (state, action) => {
+      const {cards} = action.payload;
+      state.cards = cards;
+    },
+    setCards: (state, action) => {
+      const {Cards} = action.payload;
+      state.cards = Cards;
+    },
+    delCard: (state, action) => {
+      const {idCard} = action.payload;
+      const cards = state.cards?.filter(id => id === idCard);
+      state.cards = cards;
+    },
+    addSenders: (state, action) => {
+      const {sender} = action.payload;
+      console.log('sender in STATE in action', sender);
+
+      state.senders = sender;
     },
   },
   extraReducers: builder => {
@@ -201,6 +228,32 @@ const userSlice = createSlice({
       builder.addCase(resetPassVerifyCodeAction.rejected.type, state => {
         state.loading = false;
       }),
+      loadUserData;
+    builder.addCase(
+      loadUserData.fulfilled.type,
+      (state, action: PayloadAction<UserDataAddit>) => {
+        state.loading = false;
+        console.log('loadUserData payload==', action.payload);
+        state.senders = action.payload.clientData.sender;
+        state.email = action.payload.email;
+        state.phone = action.payload.phone;
+        state.cards = action.payload.clientData.cards;
+        state.fines = action.payload.clientData.fines;
+        state.tea = action.payload.clientData.tea;
+        state.ballance = action.payload.clientData.ballance;
+        state.region = action.payload.clientData.region;
+        state.city = action.payload.clientData.city;
+        state.street = action.payload.clientData.street;
+        state.house = action.payload.clientData.house;
+        state.apartment = action.payload.clientData.apartment;
+      },
+    ),
+      builder.addCase(loadUserData.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(loadUserData.rejected.type, state => {
+        state.loading = false;
+      }),
       builder.addCase(
         resetPassAction.fulfilled.type,
         (state, action: PayloadAction<IResetPass>) => {
@@ -227,6 +280,21 @@ const userSlice = createSlice({
       builder.addCase(postRole.rejected.type, state => {
         state.loading = false;
       });
+    builder.addCase(
+      editSenders.fulfilled.type,
+      (state, action: PayloadAction<OrderSender[]>) => {
+        state.loading = false;
+        console.log('editSenders.fulfilled.type==>', action.payload);
+
+        // state.senders = action.payload;
+      },
+    ),
+      builder.addCase(editSenders.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(editSenders.rejected.type, state => {
+        state.loading = false;
+      });
   },
 });
 
@@ -234,6 +302,15 @@ const persistConfig: PersistConfig<UserState> = {
   key: 'auth',
   storage: AsyncStorage,
 };
-export const {setCode, setEmail, setAddress, setFullName, setRole} =
-  userSlice.actions;
+export const {
+  setCode,
+  setEmail,
+  setAddress,
+  setFullName,
+  setRole,
+  loadCards,
+  delCard,
+  setCards,
+  addSenders,
+} = userSlice.actions;
 export const userReducer = persistReducer(persistConfig, userSlice.reducer);

@@ -34,6 +34,8 @@ export default function Orders() {
       );
     }
   }, []);
+  // chats.filter(item => item.name.match(text))
+  console.log('text', text);
 
   async function handleChange(e: string) {
     setText(e);
@@ -49,13 +51,11 @@ export default function Orders() {
           <TouchableOpacity activeOpacity={0.8}>
             <SearchIcon width={22} height={22} />
           </TouchableOpacity>
-
           <TextInput
             style={styles.input}
             onChangeText={handleChange}
             value={text}
-            editable={searchInput}
-            placeholder="Поиск по всему сервису"
+            placeholder="Поиск по заказам"
             placeholderTextColor="#A1ADBF"
           />
         </View>

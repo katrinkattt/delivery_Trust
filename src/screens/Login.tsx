@@ -62,7 +62,7 @@ export default function Login() {
           },
           onError: async e => {
             setError('Неверный логин или пароль');
-            console.log('API_PATH_LOGIN', e);
+            console.log('LOGIN ERR:', e);
           },
         }),
       );
