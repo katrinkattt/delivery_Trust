@@ -21,6 +21,7 @@ import {useDispatch} from 'react-redux';
 import {setAddress, setFullName} from '../state/user/slice';
 import axios from 'axios';
 import {API_BASE_URL} from '../res/consts';
+import {GOOGLE_API_KEY_A} from '../api/googleApi';
 
 export default function CourierProfileData() {
   const {loading, email, role} = useAppSelector(getUser);
@@ -32,7 +33,6 @@ export default function CourierProfileData() {
   const [document, setDocument] = useState('');
   const [documentTwo, setDocumentTwo] = useState('');
   const [err, setErr] = useState('');
-  const [addressCompl, setAddressCompl] = useState(false);
   // uri: '',
   // name: 'image.jpg', // Имя файла на сервере
   // type: 'image/jpeg', // MIME-тип файла
@@ -96,71 +96,57 @@ export default function CourierProfileData() {
     }
   }, []);
 
-  const checkAddress = async add => {
-    if (err !== 'Определение адреса') {
-      setErr('Определение адреса');
-      const strAddress = `${add?.city}+${add?.street}+${add?.house}`;
-
-      const {
-        data: {results},
-      } = await axios.get(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${strAddress}&language=ru&key=${GOOGLE_API_KEY_A}`,
-      );
-      if (results[0]?.geometry.location) {
-        const send = {
-          fullName: add.fio,
-          phone: add.phone,
-          city: add.city,
-          street: add.street,
-          house: add.house,
-          apartment: add.apartment || '',
-          coord: {
-            latitude: results[0]?.geometry.location.lat,
-            longitude: results[0]?.geometry.location.lng,
-          },
-        };
-        if (send.coord.latitude && send.coord.longitude) {
-          setErr('');
-          setAddressCompl(true);
+  const submit = async (dataForm: ICreateUser) => {
+    if (document !== '' && documentTwo !== '') {
+      if (err !== 'Определение адреса') {
+        setErr('Определение адреса');
+        const strAddress = `${dataForm?.city}+${dataForm?.street}+${dataForm?.house}`;
+        const {
+          data: {results},
+        } = await axios.get(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${strAddress}&language=ru&key=${GOOGLE_API_KEY_A}`,
+        );
+        if (results[0]?.geometry.location) {
+          const send = {
+            coord: {
+              latitude: results[0]?.geometry.location.lat,
+              longitude: results[0]?.geometry.location.lng,
+            },
+          };
+          if (send.coord.latitude && send.coord.longitude) {
+            setErr('');
+            disp(setAddress({address: dataForm}));
+            disp(setFullName({full_name: dataForm.full_name}));
+            const data = {
+              ...dataForm,
+              email: email || 'sixrosesg@gmail.com',
+              user_type: 1,
+              userType: 1,
+              // file_id: {
+              document_photo_1: document,
+              document_photo_2: documentTwo,
+              // },
+            };
+            dispatch(
+              createUserAction({
+                data,
+                onSuccess: () => {
+                  //@ts-ignore
+                  navigation.navigate('SigningAnAgreement');
+                },
+                onError: async e => {
+                  setError('Ошибка сервера, попробуйте позже');
+                  console.log('createUserAction CLIENT ERR::', e);
+                },
+              }),
+            );
+          }
+        } else {
+          setErr('Адрес не найден');
         }
-      } else {
-        setErr('Адрес не найден');
       }
-    }
-  };
-  const submit = (dataForm: ICreateUser) => {
-    checkAddress(dataForm);
-    if (isCorrect && addressCompl) {
-      disp(setAddress({address: dataForm}));
-      disp(setFullName({full_name: dataForm.full_name}));
-
-      const data = {
-        ...dataForm,
-        email: email || 'sixrosesg@gmail.com',
-        user_type: 1,
-        userType: 1,
-        // file_id: {
-        document_photo_1: document,
-        document_photo_2: documentTwo,
-        // },
-      };
-      // console.log('submit data::::', data);
-      dispatch(
-        createUserAction({
-          data,
-          onSuccess: () => {
-            //@ts-ignore
-            navigation.navigate('SigningAnAgreement');
-            // navigation.navigate('TabScreen');
-          },
-          onError: async e => {
-            setError('Ошибка сервера, попробуйте позже');
-            console.log('createUserAction COURIER ERR::', e);
-          },
-        }),
-      );
     } else {
-      setError('Заполните корректно все поля');
+      setErr('Загрузите документы');
     }
   };
 
@@ -230,7 +216,7 @@ export default function CourierProfileData() {
             <Body size={12} color="#a22">
               {error}
             </Body>
-            <Body size={14} color="#222">
+            <Body size={14} color="#a22">
               {err}
             </Body>
             <View style={{marginVertical: 15}}>

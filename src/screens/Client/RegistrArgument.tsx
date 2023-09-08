@@ -17,6 +17,7 @@ import {useAppSelector} from '../../hooks/redux';
 import {getUser} from '../../state/user/selectors';
 import {setAddress, setFullName} from '../../state/user/slice';
 import axios from 'axios';
+import {GOOGLE_API_KEY_A} from '../../api/googleApi';
 
 export default function ClientRegistrArgumet() {
   const navigation = useNavigation();
@@ -24,7 +25,6 @@ export default function ClientRegistrArgumet() {
   const disp = useDispatch();
   const {loading, email, role} = useAppSelector(getUser);
   const [err, setErr] = useState('');
-  const [addressCompl, setAddressCompl] = useState(false);
 
   const initialValues: ICreateUser = {
     full_name: '',
@@ -36,10 +36,11 @@ export default function ClientRegistrArgumet() {
   };
   const [error, setError] = useState('');
 
-  const checkAddress = async add => {
+  const submit = async (dataForm: ICreateUser) => {
     if (err !== 'Определение адреса') {
       setErr('Определение адреса');
-      const strAddress = `${add?.city}+${add?.street}+${add?.house}`;
+      const strAddress = `${dataForm?.city}+${dataForm?.street}+${dataForm?.house}`;
+      console.log('strAddress', strAddress);
 
       const {
         data: {results},
@@ -48,12 +49,6 @@ export default function ClientRegistrArgumet() {
       );
       if (results[0]?.geometry.location) {
         const send = {
-          fullName: add.fio,
-          phone: add.phone,
-          city: add.city,
-          street: add.street,
-          house: add.house,
-          apartment: add.apartment || '',
           coord: {
             latitude: results[0]?.geometry.location.lat,
             longitude: results[0]?.geometry.location.lng,
@@ -61,41 +56,36 @@ export default function ClientRegistrArgumet() {
         };
         if (send.coord.latitude && send.coord.longitude) {
           setErr('');
-          setAddressCompl(true);
+          disp(setAddress({address: dataForm}));
+          disp(setFullName({full_name: dataForm.full_name}));
+          const data = {
+            ...dataForm,
+            email: email || 'sixrosesg@gmail.com',
+            user_type: 2,
+            userType: 2,
+          };
+          dispatch(
+            createUserAction({
+              data,
+              onSuccess: () => {
+                //@ts-ignore
+                navigation.navigate('TabScreen');
+              },
+              onError: async e => {
+                setError('Ошибка сервера, попробуйте позже');
+                console.log('createUserAction CLIENT ERR::', e);
+              },
+            }),
+          );
         }
       } else {
         setErr('Адрес не найден');
       }
     }
   };
-  const submit = (dataForm: ICreateUser) => {
-    checkAddress(dataForm);
-    if (!err && addressCompl) {
-      disp(setAddress({address: dataForm}));
-      disp(setFullName({full_name: dataForm.full_name}));
-      const data = {
-        ...dataForm,
-        email: email || 'sixrosesg@gmail.com',
-        user_type: 2,
-        userType: 2,
-      };
-      dispatch(
-        createUserAction({
-          data,
-          onSuccess: () => {
-            //@ts-ignore
-            navigation.navigate('TabScreen');
-          },
-          onError: async e => {
-            setError('Ошибка сервера, попробуйте позже');
-            console.log('createUserAction CLIENT ERR::', e);
-          },
-        }),
-      );
-    } else {
-      setError('Заполните корректно все поля');
-    }
-  };
+  // const submit = (dataForm: ICreateUser) => {
+  //   checkAddress(dataForm);
+  // };
 
   return (
     <View style={styles.container}>
