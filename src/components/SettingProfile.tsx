@@ -8,6 +8,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 const backImage = require('../assets/bank.png');
 import R from '../res';
+import {useSelector} from 'react-redux';
 
 // interface IData {
 //     id: number
@@ -21,11 +22,18 @@ import R from '../res';
 
 export default function SettingProfile() {
   const navigation = useNavigation();
+  const user = useSelector(state => state.user);
   const [data, setData] = useState([
     {id: 1, title: 'Курьер подходит к дому', chosen: false},
     {id: 2, title: 'Курьер опаздывает', chosen: false},
     {id: 3, title: 'Курьер взял мой заказ', chosen: false},
   ]);
+  const exampleCard = {
+    system: 'Добавить карту',
+    number: '**** **** **** 0000',
+  };
+  const currentCard = user.cards ? user.cards[user.curCard] : exampleCard;
+  console.log(currentCard, 'currentCard');
 
   const pressButton = (id: number) => {
     const newData = data.map(i => {
@@ -61,19 +69,19 @@ export default function SettingProfile() {
           style={styles.back}
           resizeMode="stretch">
           <Body size={11} color="white">
-            Master Card
+            {currentCard.system}
           </Body>
 
           <Body size={24} bold color="white">
-            **** **** **** 0321
+            **** **** **** {currentCard.number.slice(-4)}
           </Body>
         </ImageBackground>
       </TouchableOpacity>
 
-      <AuthSelect
+      {/* <AuthSelect
         label="Часовой пояс"
         placeholder="(UTC +03:00) Россия / Москва"
-      />
+      /> */}
 
       <Body size={20} semiBold style={styles.title}>
         Уведомления

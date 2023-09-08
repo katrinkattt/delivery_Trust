@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StatusBar, StyleSheet, Text, View} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -36,8 +36,9 @@ import CardEditor from './screens/CardEditor';
 import ClientHomeStack from './StackHomeClient';
 import ClientOrder from './screens/Client/ClientOrders';
 import {MessageScreen} from './components/messages/MessageScreen';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {getUser} from './state/user/selectors';
+import {loadCards} from './state/user/slice';
 
 const Stack = createStackNavigator();
 

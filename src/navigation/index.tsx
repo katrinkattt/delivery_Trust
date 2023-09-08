@@ -29,6 +29,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getUser} from '../state/user/selectors';
 import socket from '../socket';
 import {setLastMsg, addMsgChat} from '../state/chat/slice';
+import {loadCards} from '../state/user/slice';
 
 const Stack = createStackNavigator();
 

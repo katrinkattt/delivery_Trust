@@ -51,6 +51,7 @@ export const initialStateUser: UserState = {
   fines: 0,
   tea: 0,
   cards: [],
+  curCard: 0,
   senders: [],
 };
 
@@ -89,11 +90,17 @@ const userSlice = createSlice({
     },
     loadCards: (state, action) => {
       const {cards} = action.payload;
+      console.log('LOADD CADRSSSS');
+
       state.cards = cards;
     },
     setCards: (state, action) => {
       const {Cards} = action.payload;
       state.cards = Cards;
+    },
+    setCurrCard: (state, action) => {
+      const {card} = action.payload;
+      state.curCard = card;
     },
     delCard: (state, action) => {
       const {idCard} = action.payload;
@@ -127,6 +134,8 @@ const userSlice = createSlice({
         registerAction.fulfilled.type,
         (state, action: PayloadAction<ILogin>) => {
           // state.token = action.payload
+          console.log('registerAction.fulfilled', action.payload);
+
           state.loading = false;
         },
       ),
@@ -140,6 +149,8 @@ const userSlice = createSlice({
         regConfirmCodeAction.fulfilled.type,
         (state, action: PayloadAction<ILogin>) => {
           // state.token = action.payload;
+          console.log('regConfirmCodeAction', action.payload);
+
           state.access_token = action.payload.accessToken;
           state.refresh_token = action.payload.refreshToken;
           state.loading = false;
@@ -157,6 +168,8 @@ const userSlice = createSlice({
         (state, action: PayloadAction<ILogin>) => {
           console.log('IN SLISE:action.payload', action.payload);
           state.loading = false;
+          state.id = action.payload.id || 0;
+          state.user_id = action.payload.userId || 0;
         },
       ),
       builder.addCase(createUserAction.pending.type, state => {
@@ -234,18 +247,19 @@ const userSlice = createSlice({
       (state, action: PayloadAction<UserDataAddit>) => {
         state.loading = false;
         console.log('loadUserData payload==', action.payload);
-        state.senders = action.payload.clientData.sender;
+        state.senders = action.payload.userData.sender;
         state.email = action.payload.email;
         state.phone = action.payload.phone;
-        state.cards = action.payload.clientData.cards;
-        state.fines = action.payload.clientData.fines;
-        state.tea = action.payload.clientData.tea;
-        state.ballance = action.payload.clientData.ballance;
-        state.region = action.payload.clientData.region;
-        state.city = action.payload.clientData.city;
-        state.street = action.payload.clientData.street;
-        state.house = action.payload.clientData.house;
-        state.apartment = action.payload.clientData.apartment;
+        state.typeInUser = action.payload.userType == 2;
+        state.cards = action.payload.userData.cards;
+        state.fines = action.payload.userData.fines;
+        state.tea = action.payload.userData.tea;
+        state.ballance = action.payload.userData.ballance;
+        state.region = action.payload.userData.region;
+        state.city = action.payload.userData.city;
+        state.street = action.payload.userData.street;
+        state.house = action.payload.userData.house;
+        state.apartment = action.payload.userData.apartment;
       },
     ),
       builder.addCase(loadUserData.pending.type, state => {
@@ -311,6 +325,7 @@ export const {
   loadCards,
   delCard,
   setCards,
+  setCurrCard,
   addSenders,
 } = userSlice.actions;
 export const userReducer = persistReducer(persistConfig, userSlice.reducer);

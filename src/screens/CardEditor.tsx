@@ -15,14 +15,20 @@ import {validator, required} from '../utils/validators';
 import {ICardData} from '../types/data';
 import {Space} from '../components/common/Space';
 import {useDispatch, useSelector} from 'react-redux';
-import {loadCards, setCards} from '../state/user/slice';
+import {loadCards, setCards, setCurrCard} from '../state/user/slice';
 import {ICard} from '../state/user/types';
+import {FormButton} from '../components/common/FormButton/FormButton';
 
 const masterCardImg = require('../assets/bank.png');
 
 export default function CardEditor() {
   const dispatch = useDispatch();
-  const {cards} = useSelector(state => state.user);
+  const user = useSelector(state => state.user);
+  const cards = user.cards;
+  const currCard = user.curCard;
+  console.log('currCard', currCard);
+  // console.log();
+
   const cardArr = [
     {
       id: 1,
@@ -38,55 +44,65 @@ export default function CardEditor() {
       number: '**** **** **** 0321',
       recToken: 'lvabe',
     },
-    {
-      id: 3,
-      select: false,
-      system: 'Visa',
-      number: '**** **** **** 4256',
-      recToken: '',
-    },
   ];
-
   useEffect(() => {
-    dispatch(loadCards({cards: cardArr}));
+    //загрузка карт по сути с бека должна быть
+    if (!cards?.[0].number) {
+      dispatch(loadCards({cards: cardArr}));
+    }
+
+    setCurrCard({card: currCard});
   }, []);
-  console.log('cards::', cards);
+  const [delInd, setDelInd] = useState(0);
+
+  const delCard = () => {
+    console.log('delInd', delInd);
+
+    let arr: ICardData[] = [...cards];
+    console.log('arr', arr);
+    if (delInd !== currCard) {
+      if (delInd > -1) {
+        //@ts-ignore
+        arr.splice(delInd, 1);
+        console.log('arr after spl=>', arr);
+
+        dispatch(loadCards({cards: [...arr]}));
+      }
+    }
+    //reducer del card need
+    setDelModalVisible(false);
+  };
+
+  const pressButton = (num: number) => {
+    dispatch(setCurrCard({card: num}));
+  };
 
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [delModalVisible, setDelModalVisible] = useState(false);
-  const addCard = () => {
-    setAddModalVisible(false);
-    //reducer add card
-  };
+  const [loading, setLoading] = useState(false);
   const initialValues: ICardData = {
     name: '',
-    cardNumber: '',
+    number: '',
     dateEnd: '',
     cvv: '',
+    recToken: 'qwert',
   };
-  const delCard = () => {
-    setDelModalVisible(false);
-    //reducer del card
-  };
-
-  const pressButton = (id: number) => {
-    console.log('ID', id);
-
-    let cardsArr = cards;
-    console.log(cardsArr);
-    if (cardsArr.length > 1) {
-      const newData = cardsArr.map((i: ICard) => {
-        console.log('itemmmm', i);
-
-        if (i.id === id) {
-          return {...i, select: (i.select = true)};
-        } else {
-          return {...i, select: (i.select = false)};
-        }
-      });
-      console.log('reWrite', newData);
-      // dispatch(setCards({Cards: newData}));
-    }
+  const addCard = (data: ICardData) => {
+    setLoading(true);
+    const sysNum = data.number.slice(0, 1);
+    console.log('sysNum', sysNum);
+    const system =
+      sysNum == '4'
+        ? 'Visa'
+        : sysNum == '5'
+        ? 'Master Card'
+        : sysNum == '2'
+        ? 'MIR'
+        : 'Card';
+    const newCard = {...data, system: system};
+    dispatch(loadCards({cards: [newCard, ...cards]}));
+    setAddModalVisible(false);
+    setLoading(false);
   };
   return (
     <View style={{flex: 1}}>
@@ -121,7 +137,7 @@ export default function CardEditor() {
                   position="top"
                 />
                 <InputTextMask
-                  name="cardNumber"
+                  name="number"
                   label="Номер карты*"
                   placeholder="**** **** **** ****"
                   position="center"
@@ -133,11 +149,11 @@ export default function CardEditor() {
                 <InputTextMask
                   name="dateEnd"
                   label="Срок действия*"
-                  placeholder="ДД/ММ/ГГГГ"
+                  placeholder="ММ/ГГГГ"
                   keyboardType="phone-pad"
                   position="center"
                   maxLength={10}
-                  mask="[00]/[00]/[0000]"
+                  mask="[00]/[0000]"
                   validate={validator(required)}
                 />
                 <AuthInput
@@ -149,10 +165,10 @@ export default function CardEditor() {
                   keyboardType="phone-pad"
                   validate={validator(required)}
                 />
+                <Space height={20} />
+                <FormButton onPress={loading} text="ДОБАВИТЬ КАРТУ" />
               </>
             </Formik>
-            <Space height={20} />
-            <Button onPress={addCard} buttonType={2} text="ДОБАВИТЬ КАРТУ" />
           </>
         </View>
       </ModalCustom>
@@ -176,9 +192,15 @@ export default function CardEditor() {
               bold
               size={16}
               style={{marginBottom: 20, fontWeight: 'bold'}}>
-              Вы уверены, что хотите удалить карту?
+              {currCard == delInd
+                ? 'Активную карту невозможно удалить'
+                : 'Вы уверены, что хотите удалить карту?'}
             </Body>
-            <Button onPress={delCard} buttonType={1} text="УДАЛИТЬ" />
+            <Button
+              onPress={delCard}
+              buttonType={1}
+              text={currCard == delInd ? 'Закрыть' : 'УДАЛИТЬ'}
+            />
           </>
         </View>
       </ModalCustom>
@@ -191,17 +213,19 @@ export default function CardEditor() {
           style={{marginTop: 20, fontWeight: 'bold'}}>
           Мои карты
         </Body>
-        {cards.length > 1 ? (
-          cards.map(card => (
+        {cards?.[0].number ? (
+          cards.map((card, num) => (
             <View style={{flexDirection: 'row'}}>
               <TouchableOpacity
                 key={card.id}
                 style={{flexDirection: 'row'}}
                 onPress={() => {
-                  card?.recToken && pressButton(card.id);
+                  card?.recToken && pressButton(num);
                 }}>
                 <View style={{marginTop: 40, marginRight: 14}}>
-                  <Ellipses color={card?.select ? colors.lavender : '#ccc'} />
+                  <Ellipses
+                    color={currCard == num ? colors.lavender : '#ccc'}
+                  />
                 </View>
                 <ImageBackground
                   source={masterCardImg}
@@ -221,7 +245,10 @@ export default function CardEditor() {
                 </ImageBackground>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => setDelModalVisible(true)}
+                onPress={() => {
+                  setDelModalVisible(true);
+                  setDelInd(num);
+                }}
                 style={{marginTop: 24, marginLeft: 10}}>
                 <Body size={40} color={colors.ligthBorder}>
                   ×

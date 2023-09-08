@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {Platform, ScrollView, StyleSheet, View} from 'react-native';
 import Button from '../components/common/Button';
 import {useNavigation} from '@react-navigation/native';
 import AuthInput from '../components/common/AuthInput';
@@ -19,6 +19,8 @@ import {createUserAction} from '../state/user/action';
 import Body from '../components/common/Body';
 import {useDispatch} from 'react-redux';
 import {setAddress, setFullName} from '../state/user/slice';
+import axios from 'axios';
+import {API_BASE_URL} from '../res/consts';
 
 export default function CourierProfileData() {
   const {loading, email, role} = useAppSelector(getUser);
@@ -27,8 +29,10 @@ export default function CourierProfileData() {
   const disp = useDispatch();
   const [error, setError] = useState('');
   const [isCorrect, setIsCorrect] = useState(false);
-  const [document, setDocument] = useState({});
-  const [documentTwo, setDocumentTwo] = useState({});
+  const [document, setDocument] = useState('');
+  const [documentTwo, setDocumentTwo] = useState('');
+  const [err, setErr] = useState('');
+  const [addressCompl, setAddressCompl] = useState(false);
   // uri: '',
   // name: 'image.jpg', // Имя файла на сервере
   // type: 'image/jpeg', // MIME-тип файла
@@ -40,29 +44,93 @@ export default function CourierProfileData() {
     house: '',
     apartment: '',
   };
+  console.log('document', document);
 
-  const handleDocumentSelection = useCallback(async num => {
+  const handleDocumentSelection = useCallback(async n => {
+    // const createdAt = new Date();
     try {
-      const response = await DocumentPicker.pick({
+      const response = await DocumentPicker.pickSingle({
         presentationStyle: 'fullScreen',
+        type: [DocumentPicker.types.images],
+        mode: 'import',
+        copyTo: 'documentDirectory',
       });
-      if (num === 1) {
-        setDocument(response);
-      } else {
-        setDocumentTwo(response);
-        // [{"fileCopyUri": null,
-        //  "name": "Снимок экрана 2023-08-21 в 13.36.43.png",
-        //   "size": 1126539,
-        //   "type": "image/png",
-        //   "uri": "content://com.android.providers.downloads.documents/document/raw%3A%2Fstorage%2Femulated%2F0%2FDownload%2F%D0%A1%D0%BD%D0%B8%D0%BC%D0%BE%D0%BA%20%D1%8D%D0%BA%D1%80%D0%B0%D0%BD%D0%B0%202023-08-21%20%D0%B2%2013.36.43.png"
-        // }]
-      }
+      let imgRegex = /image/g;
+      console.log('FULL response', response);
+      // let str = response?.type;
+      // if (str?.match(imgRegex)) {
+      const formData = new FormData();
+      formData.append('image', {
+        uri:
+          Platform.OS === 'android'
+            ? response?.fileCopyUri
+            : response?.fileCopyUri.replace('file://', ''),
+        name: response?.name,
+        type: response?.type,
+      });
+      axios
+        .post(API_BASE_URL + '/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(response => {
+          console.log('response', response);
+
+          if (response.status == 200) {
+            const data = response.data;
+            console.log('URL загруженного изображения: ${data.imageUrl}', data);
+
+            if (n == 1) {
+              setDocument(data.file_id);
+            }
+            if (n == 2) {
+              setDocumentTwo(data.file_id);
+            }
+          } else {
+            console.log('Ошибка при загрузке изображения: ${response.status}');
+          }
+        });
     } catch (err) {
       console.warn(err);
     }
   }, []);
+
+  const checkAddress = async add => {
+    if (err !== 'Определение адреса') {
+      setErr('Определение адреса');
+      const strAddress = `${add?.city}+${add?.street}+${add?.house}`;
+
+      const {
+        data: {results},
+      } = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${strAddress}&language=ru&key=${GOOGLE_API_KEY_A}`,
+      );
+      if (results[0]?.geometry.location) {
+        const send = {
+          fullName: add.fio,
+          phone: add.phone,
+          city: add.city,
+          street: add.street,
+          house: add.house,
+          apartment: add.apartment || '',
+          coord: {
+            latitude: results[0]?.geometry.location.lat,
+            longitude: results[0]?.geometry.location.lng,
+          },
+        };
+        if (send.coord.latitude && send.coord.longitude) {
+          setErr('');
+          setAddressCompl(true);
+        }
+      } else {
+        setErr('Адрес не найден');
+      }
+    }
+  };
   const submit = (dataForm: ICreateUser) => {
-    if (isCorrect) {
+    checkAddress(dataForm);
+    if (isCorrect && addressCompl) {
       disp(setAddress({address: dataForm}));
       disp(setFullName({full_name: dataForm.full_name}));
 
@@ -71,7 +139,10 @@ export default function CourierProfileData() {
         email: email || 'sixrosesg@gmail.com',
         user_type: 1,
         userType: 1,
-        file: document,
+        // file_id: {
+        document_photo_1: document,
+        document_photo_2: documentTwo,
+        // },
       };
       // console.log('submit data::::', data);
       dispatch(
@@ -82,8 +153,9 @@ export default function CourierProfileData() {
             navigation.navigate('SigningAnAgreement');
             // navigation.navigate('TabScreen');
           },
-          onError: async () => {
+          onError: async e => {
             setError('Ошибка сервера, попробуйте позже');
+            console.log('createUserAction COURIER ERR::', e);
           },
         }),
       );
@@ -157,6 +229,9 @@ export default function CourierProfileData() {
             />
             <Body size={12} color="#a22">
               {error}
+            </Body>
+            <Body size={14} color="#222">
+              {err}
             </Body>
             <View style={{marginVertical: 15}}>
               <FormButton

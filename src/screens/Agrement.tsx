@@ -16,8 +16,9 @@ export default function Agreement() {
 
   const [agre, setAgre] = useState(false);
 
-  const goToAgreement = () => {
-    //agreement
+  const goToHome = () => {
+    //@ts-ignore
+    agre && navigation.navigate('TabScreen');
   };
 
   return (
@@ -61,7 +62,7 @@ export default function Agreement() {
         <DropShadow style={styles.shadow}>
           <View style={{marginTop: 10, paddingHorizontal: 15}}>
             <Button
-              onPress={() => agre && navigation.navigate('TabScreen')}
+              onPress={goToHome}
               buttonType={1}
               text="СОГЛАСИТЬСЯ И ОТПРАВАИТЬ"
             />

@@ -41,16 +41,20 @@ export type UserState = {
   ballance?: number;
   fines?: number;
   tea?: number;
+  curCard?: number;
   cards?: ICard[];
   senders?: OrderSender[];
 };
 
 export type ICard = {
-  id: number;
-  select: boolean;
-  system: string;
-  number: string;
-  recToken: string;
+  id?: number;
+  select?: boolean;
+  system?: string;
+  number?: string;
+  recToken?: string;
+  dateEnd?: string;
+  cvv?: string;
+  name?: string;
 };
 export type OrderSender = {
   full_name?: string;
@@ -65,7 +69,7 @@ export type OrderSender = {
 };
 
 export type UserDataAddit = {
-  clientData: {
+  userData: {
     sender?: OrderSender[];
     cards?: ICard[];
     fines?: number;
@@ -79,4 +83,5 @@ export type UserDataAddit = {
   };
   email?: string;
   phone?: string;
+  userType?: number;
 };

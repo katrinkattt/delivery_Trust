@@ -16,12 +16,15 @@ import {useDispatch} from 'react-redux';
 import {useAppSelector} from '../../hooks/redux';
 import {getUser} from '../../state/user/selectors';
 import {setAddress, setFullName} from '../../state/user/slice';
+import axios from 'axios';
 
 export default function ClientRegistrArgumet() {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const disp = useDispatch();
   const {loading, email, role} = useAppSelector(getUser);
+  const [err, setErr] = useState('');
+  const [addressCompl, setAddressCompl] = useState(false);
 
   const initialValues: ICreateUser = {
     full_name: '',
@@ -33,31 +36,65 @@ export default function ClientRegistrArgumet() {
   };
   const [error, setError] = useState('');
 
+  const checkAddress = async add => {
+    if (err !== 'Определение адреса') {
+      setErr('Определение адреса');
+      const strAddress = `${add?.city}+${add?.street}+${add?.house}`;
+
+      const {
+        data: {results},
+      } = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${strAddress}&language=ru&key=${GOOGLE_API_KEY_A}`,
+      );
+      if (results[0]?.geometry.location) {
+        const send = {
+          fullName: add.fio,
+          phone: add.phone,
+          city: add.city,
+          street: add.street,
+          house: add.house,
+          apartment: add.apartment || '',
+          coord: {
+            latitude: results[0]?.geometry.location.lat,
+            longitude: results[0]?.geometry.location.lng,
+          },
+        };
+        if (send.coord.latitude && send.coord.longitude) {
+          setErr('');
+          setAddressCompl(true);
+        }
+      } else {
+        setErr('Адрес не найден');
+      }
+    }
+  };
   const submit = (dataForm: ICreateUser) => {
-    disp(setAddress({address: dataForm}));
-    disp(setFullName({full_name: dataForm.full_name}));
-
-    //@ts-ignore
-    navigation.navigate('TabScreen'); // удалить когда бек норм ответит
-
-    const data = {
-      ...dataForm,
-      email: email || 'sixrosesg@gmail.com',
-      user_type: 2,
-      userType: 2,
-    };
-    dispatch(
-      createUserAction({
-        data,
-        onSuccess: () => {
-          //@ts-ignore
-          navigation.navigate('TabScreen');
-        },
-        onError: async () => {
-          setError('Ошибка сервера, попробуйте позже');
-        },
-      }),
-    );
+    checkAddress(dataForm);
+    if (!err && addressCompl) {
+      disp(setAddress({address: dataForm}));
+      disp(setFullName({full_name: dataForm.full_name}));
+      const data = {
+        ...dataForm,
+        email: email || 'sixrosesg@gmail.com',
+        user_type: 2,
+        userType: 2,
+      };
+      dispatch(
+        createUserAction({
+          data,
+          onSuccess: () => {
+            //@ts-ignore
+            navigation.navigate('TabScreen');
+          },
+          onError: async e => {
+            setError('Ошибка сервера, попробуйте позже');
+            console.log('createUserAction CLIENT ERR::', e);
+          },
+        }),
+      );
+    } else {
+      setError('Заполните корректно все поля');
+    }
   };
 
   return (
@@ -115,6 +152,9 @@ export default function ClientRegistrArgumet() {
               {/* <PickerInp /> */}
               <Body size={12} color="#a22" style={{marginBottom: 90}}>
                 {error}
+              </Body>
+              <Body size={14} color="#222">
+                {err}
               </Body>
               <FormButton
                 containerStyle={{marginVetrical: 15}}

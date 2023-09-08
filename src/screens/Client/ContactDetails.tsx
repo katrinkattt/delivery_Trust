@@ -174,6 +174,9 @@ export default function ContactDetails() {
       };
       console.log('sender', sender);
       dispatch(setNewOrderAnySender({sender: sender}));
+      dispatch(
+        setNewOrderSender({sender: sender.fullName, sender_id: sender_id}),
+      );
     }
   };
 

@@ -32,7 +32,7 @@ export const registerAction = createAsyncThunk<
   }
 >('register/sendcode', async arg => {
   try {
-    console.log('API_PATH_REGISTER');
+    console.log('API_PATH_REGISTER, data:', arg.data);
 
     const {data: response} = await apiClient.post<IRegistr>(
       R.consts.API_PATH_REGISTER,
@@ -285,6 +285,7 @@ export const loadUserData = createAsyncThunk<
 >('orders/free', async arg => {
   try {
     const id = arg.user_id;
+    console.log('API_USER_DATA', R.consts.API_USER_DATA + id);
     const {data: response} = await apiClient.get<UserDataAddit>(
       R.consts.API_USER_DATA + id,
     );

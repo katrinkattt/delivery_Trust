@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {ScaledSheet} from 'react-native-size-matters/extend';
 import TabViewExample from '../components/TabView';
 import Header from '../components/Header';
 import Body from '../components/common/Body';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {loadCards} from '../state/user/slice';
 
 export default function Profile() {
   const [text, setText] = useState<string>('');

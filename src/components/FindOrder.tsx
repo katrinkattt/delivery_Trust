@@ -136,64 +136,72 @@ export default function FindOrder() {
         contentContainerStyle={{paddingBottom: 150, minHeight: '100%'}}
         showsVerticalScrollIndicator={false}
         style={{marginHorizontal: 15, marginTop: 23}}>
-        {findOrders.map((order: IOrder) => (
-          <View>
-            <TouchableOpacity
-              onPress={() => {
-                readOrder == order.id
-                  ? setReadOrder(0)
-                  : setReadOrder(order.id || 0);
-              }}
-              activeOpacity={0.7}
-              style={styles.cardOneBox}>
-              <View>
-                <Body
-                  color="#243757"
-                  style={[styles.cardTitle, {marginTop: 12}]}>
-                  {order?.category}
-                </Body>
-                <Body color="#243757" style={styles.cardOneDescription}>
-                  Время выполнения:
-                  {order.activeMinute > 90
-                    ? order.activeMinute / 60 + ' час'
-                    : order.activeMinute + ' минут'}
-                </Body>
-              </View>
-
-              <View style={styles.cardRightBox}>
-                <Hourglass width={15} height={15} />
-
-                <Body color="#243757" style={styles.clock}>
-                  {order.price} ₽
-                </Body>
-              </View>
-            </TouchableOpacity>
-            {readOrder == order.id && (
-              <View style={styles.cardBoxDescrip}>
+        {findOrders[0] ? (
+          findOrders.map((order: IOrder) => (
+            <View>
+              <TouchableOpacity
+                onPress={() => {
+                  readOrder == order.id
+                    ? setReadOrder(0)
+                    : setReadOrder(order.id || 0);
+                }}
+                activeOpacity={0.7}
+                style={styles.cardOneBox}>
                 <View>
-                  <Body color="#243757" size={14}>
-                    ОТ: {order.address}
+                  <Body
+                    color="#243757"
+                    style={[styles.cardTitle, {marginTop: 12}]}>
+                    {order?.category}
                   </Body>
-                  <Body color="#243757" size={14}>
-                    ДО: {order.addressTo}
-                  </Body>
-                  <Body color="#243757" size={14} style={{width: '75%'}}>
-                    Комментарий: {order.comment}
+                  <Body color="#243757" style={styles.cardOneDescription}>
+                    Время выполнения:
+                    {order.activeMinute > 90
+                      ? order.activeMinute / 60 + ' час'
+                      : order.activeMinute + ' минут'}
                   </Body>
                 </View>
-                <TouchableOpacity
-                  onPress={() => takeOrder(order.id)}
-                  style={styles.orderButton}>
-                  <Body color="#fff" size={14}>
-                    Взять заказ
+
+                <View style={styles.cardRightBox}>
+                  <Hourglass width={15} height={15} />
+
+                  <Body color="#243757" style={styles.clock}>
+                    {order.price} ₽
                   </Body>
-                </TouchableOpacity>
-              </View>
-            )}
+                </View>
+              </TouchableOpacity>
+              {readOrder == order.id && (
+                <View style={styles.cardBoxDescrip}>
+                  <View>
+                    <Body color="#243757" size={14}>
+                      ОТ: {order.address}
+                    </Body>
+                    <Body color="#243757" size={14}>
+                      ДО: {order.addressTo}
+                    </Body>
+                    <Body color="#243757" size={14} style={{width: '75%'}}>
+                      Комментарий: {order.comment}
+                    </Body>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => takeOrder(order.id)}
+                    style={styles.orderButton}>
+                    <Body color="#fff" size={14}>
+                      Взять заказ
+                    </Body>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          ))
+        ) : (
+          <View style={styles.titlebox}>
+            <Body bold semiBold color="#A1ADBF">
+              Заказов еще нет
+            </Body>
           </View>
-        ))}
+        )}
       </ScrollView>
-      <View
+      {/* <View
         style={{
           flexDirection: 'row',
           marginHorizontal: 15,
@@ -209,7 +217,7 @@ export default function FindOrder() {
           style={styles.filterButton}>
           <FilterIcon width={21} height={25} />
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 }
@@ -217,6 +225,10 @@ export default function FindOrder() {
 const styles = StyleSheet.create({
   container: {
     marginTop: 18,
+  },
+  titlebox: {
+    alignItems: 'center',
+    marginTop: 32,
   },
   box: {
     height: 28,

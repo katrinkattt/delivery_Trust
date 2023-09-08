@@ -60,10 +60,12 @@ interface QuickReplies {
   keepIt?: boolean;
 }
 export interface ICardData {
-  name: string;
-  cardNumber: string;
-  dateEnd: string;
-  cvv: string;
+  name?: string;
+  cardNumber?: string;
+  number?: string;
+  dateEnd?: string;
+  cvv?: string;
+  recToken?: string;
 }
 
 export interface ICotactDetailsOrder {
@@ -116,6 +118,7 @@ export interface ILogin {
   id?: number;
   userType?: number;
   userData?: UserLoginData;
+  userId?: number;
 }
 export interface UserLoginData {
   apartment?: string;
