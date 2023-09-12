@@ -180,8 +180,10 @@ const ConfirmCodeField = ({data}: IPropsConfirmCode) => {
             <Body color="rgba(85, 85, 85, 1)">Получить новый код</Body>
           </TouchableOpacity>
         )}
+        <Body color="#a22" size={12}>
+          {error}
+        </Body>
 
-        <Text>{error}</Text>
         <CustomKeyboard handleKeyboardPress={handleKeyboardPress} />
       </View>
     </View>

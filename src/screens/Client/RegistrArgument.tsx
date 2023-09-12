@@ -18,6 +18,7 @@ import {getUser} from '../../state/user/selectors';
 import {setAddress, setFullName} from '../../state/user/slice';
 import axios from 'axios';
 import {GOOGLE_API_KEY_A} from '../../api/googleApi';
+import {minLength, validator} from '../../utils/validators';
 
 export default function ClientRegistrArgumet() {
   const navigation = useNavigation();
@@ -37,6 +38,8 @@ export default function ClientRegistrArgumet() {
   const [error, setError] = useState('');
 
   const submit = async (dataForm: ICreateUser) => {
+    console.log('SUBMIT');
+
     if (err !== 'Определение адреса') {
       setErr('Определение адреса');
       const strAddress = `${dataForm?.city}+${dataForm?.street}+${dataForm?.house}`;
@@ -54,6 +57,7 @@ export default function ClientRegistrArgumet() {
             longitude: results[0]?.geometry.location.lng,
           },
         };
+
         if (send.coord.latitude && send.coord.longitude) {
           setErr('');
           disp(setAddress({address: dataForm}));
@@ -72,7 +76,11 @@ export default function ClientRegistrArgumet() {
                 navigation.navigate('TabScreen');
               },
               onError: async e => {
-                setError('Ошибка сервера, попробуйте позже');
+                if (399 < e.status < 500) {
+                  setError(e.data.message);
+                } else {
+                  setError('Ошибка сервера, попробуйте позже');
+                }
                 console.log('createUserAction CLIENT ERR::', e);
               },
             }),
@@ -99,11 +107,11 @@ export default function ClientRegistrArgumet() {
                 label="Фамилия имя отчество*"
                 placeholder="Введите фамилию имя отчество"
                 position="top"
+                validate={validator(minLength(3))}
               />
-
               <AuthInput
                 name="region"
-                label="Регион*"
+                label="Регион"
                 placeholder="Выберите свой регион"
                 position="center"
               />
@@ -112,18 +120,21 @@ export default function ClientRegistrArgumet() {
                 label="Город*"
                 placeholder="Выберите свой город"
                 position="center"
+                validate={validator(minLength(3))}
               />
               <AuthInput
                 name="street"
                 label="Улица*"
                 placeholder="Укажите вашу улицу"
                 position="center"
+                validate={validator(minLength(3))}
               />
               <AuthInput
                 name="house"
                 label="Дом*"
                 placeholder="Укажите номер вашего дома"
                 position="center"
+                validate={validator(minLength(1))}
               />
 
               <AuthInput
@@ -133,7 +144,9 @@ export default function ClientRegistrArgumet() {
                 position="center"
                 name="apartment"
               />
-
+              <Body size={14} color="#333">
+                * Обязательные поля
+              </Body>
               {/* <CustomCheckbox
                 label={`Подтверждаю корректность введенных${'\n'} данных`}
                 style={{marginTop: 10}}

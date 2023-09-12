@@ -10,6 +10,7 @@ import R from '../res';
 import {setCurrentChat} from '../state/chat/slice';
 import {useDispatch} from 'react-redux';
 import {IChatState} from '../state/chat/types';
+import moment from 'moment';
 
 interface IData {
   item: IChatState;
@@ -59,9 +60,14 @@ export default function ChatItem({item, keyChat}: IData) {
             {item.messageLast || 'Сообщений пока нет'}
           </Body>
         </View>
+
         {item.messenger ? (
           <View style={{position: 'absolute', right: 15, top: '50%'}}>
-            <Body>12:14</Body>
+            <Body>
+              {item.messages[0]
+                ? moment(new Date(item.messages[0].createdAt)).format('LT')
+                : ''}
+            </Body>
             <Space height={7} />
             <View style={styles.notif}>
               <Body size={12} color="white">
@@ -71,7 +77,11 @@ export default function ChatItem({item, keyChat}: IData) {
           </View>
         ) : (
           <View style={{position: 'absolute', right: 15, top: '50%'}}>
-            <Body>12:14</Body>
+            <Body>
+              {item.messages[0]
+                ? moment(new Date(item.messages[0].createdAt)).format('LT')
+                : ''}
+            </Body>
             <Space height={7} />
             {item.read ? <ChatRead /> : <ChatUnRead />}
           </View>

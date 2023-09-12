@@ -68,7 +68,7 @@ export default function Home() {
     );
     dispatch(
       loadUserData({
-        user_id: user.id,
+        user_id: user.user_id,
         onSuccess: () => {
           console.log('good loadDataUser');
         },
@@ -79,7 +79,7 @@ export default function Home() {
     );
     dispatch(
       loadChat({
-        id: user.id,
+        id: user.user_id,
         onSuccess: () => {
           console.log('good loadChat');
         },

@@ -50,7 +50,7 @@ export default function ContactDetails() {
     longitude: 0,
   });
   const sender_id = user?.id;
-  const [senders, setSenders] = useState(user.senders);
+  const [senders, setSenders] = useState(user?.senders);
   const [err, setErr] = useState('');
   const [currSender, setCurrSender] = useState(0);
 
@@ -59,7 +59,7 @@ export default function ContactDetails() {
 
     disp(
       editSenders({
-        id: user.user_id,
+        id: user.id,
         data: {
           sender: senders,
         },
@@ -72,44 +72,48 @@ export default function ContactDetails() {
       }),
     );
   };
+  // const addSender = (formData: ICotactDetailsOrder) => {
+  //   setAddLoading(true);
+  //   checkAddress(formData);
+  // };
+  const addSender = async (add: ICotactDetailsOrder) => {
+    setErr('Определение адреса');
+    const strAddress = `${add?.city}+${add?.street}+${add?.house}`;
+    const stringAdd = `г. ${add?.city} ул.${add?.street} д.${add?.house} ${
+      !!add?.apartment ? add?.apartment + 'кв' : ''
+    }`;
+    const {
+      data: {results},
+    } = await axios.get(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${strAddress}&language=ru&key=${GOOGLE_API_KEY_A}`,
+    );
+    if (results[0]?.geometry.location) {
+      const send = {
+        fullName: add.fio,
+        phone: add.phone,
+        city: add.city,
+        street: add.street,
+        house: add.house,
+        apartment: add.apartment || '',
+        address: stringAdd,
+        coord: {
+          latitude: results[0]?.geometry.location.lat,
+          longitude: results[0]?.geometry.location.lng,
+        },
+      };
+      console.log('SEND OBJ', send);
+      setErr('');
+      //ВЕСЬ КОД ФУНКЦИИ ЧТО НАХОДИТСЯ НИЖЕ НЕ ЗАПУСКАЕТСЯ
 
-  const checkAddress = async add => {
-    if (err !== 'Определение адреса') {
-      setErr('Определение адреса');
-      const strAddress = `${add?.city}+${add?.street}+${add?.house}`;
-      const stringAdd = `г. ${add?.city} ул.${add?.street} д.${add?.house} ${
-        !!add?.apartment ? add?.apartment + 'кв' : ''
-      }`;
-      const {
-        data: {results},
-      } = await axios.get(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${strAddress}&language=ru&key=${GOOGLE_API_KEY_A}`,
-      );
-      if (results[0]?.geometry.location) {
-        const send = {
-          fullName: add.fio,
-          phone: add.phone,
-          city: add.city,
-          street: add.street,
-          house: add.house,
-          apartment: add.apartment || '',
-          address: stringAdd,
-          coord: {
-            latitude: results[0]?.geometry.location.lat,
-            longitude: results[0]?.geometry.location.lng,
-          },
-        };
-        if (send.coord.latitude && send.coord.longitude) {
-          setErr('');
-          setSenders([...senders, send]);
-          sendSenders([...senders, send]);
-          dispatch(addSenders({sender: [...senders, send]}));
-          setModalVisible(false);
-          setAddLoading(false);
-        }
-      } else {
-        setErr('Адрес не найден');
-      }
+      const arr = senders ? [...senders, send] : [send];
+      console.log('qwertyui ARR', arr);
+      setSenders(arr);
+      sendSenders(arr);
+      dispatch(addSenders({sender: arr}));
+      setModalVisible(false);
+      setAddLoading(false);
+    } else {
+      setErr('Адрес не найден');
     }
   };
   //@ts-ignore
@@ -147,8 +151,10 @@ export default function ContactDetails() {
 
   const [data, setData] = useState([{id: 0, fullName: 'Я'}]);
   useEffect(() => {
-    const arr = [{id: 0, fullName: 'Я'}, ...senders];
-    setData(arr);
+    if (senders !== null) {
+      const arr = [{id: 0, fullName: 'Я'}, ...senders];
+      setData(arr);
+    }
   }, [senders]);
 
   const initialValues: ICotactDetailsOrder = {
@@ -208,10 +214,7 @@ export default function ContactDetails() {
     entrance: '',
     doorCode: '',
   };
-  const addSender = (formData: ICotactDetailsOrder) => {
-    setAddLoading(true);
-    checkAddress(formData);
-  };
+
   console.log('currSender', currSender);
   console.log('data', data);
 

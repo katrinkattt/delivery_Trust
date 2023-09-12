@@ -7951,6 +7951,11 @@ react-native-audio-record@^0.2.2:
   resolved "https://registry.yarnpkg.com/react-native-audio-record/-/react-native-audio-record-0.2.2.tgz#9cbb0ddd3cbdd18f5edfabae812c0bc9c680e928"
   integrity sha512-+JEY3AWz21xylePbXZ81DLHcqU5oJYztn3Uel3ay53P3ZrvJlwfmOmyOuoavA9boPV1O0dLLQIu9gC7xbKwNvQ==
 
+react-native-audio@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-audio/-/react-native-audio-4.3.0.tgz#fae22b81f6a4dda706fd4837d0c6a89c66cf2e7e"
+  integrity sha512-QQYq28eSJy+y/Ukvry0AkbwMVELAj+LcEwCVRH+7sKLqlnoBBxGd4ilhgJHjwOiC70192LueGbjXJjPPEwW3iA==
+
 react-native-awesome-slider@^2.4.1:
   version "2.4.2"
   resolved "https://registry.npmjs.org/react-native-awesome-slider/-/react-native-awesome-slider-2.4.2.tgz"
@@ -8164,6 +8169,11 @@ react-native-parsed-text@0.0.22:
   integrity sha512-hfD83RDXZf9Fvth3DowR7j65fMnlqM9PpxZBGWkzVcUTFtqe6/yPcIoIAgrJbKn6YmtzkivmhWE2MCE4JKBXrQ==
   dependencies:
     prop-types "^15.7.x"
+
+react-native-permissions@^3.9.1:
+  version "3.9.1"
+  resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-3.9.1.tgz#15f1039b3e6d9b4250f715db642ce0a38e0ae101"
+  integrity sha512-9Pvq7d8hb75+DVzdU5qrwTNmlULWqCugusCxD4Hce0ztbQhInS0tdgp/qt1neWLS0Xg6WX+emr9dM4BpKdk87w==
 
 react-native-qrcode-svg@^6.2.0:
   version "6.2.0"

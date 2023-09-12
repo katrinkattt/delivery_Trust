@@ -1,5 +1,13 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import {StyleSheet, View, Linking, Platform, Image, Text} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Linking,
+  Platform,
+  Image,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import {
   GiftedChat,
@@ -10,15 +18,15 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import Sound from 'react-native-sound';
 import AudioRecord from 'react-native-audio-record';
+// import {AudioRecorder, AudioUtils} from 'react-native-audio';
+import Permissions from 'react-native-permissions';
 import {IChatData} from '../../screens/Messages';
 import Body from '../common/Body';
 import Header from '../Header';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import {colors} from '../../theme/themes';
 import {useSelector} from 'react-redux';
 import {getUser} from '../../state/user/selectors';
 import socket from '../../socket';
-import {sendFileChat} from '../../state/chat/action';
 import R from '../../res';
 import {useAppDispatch} from '../../hooks/redux';
 import axios from 'axios';
@@ -33,6 +41,7 @@ interface IProps {
     };
   };
 }
+//@ts-ignore
 const customtInputToolbar = props => {
   return (
     <InputToolbar
@@ -109,7 +118,7 @@ export const MessageScreen = () => {
     </Send>
   );
   const handleDocumentSelection = useCallback(async () => {
-    const createdAt = new Date();
+    // const createdAt = new Date();
     try {
       const response = await DocumentPicker.pickSingle({
         presentationStyle: 'fullScreen',
@@ -147,25 +156,6 @@ export const MessageScreen = () => {
             console.log('Ошибка при загрузке изображения: ${response.status}');
           }
         });
-      // } else {
-      //   let sendObjDoc = {
-      //     _id: generateID,
-      //     text: '',
-      //     createdAt: new Date(),
-      //     user,
-      //     name: response.name,
-      //     file: response?.uri,
-      //     file_id: response?.size,
-      //     file_type: response?.type,
-      //     attachment: {
-      //       url: response.uri,
-      //       type: response?.type,
-      //     },
-      //   };
-      //   console.log('obj DOC', sendObjDoc);
-      //   // @ts-ignore
-      //   onSend([sendObjDoc]);
-      // }
     } catch (err) {
       console.warn(err);
     }
@@ -201,53 +191,91 @@ export const MessageScreen = () => {
         />
         <Actions
           {...props}
+          options={{
+            'Send audio': handleVoiceSend,
+          }}
           icon={() => (
             <Image
               source={require(microImg)}
               style={{width: 22, resizeMode: 'contain', marginTop: -10}}
             />
           )}
-          onPressActionButton={handleVoiceSend}
+          // onPressActionButton={handleVoiceSend}
         />
       </View>
     );
   };
-  const handleVoiceSend = (voiceUri, voiceDuration) => {
-    // const [isRecording, setIsRecording] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioMessage, setAudioMessage] = useState({});
+  const handleVoiceSend = () => {
+    console.log('handleVoiceSend');
+    // Permissions.request('microphone').then(response => {
+    //   if (response === 'authorized') {
+    // const audioPath = AudioUtils.DocumentDirectoryPath + '/audio.aac';
+    // AudioRecorder.prepareRecordingAtPath(audioPath, {
+    //   SampleRate: 22050,
+    //   Channels: 1,
+    //   AudioQuality: 'Low',
+    //   AudioEncoding: 'aac',
+    // });
+    // AudioRecorder.startRecording();
 
-    // const handleRecordPress = () => {
-    //   if (!isRecording) {
-    //     startRecording();
-    //   } else {
-    //     stopRecording();
-    //   }
+    // const audioFile = {
+    //   uri: 'file://' + audioPath,
+    //   type: 'audio/aac',
+    //   name: 'audio.aac',
     // };
 
-    // const startRecording = () => {
-    //   setIsRecording(true);
-    //   // AudioRecord.start();
+    // const message = {
+    //   _id: Math.round(Math.random() * 1000000),
+    //   createdAt: new Date().getTime(),
+    //   user: {
+    //     _id: 1,
+    //     name: 'User',
+    //   },
+    //   audio: audioFile,
     // };
-
-    // const stopRecording = () => {
-    //   setIsRecording(false);
-    //   // AudioRecord.stop();
+    console.log('AUDIO message');
+    // onSend([message]);
     // };
-
-    const audioMessage = {
-      _id: generateID,
-      audio: voiceUri,
-      duration: voiceDuration,
-      createdAt: new Date(),
-      user,
-    };
-    //@ts-ignore
-    onSend([audioMessage]);
+    // });
   };
+  // const handleVoiceSend = () => {
+  //   console.log('handleVoiceSend');
+  //   const handleRecordPress = () => {
+  //     if (!isRecording) {
+  //       startRecording();
+  //     } else {
+  //       stopRecording();
+  //     }
+  //   };
+  //   const startRecording = () => {
+  //     setIsRecording(true);
+  //     AudioRecord.start();
+  //   };
+  //   const stopRecording = () => {
+  //     setIsRecording(false);
+  //     AudioRecord.stop();
+  //   };
+  //   const audioMesg = {
+  //     _id: generateID,
+  //     audio: voiceUri,
+  //     duration: voiceDuration,
+  //     createdAt: new Date(),
+  //     user,
+  //   };
+  //   setAudioMessage(audioMesg);
+  //   console.log('audioMessage', audioMessage);
+  //@ts-ignore
+  // onSend([audioMessage]);
+  // };
 
   const CustomAudioComponent = props => {
     return (
       <TouchableOpacity
         onPress={() => {
+          console.log('PRESS AUDIO LISTEN');
+
           const sound = new Sound(props?.currentMessage?.audio, error => {
             if (error) {
               console.log('Failed to load the sound', error);
@@ -309,9 +337,9 @@ export const MessageScreen = () => {
           onPress={() =>
             userState.typeInUser
               ? //@ts-ignore
-                navigation.navigate(R.routes.CLIENT_OREDERS)
+                navigation.navigate('ClientOrderStack')
               : //@ts-ignore
-                navigation.navigate(R.routes.OREDERS)
+                navigation.navigate('OrderStack')
           }
           style={{
             paddingVertical: 20,
@@ -319,7 +347,7 @@ export const MessageScreen = () => {
             backgroundColor: '#F7F9FD',
           }}>
           <Body size={16} color="rgba(85, 85, 85, 1)" center>
-            Перейти в заказ Доставка...
+            Перейти к заказам ...
           </Body>
         </TouchableOpacity>
       </View>
@@ -327,8 +355,7 @@ export const MessageScreen = () => {
         scrollToBottom
         renderActions={props => renderActions(props)}
         renderCustomView={props => renderCustomView(props)}
-        renderMessageAudio={props => <CustomAudioComponent {...props} />}
-        // renderMessageAudio={renderAudio}
+        renderMessageAudio={props => CustomAudioComponent(props)}
         renderSend={renderSend}
         minInputToolbarHeight={33}
         maxInputLength={32}

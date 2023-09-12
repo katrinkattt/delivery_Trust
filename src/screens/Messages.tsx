@@ -52,7 +52,7 @@ export default function Messages() {
   const reload = () => {
     dispatch(
       loadChat({
-        id: user.id,
+        id: user.user_id,
         onSuccess: () => {
           console.log('good loadChat');
           setRefreshing(false);

@@ -55,6 +55,7 @@ export default function HomeClient() {
   const order = useSelector(state => state.order);
   const activeOrder = order.orders.filter((obj: IOrder) => obj.active);
   const lastOrder = activeOrder.length > 0 ? activeOrder.length - 1 : 0;
+  console.log('activeOrder', activeOrder);
 
   const time = (activeOrder[lastOrder]?.typeTarif * 60) | 60;
   let curTime = (time - activeOrder[lastOrder]?.activeMinute) | 1;
@@ -102,7 +103,7 @@ export default function HomeClient() {
     );
     dispatch(
       loadUserData({
-        user_id: user.id,
+        user_id: user.user_id,
         onSuccess: () => {
           console.log('good loadDataUser');
         },
@@ -113,7 +114,7 @@ export default function HomeClient() {
     );
     dispatch(
       loadChat({
-        id: user.id,
+        id: user.user_id,
         onSuccess: () => {
           console.log('good loadChat');
         },
@@ -185,7 +186,7 @@ export default function HomeClient() {
               }}>
               <View>
                 <Body color="#243757" bold style={styles.currentOrdersText}>
-                  {lastOrder ? 'Заказ в процессе!' : 'Еще нет заказов'}
+                  {lastOrder + 1 ? 'Заказ в процессе!' : 'Еще нет заказов'}
                 </Body>
               </View>
 

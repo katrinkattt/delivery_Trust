@@ -38,10 +38,8 @@ export const freeOrders = createAsyncThunk<
   }
 >('orders/free', async arg => {
   try {
-    const free = '?active=true&courier=none';
-    console.log('FREE_ORDERS+add=', R.consts.API_GET_ORDERS + free);
     const {data: response} = await apiClient.get<IOrder[]>(
-      R.consts.API_GET_ORDERS + free,
+      R.consts.API_GET_FREE_ORDERS,
     );
     arg.onSuccess?.(response);
     console.log('response in GET_FREE_ORDERS', response);
@@ -87,7 +85,7 @@ export const editOrder = createAsyncThunk<
   try {
     const idOrder = `?order_id=${arg.id}`;
     const {data: response} = await apiClient.put<IOrder>(
-      R.consts.API_CR_ORDER + idOrder,
+      R.consts.API_CR_ORDER,
       arg.data,
     );
     console.log(

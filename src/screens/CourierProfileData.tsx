@@ -22,6 +22,7 @@ import {setAddress, setFullName} from '../state/user/slice';
 import axios from 'axios';
 import {API_BASE_URL} from '../res/consts';
 import {GOOGLE_API_KEY_A} from '../api/googleApi';
+import {minLength, validator} from '../utils/validators';
 
 export default function CourierProfileData() {
   const {loading, email, role} = useAppSelector(getUser);
@@ -135,8 +136,12 @@ export default function CourierProfileData() {
                   navigation.navigate('SigningAnAgreement');
                 },
                 onError: async e => {
-                  setError('Ошибка сервера, попробуйте позже');
-                  console.log('createUserAction CLIENT ERR::', e);
+                  if (399 < e.status < 500) {
+                    setError(e.data.message);
+                  } else {
+                    setError('Ошибка сервера, попробуйте позже');
+                  }
+                  console.log('createUserAction COURIER ERR::', e);
                 },
               }),
             );
@@ -161,10 +166,11 @@ export default function CourierProfileData() {
               label="Фамилия имя отчество*"
               placeholder="Введите фамилию имя отчество"
               position="top"
+              validate={validator(minLength(3))}
             />
             <AuthInput
               name="region"
-              label="Регион*"
+              label="Регион"
               placeholder="Выберите свой регион"
               position="center"
             />
@@ -173,20 +179,22 @@ export default function CourierProfileData() {
               label="Город*"
               placeholder="Выберите свой город"
               position="center"
+              validate={validator(minLength(3))}
             />
             <AuthInput
               name="street"
               label="Улица*"
               placeholder="Укажите вашу улицу"
               position="center"
+              validate={validator(minLength(3))}
             />
             <AuthInput
               name="house"
               label="Дом*"
               placeholder="Укажите номер вашего дома"
               position="center"
+              validate={validator(minLength(1))}
             />
-
             <AuthInput
               containerStyle={{borderBottomWidth: 0}}
               label="Квартира"
@@ -194,6 +202,9 @@ export default function CourierProfileData() {
               position="center"
               name="apartment"
             />
+            <Body size={14} color="#333">
+              * Обязательные поля
+            </Body>
             <TouchableOpacity onPress={() => handleDocumentSelection(1)}>
               <ImageInput
                 containerStyle={{borderTopWidth: 1}}

@@ -8,7 +8,11 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 const backImage = require('../assets/bank.png');
 import R from '../res';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import Button from './common/Button';
+import {ModalCustom} from './ModalCustom';
+import {colors} from '../theme/themes';
+import {logout} from '../state/user/slice';
 
 // interface IData {
 //     id: number
@@ -22,6 +26,7 @@ import {useSelector} from 'react-redux';
 
 export default function SettingProfile() {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const user = useSelector(state => state.user);
   const [data, setData] = useState([
     {id: 1, title: 'Курьер подходит к дому', chosen: false},
@@ -32,7 +37,9 @@ export default function SettingProfile() {
     system: 'Добавить карту',
     number: '**** **** **** 0000',
   };
-  const currentCard = user.cards ? user.cards[user.curCard] : exampleCard;
+  const currentCard = user.cards?.number
+    ? user.cards[user.curCard]
+    : exampleCard;
   console.log(currentCard, 'currentCard');
 
   const pressButton = (id: number) => {
@@ -45,7 +52,7 @@ export default function SettingProfile() {
     });
     setData(newData);
   };
-
+  const [modalVisible, setModalVisible] = useState(false);
   // const handPress = (item) => {
   //     const newItem = teleg.map((val) => {
   //         if (val.id === item.id) {
@@ -60,8 +67,48 @@ export default function SettingProfile() {
     //@ts-ignore
     navigation.navigate(R.routes.CARD_EDITOR);
   };
+  const logOut = () => {
+    setModalVisible(false);
+    dispatch(logout());
+    navigation.navigate('AuthNavigator');
+  };
   return (
     <View style={styles.card}>
+      <ModalCustom modalVisible={modalVisible}>
+        <View style={{width: 290}}>
+          {/* <TouchableOpacity
+            onPress={() => setModalVisible(false)}
+            style={{alignItems: 'flex-end', height: 30}}>
+            <Text
+              style={{
+                marginTop: -20,
+                color: colors.lavender,
+                fontSize: 26,
+              }}>
+              ×
+            </Text> */}
+          {/* </TouchableOpacity> */}
+          <Body
+            color="#243757"
+            bold
+            size={16}
+            style={{marginBottom: 20, marginTop: 0, fontWeight: 'bold'}}>
+            Вы действительно хотите выйти?
+          </Body>
+          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+            <View style={{width: '50%', paddingHorizontal: 10}}>
+              <Button
+                onPress={() => setModalVisible(false)}
+                buttonType={2}
+                text="ОТМЕНИТЬ"
+              />
+            </View>
+            <View style={{width: '50%', paddingHorizontal: 10}}>
+              <Button onPress={logOut} buttonType={1} text="ВЫЙТИ" />
+            </View>
+          </View>
+        </View>
+      </ModalCustom>
       <Text style={styles.courierRatingText}>Банковская карта</Text>
       <TouchableOpacity onPress={editCard}>
         <ImageBackground
@@ -107,6 +154,11 @@ export default function SettingProfile() {
           />
         </View>
       ))}
+      <Button
+        onPress={() => setModalVisible(true)}
+        buttonType={1}
+        text="ВЫЙТИ"
+      />
       {/* <View style={styles.SwitchCard}>
                 <Body size={16} style={styles.text}>
                     Курьер подходит к дому

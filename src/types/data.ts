@@ -150,7 +150,7 @@ export interface IRole {
   user_type?: number;
   access_token?: string;
   role?: string;
-  userType?: string;
+  userType?: number;
 }
 export interface IChangePass {
   oldPasword: string;

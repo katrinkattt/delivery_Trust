@@ -99,6 +99,7 @@ export default function OrderDetail({route}: IProps) {
       editOrder({
         id: item?.id || 0,
         data: {
+          order_id: item?.id,
           complete: false,
           active: false,
         },
@@ -124,6 +125,7 @@ export default function OrderDetail({route}: IProps) {
           editOrder({
             id: item?.id || 0,
             data: {
+              order_id: item?.id,
               complete: true,
               active: false,
             },
@@ -388,17 +390,19 @@ export default function OrderDetail({route}: IProps) {
         </View>
 
         <View style={{marginTop: 16}}>
-          <Button
-            onPress={confirmDelivery}
-            buttonType={user ? 1 : 3}
-            text={
-              item.active
-                ? 'ПОДТВЕРДИТЬ ДОСТАВКУ'
-                : item?.complete
-                ? 'ЗАБРАЛ ПОСЫЛКУ'
-                : 'ЗАКАЗ ОТМЕНЕН'
-            }
-          />
+          {user && (
+            <Button
+              onPress={confirmDelivery}
+              buttonType={user ? 1 : 3}
+              text={
+                item.active
+                  ? 'ПОДТВЕРДИТЬ ДОСТАВКУ'
+                  : item?.complete
+                  ? 'ЗАБРАЛ ПОСЫЛКУ'
+                  : 'ЗАКАЗ ОТМЕНЕН'
+              }
+            />
+          )}
         </View>
       </ScrollView>
     </View>

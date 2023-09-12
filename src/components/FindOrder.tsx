@@ -30,14 +30,18 @@ export default function FindOrder() {
   const dispatch = useAppDispatch();
   const [pressFilter, setPressFilter] = useState(false);
   const [readOrder, setReadOrder] = useState(0);
-  const {findOrders} = useSelector(state => state.order);
+  // const {findOrders} = useSelector(state => state.order);
+  const [findOrders, setFindOrders] = useState([]);
   const user = useSelector(state => state.user);
   const [refreshing, setRefreshing] = useState(false);
+  console.log('findOrders in PAGE', findOrders);
 
   const reload = () => {
     dispatch(
       freeOrders({
-        onSuccess: () => {
+        onSuccess: r => {
+          console.log('resp', r);
+          setFindOrders(r);
           setRefreshing(false);
         },
         onError: async e => {
@@ -60,13 +64,14 @@ export default function FindOrder() {
         data: {
           order_id: id,
           courier_id: user.id,
+          courierId: user.id,
         },
         onSuccess: () => {
-          console.log('good freeOrders');
+          console.log('good takeOrder');
           reload();
         },
         onError: async e => {
-          console.log('ERR freeOrders =>>', e);
+          console.log('ERR takeOrder =>>', e);
         },
       }),
     );

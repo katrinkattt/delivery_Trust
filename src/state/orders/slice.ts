@@ -174,10 +174,9 @@ const ordersSlice = createSlice({
     builder.addCase(
       freeOrders.fulfilled.type,
       (state, action: PayloadAction<IOrder[]>) => {
+        console.log('action.payload===>', action);
         state.loading = false;
         state.findOrders = action.payload;
-        state.donut = 0;
-        state.currPaymentId = 0;
       },
     ),
       builder.addCase(freeOrders.pending.type, state => {

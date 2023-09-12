@@ -59,6 +59,14 @@ const userSlice = createSlice({
   name: 'user',
   initialState: initialStateUser,
   reducers: {
+    logout: state => {
+      state.access_token = '';
+      state.refresh_token = '';
+      state.role = 0;
+      state.email = '';
+      state.user_id = 0;
+      return state;
+    },
     setCode: (state, action) => {
       const {code} = action.payload;
       state.code = code;
@@ -109,9 +117,8 @@ const userSlice = createSlice({
     },
     addSenders: (state, action) => {
       const {sender} = action.payload;
-      console.log('sender in STATE in action', sender);
-
       state.senders = sender;
+      console.log('sender in STATE in action', sender);
     },
   },
   extraReducers: builder => {
@@ -285,7 +292,7 @@ const userSlice = createSlice({
         (state, action: PayloadAction<IRole>) => {
           state.loading = false;
           state.role = action.payload.userType;
-          state.typeInUser = action.payload.userType === 'Client';
+          state.typeInUser = action.payload.userType == 2;
         },
       ),
       builder.addCase(postRole.pending.type, state => {
@@ -300,7 +307,7 @@ const userSlice = createSlice({
         state.loading = false;
         console.log('editSenders.fulfilled.type==>', action.payload);
 
-        // state.senders = action.payload;
+        state.senders = action.payload;
       },
     ),
       builder.addCase(editSenders.pending.type, state => {
@@ -327,5 +334,6 @@ export const {
   setCards,
   setCurrCard,
   addSenders,
+  logout,
 } = userSlice.actions;
 export const userReducer = persistReducer(persistConfig, userSlice.reducer);
