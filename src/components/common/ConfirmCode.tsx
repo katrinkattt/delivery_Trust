@@ -97,6 +97,8 @@ const ConfirmCodeField = ({data}: IPropsConfirmCode) => {
         dispatch(setEmail({email: data.email}));
       }
       if (data.email && !data?.password) {
+        console.log();
+
         dispatch(setCode({code: code}));
         dispatch(setEmail({email: data.email}));
         dispatch(
@@ -105,9 +107,16 @@ const ConfirmCodeField = ({data}: IPropsConfirmCode) => {
               email: data.email,
               code: code,
             },
-            onSuccess: async () => {
-              // @ts-ignore
-              navigation.navigate(R.routes.NEW_PASS);
+            onSuccess: async r => {
+              console.log('validCode>>', r?.validCode);
+              if (r?.validCode == true) {
+                // @ts-ignore
+                navigation.navigate(R.routes.NEW_PASS);
+              } else {
+                setError(
+                  'Предоставленный код не совпадает или истек срок действия',
+                );
+              }
             },
             onError: async () => {
               setError(

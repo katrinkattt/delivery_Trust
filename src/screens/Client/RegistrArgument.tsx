@@ -109,16 +109,16 @@ export default function ClientRegistrArgumet() {
                 position="top"
                 validate={validator(minLength(3))}
               />
-              <AuthInput
+              {/* <AuthInput
                 name="region"
                 label="Регион"
-                placeholder="Выберите свой регион"
+                placeholder="Укажите ваш регион"
                 position="center"
-              />
+              /> */}
               <AuthInput
                 name="city"
                 label="Город*"
-                placeholder="Выберите свой город"
+                placeholder="Укажите ваш город"
                 position="center"
                 validate={validator(minLength(3))}
               />

@@ -52,7 +52,7 @@ export default function AuthNavigator() {
         bold
         size={36}
         color="#fff">
-        Название приложения
+        Delivery Trust
       </Body>
 
       <Image

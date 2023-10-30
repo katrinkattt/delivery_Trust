@@ -67,13 +67,16 @@ export default function Login() {
         }),
       );
     } else {
+      const dataRec = {
+        email: data.email,
+      };
       dispatch(
         resetPassCodeAction({
           data: {email: data.email},
           onSuccess: () => {
             //@ts-ignore
             navigation.navigate(R.routes.CONFIRM_EMAIL, {
-              data: {email: emailRecov},
+              data: dataRec,
             });
           },
           onError: async () => {
@@ -135,7 +138,7 @@ export default function Login() {
         />
         {!recov && (
           <View style={styles.socialButtonsContainer}>
-            <View style={styles.socialMediaButton}>
+            {/* <View style={styles.socialMediaButton}>
               <FacebookLogo />
             </View>
 
@@ -145,7 +148,7 @@ export default function Login() {
 
             <View style={styles.socialMediaButton}>
               <AppleLogo />
-            </View>
+            </View> */}
           </View>
         )}
       </View>

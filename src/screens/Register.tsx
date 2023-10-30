@@ -16,6 +16,7 @@ import useAppSelector from '../hooks/useAppSelector';
 import {requir, validator, email, tel} from '../utils/validators';
 import Body from '../components/common/Body';
 import {useSelector} from 'react-redux';
+import InputTextMask from '../components/common/InputTextMask';
 
 export default function Register() {
   const [error, setError] = useState('');
@@ -71,14 +72,14 @@ export default function Register() {
             name="email"
             validate={validator(email)}
           />
-
-          <AuthInput
+          <InputTextMask
             label="Номер телефона*"
             placeholder="Введите номер телефона"
             keyboardType="phone-pad"
             position="center"
             name="phone"
-            maxLength={11}
+            maxLength={16}
+            mask="+[0] [000] [000]-[00]-[00]"
             validate={validator(tel)}
           />
           <AuthInput
@@ -111,7 +112,7 @@ export default function Register() {
           <Space height={20} />
 
           <View style={styles.socialButtonsContainer}>
-            <View style={styles.socialMediaButton}>
+            {/* <View style={styles.socialMediaButton}>
               <FacebookLogo />
             </View>
 
@@ -121,7 +122,7 @@ export default function Register() {
 
             <View style={styles.socialMediaButton}>
               <AppleLogo />
-            </View>
+            </View> */}
           </View>
         </View>
       )}

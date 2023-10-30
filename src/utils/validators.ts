@@ -43,7 +43,7 @@ export function req(value: string) {
 }
 
 export function tel(value: string) {
-  if (value.length < 11) {
+  if (value.length < 15) {
     return 'Номер должен состоять не менее  11 цифр';
   }
 }

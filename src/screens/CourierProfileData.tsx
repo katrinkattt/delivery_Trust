@@ -23,6 +23,8 @@ import axios from 'axios';
 import {API_BASE_URL} from '../res/consts';
 import {GOOGLE_API_KEY_A} from '../api/googleApi';
 import {minLength, validator} from '../utils/validators';
+import {colors} from '../theme/themes';
+import {SCREEN_WIDTH} from '../res/consts';
 
 export default function CourierProfileData() {
   const {loading, email, role} = useAppSelector(getUser);
@@ -39,7 +41,7 @@ export default function CourierProfileData() {
   // type: 'image/jpeg', // MIME-тип файла
   const initialValues: ICreateUser = {
     full_name: '',
-    region: '',
+    // region: '',
     city: '',
     street: '',
     house: '',
@@ -168,16 +170,16 @@ export default function CourierProfileData() {
               position="top"
               validate={validator(minLength(3))}
             />
-            <AuthInput
+            {/* <AuthInput
               name="region"
               label="Регион"
               placeholder="Выберите свой регион"
               position="center"
-            />
+            /> */}
             <AuthInput
               name="city"
               label="Город*"
-              placeholder="Выберите свой город"
+              placeholder="Укажите ваш город"
               position="center"
               validate={validator(minLength(3))}
             />
@@ -207,19 +209,31 @@ export default function CourierProfileData() {
             </Body>
             <TouchableOpacity onPress={() => handleDocumentSelection(1)}>
               <ImageInput
-                containerStyle={{borderTopWidth: 1}}
+                containerStyle={{
+                  borderTopWidth: 1,
+                  backgroundColor:
+                    document !== '' ? colors.lavender : colors.ligther,
+                }}
                 label="Разворот документа, удостоверяющего личность с фото"
                 position="center"
               />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleDocumentSelection(2)}>
               <ImageInput
+                containerStyle={{
+                  backgroundColor:
+                    documentTwo !== '' ? colors.lavender : colors.ligther,
+                }}
                 label="Второй разворот документа, удостоверяющего личность *"
                 position="bottom"
               />
             </TouchableOpacity>
             <CustomCheckbox
-              label={`Подтверждаю корректность введенных${'\n'} данных`}
+              label={
+                SCREEN_WIDTH > 385
+                  ? `Подтверждаю корректность введенных${'\n'}данных`
+                  : `Подтверждаю корректность ${'\n'}введенных данных`
+              }
               style={{marginTop: 10}}
               onChange={() => setIsCorrect(!isCorrect)}
               val={isCorrect}

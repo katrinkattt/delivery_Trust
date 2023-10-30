@@ -1,7 +1,13 @@
 import {createAction, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {PersistConfig, persistReducer} from 'redux-persist';
 import AsyncStorage from '@react-native-community/async-storage';
-import {IOrder, OrdersState, TariffOrder, CategoryOrder} from './types';
+import {
+  IOrder,
+  OrdersState,
+  TariffOrder,
+  CategoryOrder,
+  ITariffPrice,
+} from './types';
 import {
   loadOrder,
   freeOrders,
@@ -9,6 +15,7 @@ import {
   createOrder,
   loadCategory,
   loadTariffs,
+  tariffPrice,
 } from './action';
 
 export const initialOrdersState: OrdersState = {
@@ -18,6 +25,7 @@ export const initialOrdersState: OrdersState = {
   categoryDoc: [],
   categoryPack: [],
   tariffs: [],
+  currTariff: {},
   donut: 0,
   currPaymentId: 0,
   newOrder: {
@@ -111,6 +119,8 @@ const ordersSlice = createSlice({
     },
     setNewOrderSender: (state, action) => {
       const {sender, sender_id} = action.payload;
+      console.log('setNewOrderSender', 'sender:', sender, 's_ID', sender_id);
+
       state.newOrder.sender = sender;
       state.newOrder.sender_id = sender_id;
       return state;
@@ -123,8 +133,9 @@ const ordersSlice = createSlice({
       return state;
     },
     setNewOrderRecipient: (state, action) => {
-      const {recipient} = action.payload;
+      const {recipient, phone} = action.payload;
       state.newOrder.recipient = recipient;
+      state.newOrder.phone = phone;
       return state;
     },
     setNewOrderPaymentType: (state, action) => {
@@ -211,6 +222,21 @@ const ordersSlice = createSlice({
         state.loading = false;
       });
     builder.addCase(
+      tariffPrice.fulfilled.type,
+      (state, action: PayloadAction<ITariffPrice>) => {
+        state.loading = false;
+        state.currTariff = action.payload;
+        state.newOrder.tariff = action.payload.tariffid;
+        state.newOrder.price = action.payload.price;
+      },
+    ),
+      builder.addCase(tariffPrice.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(tariffPrice.rejected.type, state => {
+        state.loading = false;
+      });
+    builder.addCase(
       loadCategory.fulfilled.type,
       (state, action: PayloadAction<CategoryOrder>) => {
         state.loading = false;
@@ -228,7 +254,7 @@ const ordersSlice = createSlice({
       });
   },
 });
-const persistConfig: PersistConfig<OrderState> = {
+const persistConfig: PersistConfig<OrdersState> = {
   key: 'orders',
   storage: AsyncStorage,
   whitelist: ['load', 'setState'],

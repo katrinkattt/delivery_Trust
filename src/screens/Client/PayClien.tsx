@@ -20,11 +20,6 @@ import {setNewOrderPaymentType} from '../../state/orders/slice';
 import {useDispatch, useSelector} from 'react-redux';
 
 export default function PayClient() {
-  const [data, setData] = useState([
-    {id: 1, title: 'По QR-коду', select: false},
-    {id: 2, title: '**** **** **** 5670', select: true},
-    {id: 3, title: 'Криптовалюты', select: true},
-  ]);
   const [currMethod, setCurrMethod] = useState(1);
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
@@ -33,6 +28,21 @@ export default function PayClient() {
   const donut = order.donut;
   const [err, setErr] = useState('');
   const user = useSelector(state => state.user);
+  const tariff = order.currTariff;
+  const curCard = user?.curCard;
+  const cardNum = user?.cards[curCard]
+    ? user?.cards[curCard].number.slice(-4)
+    : ' добавить';
+
+  const [data, setData] = useState([
+    {id: 1, title: 'По QR-коду', select: false},
+    {
+      id: 2,
+      title: '**** **** **** ' + cardNum,
+      select: true,
+    },
+    {id: 3, title: 'Криптовалюты', select: true},
+  ]);
 
   const pressButton = (id: number) => {
     const newData = data.map(i => {
@@ -70,40 +80,42 @@ export default function PayClient() {
     if (donut > 0) {
       console.log('===>paymentFunc');
 
-      dispatch(
-        paymentFunc({
-          data: {
-            id: order.currPaymentId,
-            type: currMethod,
-            total: price,
-          },
-          onSuccess: () => {
-            reloadOrders();
-            // @ts-ignore
-            // navigation.navigate('TabScreen');
-            console.log('paymentFunc OK');
-          },
-          onError: async e => {
-            console.log('Ошибка сервера', e);
-          },
-        }),
-      );
+      // dispatch(
+      //   paymentFunc({
+      //     data: {
+      //       id: order.currPaymentId,
+      //       type: currMethod,
+      //       total: price,
+      //     },
+      //     onSuccess: () => {
+      //       reloadOrders();
+      //       // @ts-ignore
+      //       // navigation.navigate('TabScreen');
+      //       console.log('paymentFunc OK');
+      //     },
+      //     onError: async e => {
+      //       console.log('Ошибка сервера', e);
+      //     },
+      //   }),
+      // );
     }
     if (donut == 0) {
-      dispatch(
-        createOrder({
-          data: order.newOrder,
-          onSuccess: () => {
-            // @ts-ignore
-            // navigation.navigate('TabScreen');
-          },
-          onError: async e => {
-            console.log('Ошибка сервера', e);
+      console.log('donut == 0');
 
-            setErr('Ошибка сервера, попробуйте позже');
-          },
-        }),
-      );
+      // dispatch(
+      //   createOrder({
+      //     data: order.newOrder,
+      //     onSuccess: () => {
+      //       // @ts-ignore
+      //       // navigation.navigate('TabScreen');
+      //     },
+      //     onError: async e => {
+      //       console.log('Ошибка сервера', e);
+
+      //       setErr('Ошибка сервера, попробуйте позже');
+      //     },
+      //   }),
+      // );
     }
   };
 

@@ -7,6 +7,7 @@ import {
   View,
   Platform,
   FlatList,
+  Text,
 } from 'react-native';
 import notifee, {EventType} from '@notifee/react-native';
 import FastImage from 'react-native-fast-image';
@@ -38,6 +39,7 @@ import {
 import {loadChat} from '../../state/chat/action';
 import {IOrder} from '../../state/orders/types';
 import {loadUserData} from '../../state/user/action';
+import {sha256} from 'react-native-sha256';
 
 const {width} = Dimensions.get('window');
 
@@ -54,7 +56,7 @@ export default function HomeClient() {
   const dispatch = useAppDispatch();
   const order = useSelector(state => state.order);
   const activeOrder = order.orders.filter((obj: IOrder) => obj.active);
-  const lastOrder = activeOrder.length > 0 ? activeOrder.length - 1 : 0;
+  const lastOrder = activeOrder.length > 0 ? activeOrder.length - 1 : -1;
   console.log('activeOrder', activeOrder);
 
   const time = (activeOrder[lastOrder]?.typeTarif * 60) | 60;
@@ -85,7 +87,7 @@ export default function HomeClient() {
         },
       }),
     );
-    //@ts-ignore
+    // @ts-ignore
     navigation.navigate(R.routes.CLIENT_ORDER_PARAM);
   };
 
@@ -152,9 +154,16 @@ export default function HomeClient() {
               <FastImage source={userImg} style={styles.image} />
 
               <View style={{marginLeft: 24}}>
-                <Body color="white" style={{fontSize: 20, fontWeight: '700'}}>
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    color: '#fff',
+                    fontSize: 20,
+                    fontWeight: '700',
+                    width: 140,
+                  }}>
                   {user?.full_name}
-                </Body>
+                </Text>
               </View>
             </View>
             {/* <Button

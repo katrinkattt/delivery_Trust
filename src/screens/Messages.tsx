@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     // position: 'absolute',
   },
   inputBox: {
-    width: '100%',
+    width: '92%',
     height: 52,
     marginTop: 0,
     flexDirection: 'row',

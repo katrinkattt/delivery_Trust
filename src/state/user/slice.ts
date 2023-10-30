@@ -25,8 +25,16 @@ import {
   createUserAction,
   editSenders,
   loadUserData,
+  editData,
+  changePass,
 } from './action';
-import {OrderSender, UserDataAddit, UserState} from './types';
+import {
+  OrderSender,
+  UserDataAddit,
+  UserState,
+  EditData,
+  ChangePass,
+} from './types';
 
 export const initialStateUser: UserState = {
   id: 0,
@@ -98,22 +106,25 @@ const userSlice = createSlice({
     },
     loadCards: (state, action) => {
       const {cards} = action.payload;
-      console.log('LOADD CADRSSSS');
+      console.log('LOADD CADRSSSS', action.payload);
 
       state.cards = cards;
     },
     setCards: (state, action) => {
       const {Cards} = action.payload;
       state.cards = Cards;
+      return state;
     },
     setCurrCard: (state, action) => {
       const {card} = action.payload;
       state.curCard = card;
+      return state;
     },
     delCard: (state, action) => {
       const {idCard} = action.payload;
       const cards = state.cards?.filter(id => id === idCard);
       state.cards = cards;
+      return state;
     },
     addSenders: (state, action) => {
       const {sender} = action.payload;
@@ -258,7 +269,7 @@ const userSlice = createSlice({
         state.email = action.payload.email;
         state.phone = action.payload.phone;
         state.typeInUser = action.payload.userType == 2;
-        state.cards = action.payload.userData.cards;
+        // state.cards = action.payload.userData.cards;
         state.fines = action.payload.userData.fines;
         state.tea = action.payload.userData.tea;
         state.ballance = action.payload.userData.ballance;
@@ -302,12 +313,40 @@ const userSlice = createSlice({
         state.loading = false;
       });
     builder.addCase(
+      editData.fulfilled.type,
+      (state, action: PayloadAction<EditData>) => {
+        state.loading = false;
+        console.log('editData.fulfilled.type==>', action.payload);
+      },
+    ),
+      builder.addCase(editData.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(editData.rejected.type, state => {
+        state.loading = false;
+      });
+    //
+    builder.addCase(
+      changePass.fulfilled.type,
+      (state, action: PayloadAction<ChangePass>) => {
+        state.loading = false;
+        console.log('ChangePass fulfilled==>', action.payload);
+      },
+    ),
+      builder.addCase(changePass.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(changePass.rejected.type, state => {
+        state.loading = false;
+      });
+    //
+    builder.addCase(
       editSenders.fulfilled.type,
       (state, action: PayloadAction<OrderSender[]>) => {
         state.loading = false;
         console.log('editSenders.fulfilled.type==>', action.payload);
 
-        state.senders = action.payload;
+        // state.senders = action.payload;
       },
     ),
       builder.addCase(editSenders.pending.type, state => {

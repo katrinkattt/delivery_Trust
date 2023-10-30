@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {ScrollView, View, Text, TouchableOpacity} from 'react-native';
+import {ScrollView, View, Text, TouchableOpacity, Linking} from 'react-native';
 import Body from '../components/common/Body';
 import {ScaledSheet} from 'react-native-size-matters/extend';
 import {DownloadIcon, TreatyIcon} from '../components/common/Svgs';
@@ -16,6 +16,8 @@ export default function SigningAnAgreement() {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [agre, setAgre] = useState(false);
+  const dogovorLink =
+    'https://docs.google.com/document/d/1rFlzbOIpHG9Hcz_dKfmSiH21RJ75bM1c7G2nSu7LTyI/edit?usp=sharing';
 
   const goToAgreement = () => {
     //@ts-ignore
@@ -80,6 +82,7 @@ export default function SigningAnAgreement() {
 
       <DropShadow style={styles.buttonShadow}>
         <Button
+          onPress={() => Linking.openURL(dogovorLink)}
           renderContent={() => (
             <>
               <Body

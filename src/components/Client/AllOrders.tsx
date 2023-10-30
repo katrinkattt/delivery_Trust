@@ -12,6 +12,7 @@ import Body from '../common/Body';
 import OrdersITEM from './OrdersITEM';
 import {useAppDispatch} from '../../hooks/redux';
 import {loadOrder} from '../../state/orders/action';
+import {IOrder} from '../../state/orders/types';
 
 const data = [
   {id: 1, name: 'Все', active: true},
@@ -26,6 +27,11 @@ export default function AllOrders() {
   const {id} = useSelector(state => state.user);
   const [refreshing, setRefreshing] = useState(false);
   const dispatch = useAppDispatch();
+  const [filter, setFilter] = useState('Все');
+  const FilteredOrder =
+    filter == 'Все'
+      ? orders
+      : orders.filter((obj: IOrder) => obj.category == filter);
 
   const reload = () => {
     dispatch(
@@ -55,15 +61,16 @@ export default function AllOrders() {
         contentContainerStyle={{paddingRight: 35, paddingHorizontal: 16}}>
         {data?.map(item => (
           <TouchableOpacity
+            onPress={() => setFilter(item.name)}
             key={item?.id}
             activeOpacity={0.7}
             style={[
               styles.box,
-              {backgroundColor: item?.active ? '#F1F0FE' : '#F7F9FD'},
+              {backgroundColor: item.name == filter ? '#F1F0FE' : '#F7F9FD'},
             ]}>
             <Body
               medium
-              color={item?.active ? '#937AEA' : '#A1ADBF'}
+              color={item.name == filter ? '#937AEA' : '#A1ADBF'}
               style={styles.text}>
               {item.name}
             </Body>
@@ -76,7 +83,7 @@ export default function AllOrders() {
         }>
         {orders[0] ? (
           <FlatList
-            data={orders}
+            data={FilteredOrder}
             style={{marginBottom: 35}}
             keyExtractor={item => item.id.toString()}
             //@ts-ignore

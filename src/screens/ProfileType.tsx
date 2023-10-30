@@ -127,7 +127,7 @@ export default function ProfileType() {
           style={styles.tabBarItem}>
           <Animated.Text
             style={{fontFamily: 'Gilroy-SemiBold', color: tabBarRunnerColor}}>
-            Пользователь
+            Заказчик
           </Animated.Text>
         </TouchableOpacity>
       </View>

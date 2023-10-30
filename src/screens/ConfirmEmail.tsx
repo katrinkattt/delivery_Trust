@@ -7,6 +7,7 @@ import ConfirmCodeField from '../components/common/ConfirmCode';
 export default function ConfirmEmail({route}) {
   const safeAreaInsets = useSafeAreaInsets();
   const {data} = route.params;
+  console.log('data route.params', data);
 
   return (
     <View style={[styles.container, {paddingTop: safeAreaInsets.top + 33}]}>

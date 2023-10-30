@@ -9,7 +9,7 @@ import {
   IResetPass,
   ICreateUser,
 } from '../../types/data';
-import {OrderSender, UserDataAddit} from './types';
+import {OrderSender, UserDataAddit, EditData, ChangePass} from './types';
 import R from '../../res';
 import apiClient from '../../api/instance';
 export const signOutUser = createAction('user/signOut');
@@ -75,6 +75,7 @@ export const regConfirmCodeAction = createAsyncThunk<
     throw e;
   }
 });
+
 export const createUserAction = createAsyncThunk<
   ILogin,
   {
@@ -169,7 +170,6 @@ export const resetPassCodeAction = createAsyncThunk<
     );
 
     arg.onSuccess?.(response);
-    console.log(response, 'response');
 
     return response;
   } catch (e: any) {
@@ -177,6 +177,7 @@ export const resetPassCodeAction = createAsyncThunk<
     throw e;
   }
 });
+
 export const resetPassVerifyCodeAction = createAsyncThunk<
   IResetPassCode,
   {
@@ -195,8 +196,12 @@ export const resetPassVerifyCodeAction = createAsyncThunk<
     );
 
     arg.onSuccess?.(response);
+    console.log('API_RESET_PASS_VERIFY resp=>>', response);
+
     return response;
   } catch (e: any) {
+    console.log('API_RESET_PASS_VERIFY ERR:', e);
+
     arg.onError?.(e.response);
     throw e;
   }
@@ -275,6 +280,65 @@ export const editSenders = createAsyncThunk<
     throw e;
   }
 });
+// /changepassword/
+export const changePass = createAsyncThunk<
+  EditData,
+  {
+    id: number;
+    data: ChangePass;
+    onSuccess?: (response: ChangePass) => void;
+    onError?: (e: any) => void;
+  }
+>('user_changepass/put', async arg => {
+  console.log('R.consts.ChangePass + id,', R.consts.API_USER_DATA + arg.id);
+  console.log('ChangePass put- DATA:', arg.data);
+
+  try {
+    const id = arg.id;
+    const {data: response} = await apiClient.put<ChangePass>(
+      R.consts.API_CH_PASS + id,
+      arg.data,
+    );
+    console.log('R.consts.API_CH_PASS + id,', R.consts.API_USER_DATA + id);
+    console.log('response changePass', response);
+    arg.onSuccess?.(response);
+    return response;
+  } catch (e: any) {
+    arg.onError?.(e.response);
+    throw e;
+  }
+});
+//
+export const editData = createAsyncThunk<
+  EditData,
+  {
+    id: number;
+    data: EditData;
+    onSuccess?: (response: EditData) => void;
+    onError?: (e: any) => void;
+  }
+>('user_data/put', async arg => {
+  console.log('R.consts.API_USER_DATA + id,', R.consts.API_USER_DATA + arg.id);
+  console.log('user_data/put DATA:', arg.data);
+
+  try {
+    const id = arg.id;
+    const {data: response} = await apiClient.put<EditData>(
+      R.consts.API_USER_EDIT + id,
+      arg.data,
+    );
+    console.log('R.consts.API_USER_DATA + id,', R.consts.API_USER_DATA + id);
+    console.log('user_data/put DATA:', arg.data);
+
+    console.log('response editData', response);
+    arg.onSuccess?.(response);
+    return response;
+  } catch (e: any) {
+    arg.onError?.(e.response);
+    throw e;
+  }
+});
+
 export const loadUserData = createAsyncThunk<
   UserDataAddit,
   {

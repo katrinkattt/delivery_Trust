@@ -8,6 +8,7 @@ export type OrdersState = {
   categoryDoc: Category[];
   categoryPack: Category[];
   tariffs: Tariff[];
+  currTariff: ITariffPriceResp;
 };
 export type IOrder = {
   id?: number;
@@ -43,11 +44,14 @@ export type TariffOrder = {
   tariffs: Tariff[];
 };
 export type Tariff = {
-  tarifId: number;
-  title: string;
-  text: string;
-  txtOutput: string;
-  price: number;
+  tarifId?: number;
+  title?: string;
+  text?: string;
+  txtOutput?: string;
+  price?: number;
+  tariffid?: number;
+  description?: string;
+  txtoutput?: string;
 };
 export type CategoryOrder = {
   doc: Category[];
@@ -65,4 +69,20 @@ export type Payment = {
   tip?: string;
   created_at?: string;
   updated_at?: string;
+};
+export type ITariffPrice = {
+  coors_from?: {latitude: number; longitude: number};
+  coors_delivery?: {latitude: number; longitude: number};
+  description?: string;
+  price?: number;
+  tariffid?: number;
+  title?: string;
+  txtoutput?: string;
+};
+export type ITariffPriceResp = {
+  description?: string;
+  price?: number;
+  tariffid?: number;
+  title?: string;
+  txtoutput?: string;
 };

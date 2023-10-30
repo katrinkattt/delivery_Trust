@@ -25,33 +25,27 @@ export default function CardEditor() {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
   const cards = user.cards;
-  const currCard = user.curCard;
+  const currCard = user?.curCard || 0;
   console.log('currCard', currCard);
-  // console.log();
 
-  const cardArr = [
-    {
-      id: 1,
-      select: true,
-      system: 'MIR',
-      number: '**** **** **** 4256',
-      recToken: 'jsdgdb',
-    },
-    {
-      id: 2,
-      select: false,
-      system: 'Master Card',
-      number: '**** **** **** 0321',
-      recToken: 'lvabe',
-    },
-  ];
+  // const cardArr: ICardData[] = [
+  //   // {
+  //   //   id: 1,
+  //   //   select: true,
+  //   //   system: 'MIR',
+  //   //   number: '**** **** **** 4256',
+  //   //   recToken: 'jsdgdb',
+  //   // },
+  // ];
   useEffect(() => {
     //загрузка карт по сути с бека должна быть
-    if (!cards?.[0].number) {
-      dispatch(loadCards({cards: cardArr}));
+    if (cards !== null || cards?.length > 0) {
+      // dispatch(loadCards({cards: cardArr}));
+      setCurrCard({card: currCard});
+    } else {
+      dispatch(loadCards({cards: []}));
+      setCurrCard({card: 0});
     }
-
-    setCurrCard({card: currCard});
   }, []);
   const [delInd, setDelInd] = useState(0);
 
@@ -74,6 +68,8 @@ export default function CardEditor() {
   };
 
   const pressButton = (num: number) => {
+    console.log('pressButton', num);
+
     dispatch(setCurrCard({card: num}));
   };
 
@@ -100,10 +96,16 @@ export default function CardEditor() {
         ? 'MIR'
         : 'Card';
     const newCard = {...data, system: system};
-    dispatch(loadCards({cards: [newCard, ...cards]}));
+    if (cards?.length > 0 || cards !== null) {
+      dispatch(loadCards({cards: [newCard, ...cards]}));
+    } else {
+      dispatch(loadCards({cards: [newCard]}));
+    }
     setAddModalVisible(false);
     setLoading(false);
   };
+  console.log('cards', cards);
+
   return (
     <View style={{flex: 1}}>
       <ModalCustom modalVisible={addModalVisible}>
@@ -213,7 +215,7 @@ export default function CardEditor() {
           style={{marginTop: 20, fontWeight: 'bold'}}>
           Мои карты
         </Body>
-        {cards?.[0].number ? (
+        {cards !== null && cards?.length > 0 ? (
           cards.map((card, num) => (
             <View style={{flexDirection: 'row'}}>
               <TouchableOpacity

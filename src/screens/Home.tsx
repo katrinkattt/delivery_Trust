@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
   Platform,
+  Text,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import notifee, {EventType} from '@notifee/react-native';
@@ -114,9 +115,16 @@ export default function Home() {
               <FastImage source={userImg} style={styles.image} />
 
               <View style={{marginLeft: 14}}>
-                <Body color="#243757" style={{fontSize: 20, fontWeight: '700'}}>
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    color: '#243757',
+                    fontSize: 20,
+                    fontWeight: '700',
+                    width: 140,
+                  }}>
                   {user?.full_name}
-                </Body>
+                </Text>
               </View>
             </View>
 

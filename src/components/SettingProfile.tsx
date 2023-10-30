@@ -37,9 +37,11 @@ export default function SettingProfile() {
     system: 'Добавить карту',
     number: '**** **** **** 0000',
   };
-  const currentCard = user.cards?.number
-    ? user.cards[user.curCard]
-    : exampleCard;
+  const currentCard =
+    user.cards == null || user.cards.length < 1
+      ? exampleCard
+      : user.cards[user.curCard];
+
   console.log(currentCard, 'currentCard');
 
   const pressButton = (id: number) => {
@@ -129,36 +131,41 @@ export default function SettingProfile() {
         label="Часовой пояс"
         placeholder="(UTC +03:00) Россия / Москва"
       /> */}
+      {user?.typeInUser && (
+        <Body size={20} semiBold style={styles.title}>
+          Уведомления
+        </Body>
+      )}
 
-      <Body size={20} semiBold style={styles.title}>
-        Уведомления
-      </Body>
+      {user?.typeInUser &&
+        data.map(item => (
+          <View style={styles.SwitchCard} key={item.id}>
+            <Body size={16} style={styles.text}>
+              {item.title}
+            </Body>
 
-      {data.map(item => (
-        <View style={styles.SwitchCard} key={item.id}>
-          <Body size={16} style={styles.text}>
-            {item.title}
-          </Body>
+            <ToggleSwitch
+              isOn={item.chosen}
+              onColor="rgba(94, 98, 223, 1)"
+              thumbOnStyle={styles.on}
+              thumbOffStyle={styles.of}
+              trackOnStyle={styles.ton}
+              trackOffStyle={styles.tOff}
+              offColor="#E8E8F0"
+              labelStyle={styles.swipe}
+              size="medium"
+              onToggle={() => pressButton(item.id)}
+            />
+          </View>
+        ))}
+      <View style={{width: '100%', position: 'absolute', bottom: 0}}>
+        <Button
+          onPress={() => setModalVisible(true)}
+          buttonType={1}
+          text="ВЫЙТИ ИЗ ПРИЛОЖЕНИЯ"
+        />
+      </View>
 
-          <ToggleSwitch
-            isOn={item.chosen}
-            onColor="rgba(94, 98, 223, 1)"
-            thumbOnStyle={styles.on}
-            thumbOffStyle={styles.of}
-            trackOnStyle={styles.ton}
-            trackOffStyle={styles.tOff}
-            offColor="#E8E8F0"
-            labelStyle={styles.swipe}
-            size="medium"
-            onToggle={() => pressButton(item.id)}
-          />
-        </View>
-      ))}
-      <Button
-        onPress={() => setModalVisible(true)}
-        buttonType={1}
-        text="ВЫЙТИ"
-      />
       {/* <View style={styles.SwitchCard}>
                 <Body size={16} style={styles.text}>
                     Курьер подходит к дому

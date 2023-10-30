@@ -16,10 +16,6 @@ import {
   Send,
 } from 'react-native-gifted-chat';
 import {useNavigation} from '@react-navigation/native';
-import Sound from 'react-native-sound';
-import AudioRecord from 'react-native-audio-record';
-// import {AudioRecorder, AudioUtils} from 'react-native-audio';
-import Permissions from 'react-native-permissions';
 import {IChatData} from '../../screens/Messages';
 import Body from '../common/Body';
 import Header from '../Header';
@@ -32,7 +28,7 @@ import {useAppDispatch} from '../../hooks/redux';
 import axios from 'axios';
 import {API_BASE_URL} from '../../res/consts';
 const addDocImg = '../../assets/addDoc.png';
-const microImg = '../../assets/microChat.png';
+const phoneImg = '../../assets/phone-call-svgrepo-com.png';
 
 interface IProps {
   route: {
@@ -66,10 +62,9 @@ export const MessageScreen = () => {
     name: userState.full_name,
     avatar: 10,
   };
-
   const item = chats[currentChat];
-  console.log('user===>', user);
-
+  const phone = userState.typeInUser ? item?.courierPhone : item?.clientPhone;
+  console.log('phone', phone);
   console.log('chat in page', item);
   const generateID = () => Math.random().toString(36).substring(2, 10);
 
@@ -192,113 +187,51 @@ export const MessageScreen = () => {
         <Actions
           {...props}
           options={{
-            'Send audio': handleVoiceSend,
+            Позвонить: () => Linking.openURL(`tel:${phone}`),
           }}
           icon={() => (
             <Image
-              source={require(microImg)}
-              style={{width: 22, resizeMode: 'contain', marginTop: -10}}
+              source={require(phoneImg)}
+              style={{
+                width: 24,
+                height: 24,
+              }}
             />
           )}
-          // onPressActionButton={handleVoiceSend}
         />
       </View>
     );
   };
-  const [isRecording, setIsRecording] = useState(false);
-  const [audioMessage, setAudioMessage] = useState({});
-  const handleVoiceSend = () => {
-    console.log('handleVoiceSend');
-    // Permissions.request('microphone').then(response => {
-    //   if (response === 'authorized') {
-    // const audioPath = AudioUtils.DocumentDirectoryPath + '/audio.aac';
-    // AudioRecorder.prepareRecordingAtPath(audioPath, {
-    //   SampleRate: 22050,
-    //   Channels: 1,
-    //   AudioQuality: 'Low',
-    //   AudioEncoding: 'aac',
-    // });
-    // AudioRecorder.startRecording();
 
-    // const audioFile = {
-    //   uri: 'file://' + audioPath,
-    //   type: 'audio/aac',
-    //   name: 'audio.aac',
-    // };
+  // const CustomAudioComponent = props => {
+  //   return (
+  //     <TouchableOpacity
+  //       onPress={() => {
+  //         console.log('PRESS AUDIO LISTEN');
 
-    // const message = {
-    //   _id: Math.round(Math.random() * 1000000),
-    //   createdAt: new Date().getTime(),
-    //   user: {
-    //     _id: 1,
-    //     name: 'User',
-    //   },
-    //   audio: audioFile,
-    // };
-    console.log('AUDIO message');
-    // onSend([message]);
-    // };
-    // });
-  };
-  // const handleVoiceSend = () => {
-  //   console.log('handleVoiceSend');
-  //   const handleRecordPress = () => {
-  //     if (!isRecording) {
-  //       startRecording();
-  //     } else {
-  //       stopRecording();
-  //     }
-  //   };
-  //   const startRecording = () => {
-  //     setIsRecording(true);
-  //     AudioRecord.start();
-  //   };
-  //   const stopRecording = () => {
-  //     setIsRecording(false);
-  //     AudioRecord.stop();
-  //   };
-  //   const audioMesg = {
-  //     _id: generateID,
-  //     audio: voiceUri,
-  //     duration: voiceDuration,
-  //     createdAt: new Date(),
-  //     user,
-  //   };
-  //   setAudioMessage(audioMesg);
-  //   console.log('audioMessage', audioMessage);
-  //@ts-ignore
-  // onSend([audioMessage]);
+  //         const sound = new Sound(props?.currentMessage?.audio, error => {
+  //           if (error) {
+  //             console.log('Failed to load the sound', error);
+  //             return;
+  //           }
+  //           // if Звук успешно загружен, можно воспроизводить
+  //           sound.play();
+  //         });
+  //       }}>
+  //       <View
+  //         style={{
+  //           flexDirection: 'row',
+  //           alignItems: 'center',
+  //           paddingHorizontal: 6,
+  //         }}>
+  //         <Text style={{color: '#fff', fontSize: 26}}>ᐉ</Text>
+  //         <Text style={{marginVertical: 8}}>
+  //           {props?.currentMessage?.duration} sec
+  //         </Text>
+  //       </View>
+  //     </TouchableOpacity>
+  //   );
   // };
-
-  const CustomAudioComponent = props => {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          console.log('PRESS AUDIO LISTEN');
-
-          const sound = new Sound(props?.currentMessage?.audio, error => {
-            if (error) {
-              console.log('Failed to load the sound', error);
-              return;
-            }
-            // if Звук успешно загружен, можно воспроизводить
-            sound.play();
-          });
-        }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            paddingHorizontal: 6,
-          }}>
-          <Text style={{color: '#fff', fontSize: 26}}>ᐉ</Text>
-          <Text style={{marginVertical: 8}}>
-            {props?.currentMessage?.duration} sec
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
 
   const renderCustomView = props => {
     if (props?.currentMessage?.file_type) {
@@ -355,7 +288,6 @@ export const MessageScreen = () => {
         scrollToBottom
         renderActions={props => renderActions(props)}
         renderCustomView={props => renderCustomView(props)}
-        renderMessageAudio={props => CustomAudioComponent(props)}
         renderSend={renderSend}
         minInputToolbarHeight={33}
         maxInputLength={32}

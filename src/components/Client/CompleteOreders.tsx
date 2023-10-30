@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   FlatList,
   ScrollView,
@@ -21,6 +21,10 @@ const data = [
 export default function CompleteOrders() {
   const {orders} = useSelector(state => state.order);
   const completeOrder = orders.filter((obj: IOrder) => !obj.active);
+  const [filter, setFilter] = useState('Все');
+  const FilteredOrder =
+    filter != 'Все' &&
+    completeOrder.filter((obj: IOrder) => obj.category == filter);
 
   return (
     <View style={styles.container}>
@@ -31,14 +35,15 @@ export default function CompleteOrders() {
         {data?.map(item => (
           <TouchableOpacity
             key={item?.id}
+            onPress={() => setFilter(item.name)}
             activeOpacity={0.7}
             style={[
               styles.box,
-              {backgroundColor: item?.active ? '#F1F0FE' : '#F7F9FD'},
+              {backgroundColor: item.name == filter ? '#F1F0FE' : '#F7F9FD'},
             ]}>
             <Body
               medium
-              color={item?.active ? '#937AEA' : '#A1ADBF'}
+              color={item.name == filter ? '#937AEA' : '#A1ADBF'}
               style={styles.text}>
               {item.name}
             </Body>
@@ -47,7 +52,7 @@ export default function CompleteOrders() {
       </ScrollView>
 
       <FlatList
-        data={completeOrder}
+        data={FilteredOrder}
         keyExtractor={item => item.id.toString()}
         style={{marginBottom: 35}}
         inverted

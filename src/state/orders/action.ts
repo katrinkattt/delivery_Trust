@@ -2,7 +2,13 @@ import {createAction, createAsyncThunk} from '@reduxjs/toolkit';
 import {IOrdersLoad, ILoadCategory} from '../../types/data';
 import apiClient from '../../api/instance';
 import R from '../../res';
-import {CategoryOrder, IOrder, TariffOrder, Payment} from './types';
+import {
+  CategoryOrder,
+  IOrder,
+  TariffOrder,
+  Payment,
+  ITariffPrice,
+} from './types';
 
 export const loadOrder = createAsyncThunk<
   IOrder[],
@@ -43,6 +49,31 @@ export const freeOrders = createAsyncThunk<
     );
     arg.onSuccess?.(response);
     console.log('response in GET_FREE_ORDERS', response);
+    return response;
+  } catch (e: any) {
+    arg.onError?.(e.response);
+    throw e;
+  }
+});
+// API_TARIFF_PRICE
+export const tariffPrice = createAsyncThunk<
+  ITariffPrice,
+  {
+    data: ITariffPrice;
+    onSuccess?: (response: ITariffPrice) => void;
+    onError?: (e: any) => void;
+  }
+>('tarifPrice', async arg => {
+  try {
+    console.log('api/tariff==>', arg.data);
+    const {data: response} = await apiClient.get<ITariffPrice>(
+      R.consts.API_TARIFF_PRICE,
+      {params: arg.data},
+    );
+    console.log('response API_TARIFF_PRICE::', response);
+
+    arg.onSuccess?.(response);
+
     return response;
   } catch (e: any) {
     arg.onError?.(e.response);

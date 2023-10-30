@@ -67,6 +67,23 @@ export type OrderSender = {
   houseCode?: string;
   coord?: {latitude: number; longitude: number};
 };
+export type EditData = {
+  full_name?: string;
+  email?: string;
+  phone?: string;
+  city?: string;
+  street?: string;
+  house?: string;
+  apartment?: string;
+  entrance?: string;
+  houseCode?: string;
+  coord?: {latitude: number; longitude: number};
+};
+export type ChangePass = {
+  oldPassword?: string;
+  newPassword?: string;
+  repeatNewPassword?: string;
+};
 
 export type UserDataAddit = {
   userData: {

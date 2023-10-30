@@ -20,7 +20,7 @@ import {ICotactDetailsOrder} from '../../types/data';
 import {validator, tel, req, minLength} from '../../utils/validators';
 import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
-import {GOOGLE_API_KEY_A} from '../../api/googleApi';
+import {GOOGLE_API_KEY_A, GOOGLE_API_KEY_IOS} from '../../api/googleApi';
 import {FormButton} from '../../components/common/FormButton/FormButton';
 import {
   setNewOrderStartCoord,
@@ -37,6 +37,8 @@ import {colors} from '../../theme/themes';
 import {useAppDispatch} from '../../hooks/redux';
 import {editSenders} from '../../state/user/action';
 import {OrderSender} from '../../state/user/types';
+import InputTextMask from '../../components/common/InputTextMask';
+import {tariffPrice} from '../../state/orders/action';
 
 export default function ContactDetails() {
   const navigation = useNavigation();
@@ -87,6 +89,7 @@ export default function ContactDetails() {
     } = await axios.get(
       `https://maps.googleapis.com/maps/api/geocode/json?address=${strAddress}&language=ru&key=${GOOGLE_API_KEY_A}`,
     );
+
     if (results[0]?.geometry.location) {
       const send = {
         fullName: add.fio,
@@ -118,15 +121,21 @@ export default function ContactDetails() {
   };
   //@ts-ignore
   const getCoord = async (add, user: string) => {
-    const strAddress = `${add?.city}+${add?.street}+${add?.house}`;
+    const strAddress = `${add?.city}+${add?.city}+${add?.house}`;
     const stringAdd = `г. ${add?.city} ул.${add?.street} д.${add?.house} ${
       !!add?.apartment ? add?.apartment + 'кв' : ''
     }`;
+    console.log('strAddress', strAddress);
+    console.log(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${strAddress}&language=ru&key=${GOOGLE_API_KEY_A}`,
+    );
+
     const {
       data: {results},
     } = await axios.get(
       `https://maps.googleapis.com/maps/api/geocode/json?address=${strAddress}&language=ru&key=${GOOGLE_API_KEY_A}`,
     );
+    console.log('GOOGLE results===>', results);
     if (user === 'sender') {
       setCoordSender({
         latitude: results[0]?.geometry.location.lat,
@@ -135,7 +144,7 @@ export default function ContactDetails() {
       dispatch(setNewOrderStartCoord({coord: coordSender}));
       dispatch(setNewOrderAddress({address: stringAdd}));
       dispatch(
-        setNewOrderSender({sender: add?.fullName, sender_id: sender_id}),
+        setNewOrderSender({sender: add?.full_name, sender_id: sender_id}),
       );
     }
     if (user === 'recipient') {
@@ -145,7 +154,7 @@ export default function ContactDetails() {
       });
       dispatch(setNewOrderFinishCoord({coord: coordRecipient}));
       dispatch(setNewOrderAddressTo({addressTo: stringAdd}));
-      dispatch(setNewOrderRecipient({recipient: add.fio}));
+      dispatch(setNewOrderRecipient({recipient: add.fio, phone: add.phone}));
     }
   };
 
@@ -188,14 +197,34 @@ export default function ContactDetails() {
 
   const goOrderParams = (formData: ICotactDetailsOrder) => {
     if (agre) {
-      console.log(formData.city, formData.street, formData.house);
+      console.log(
+        'FORM DATA',
+        formData.city,
+        formData.street,
+        formData.house,
+        formData.phone,
+      );
       if (currSender == 0) {
         getCoord(user, 'sender');
       }
       getCoord(formData, 'recipient').then(() => {
         if (coordRecipient.latitude !== 0) {
-          //@ts-ignore
-          navigation.navigate(R.routes.CLIENT_ORDER_RATE);
+          disp(
+            tariffPrice({
+              data: {
+                coors_from: coordSender,
+                coors_delivery: coordRecipient,
+              },
+              onSuccess: () => {
+                console.log('tariffs LOADED');
+                //@ts-ignore
+                navigation.navigate(R.routes.CLIENT_ORDER_RATE);
+              },
+              onError: async e => {
+                console.log('ERR LOADED TARIFF', e);
+              },
+            }),
+          );
         }
       });
     }
@@ -224,10 +253,9 @@ export default function ContactDetails() {
     if (num !== currSender) {
       if (num !== 0) {
         const numINSenders = num - 1;
-        let arr = senders;
+        let arr = [...senders];
         arr.splice(numINSenders, 1);
 
-        console.log('numINSenderse', numINSenders);
         setSenders([...arr]);
         sendSenders([...arr]);
         dispatch(addSenders({sender: [...arr]}));
@@ -269,13 +297,14 @@ export default function ContactDetails() {
                   name="fio"
                   validate={validator(req)}
                 />
-                <AuthInput
+                <InputTextMask
                   label="Телефон*"
                   placeholder="Введите телефон"
-                  position="center"
                   keyboardType="phone-pad"
+                  position="center"
                   name="phone"
-                  maxLength={11}
+                  maxLength={16}
+                  mask="+[0] [000] [000]-[00]-[00]"
                   validate={validator(tel)}
                 />
                 <AuthInput
@@ -432,13 +461,14 @@ export default function ContactDetails() {
               name="fio"
               validate={validator(req)}
             />
-            <AuthInput
+            <InputTextMask
               label="Телефон*"
               placeholder="Введите телефон"
-              position="center"
               keyboardType="phone-pad"
+              position="center"
               name="phone"
-              maxLength={11}
+              maxLength={16}
+              mask="+[0] [000] [000]-[00]-[00]"
               validate={validator(tel)}
             />
             <AuthInput

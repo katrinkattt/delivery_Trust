@@ -137,6 +137,7 @@ export interface IResetPassCode {
   email?: string;
   code?: string;
   valid_code?: boolean;
+  validCode?: boolean;
 }
 export interface IResetPass {
   email?: string;
@@ -154,8 +155,8 @@ export interface IRole {
 }
 export interface IChangePass {
   oldPasword: string;
-  password: string;
-  passwordConfirmation: string;
+  newPassword?: string;
+  repeatNewPassword?: string;
 }
 
 // export interface ClientRegistData {

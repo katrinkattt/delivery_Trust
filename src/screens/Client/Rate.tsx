@@ -15,22 +15,25 @@ import {useNavigation} from '@react-navigation/native';
 import R from '../../res';
 import {useDispatch, useSelector} from 'react-redux';
 import {setNewOrderTariff} from '../../state/orders/slice';
+import {colors} from '../../theme/themes';
 
 export default function Rate() {
   const [isOrder] = useState(false);
   const order = useSelector(state => state.order);
+
   const newOrder = order?.newOrder;
   const disp = useDispatch();
   const [curTarif, setCurTarif] = useState(0);
+  const tariff = order.currTariff;
 
-  useEffect(() => {
-    disp(
-      setNewOrderTariff({
-        typeTarif: order?.tariffs[0].tariffid,
-        price: order?.tariffs[0].price,
-      }),
-    );
-  }, []);
+  // useEffect(() => {
+  //   disp(
+  //     setNewOrderTariff({
+  //       typeTarif: order?.tariffs[0].tariffid,
+  //       price: order?.tariffs[0].price,
+  //     }),
+  //   );
+  // }, []);
 
   const pressButton = (id: number, tariff: number, price: number) => {
     setCurTarif(id);
@@ -55,7 +58,7 @@ export default function Rate() {
 
         <View style={{marginHorizontal: 15}}>
           <View style={{flexDirection: 'column'}}>
-            {order?.tariffs.map((item, num: number) => (
+            {/* {order?.tariffs.map((item, num: number) => (
               <TouchableOpacity
                 key={num}
                 style={
@@ -90,7 +93,29 @@ export default function Rate() {
                   </Body>
                 </View>
               </TouchableOpacity>
-            ))}
+            ))} */}
+            <View key={123} style={styles.senderItem}>
+              <View style={{marginTop: 12}}>
+                <Ellipses color={'white'} />
+              </View>
+
+              <Space width={18} />
+              <View>
+                <Body color={'white'} style={{marginRight: 10}}>
+                  {tariff?.title}
+                </Body>
+                <Space height={4} />
+                <Body color={'white'} size={13} style={{marginRight: 10}}>
+                  {tariff?.description}
+                </Body>
+              </View>
+
+              <View style={{position: 'absolute', right: 23, top: 25}}>
+                <Body size={18} color={'white'}>
+                  {tariff?.price} ₽
+                </Body>
+              </View>
+            </View>
           </View>
 
           <View style={styles.orderDetailBox}>
@@ -151,7 +176,29 @@ export default function Rate() {
                 </View>
               )}
             </View>
+            {newOrder?.comment && (
+              <>
+                <View
+                  style={{
+                    height: 3,
+                    width: '93%',
+                    backgroundColor: colors.lavender,
+                    marginTop: 18,
+                  }}
+                />
+                <Body
+                  color="#243757"
+                  style={[styles.orderDetailText, {marginTop: 8}]}>
+                  Комментарий:
+                </Body>
 
+                <Body
+                  color="#243757"
+                  style={[styles.orderDetailText, {marginTop: 3}]}>
+                  {newOrder?.comment}
+                </Body>
+              </>
+            )}
             <View style={{marginTop: 40, flexDirection: 'row'}}>
               <Body
                 color="rgba(0, 0, 0, 0.36)"
@@ -182,7 +229,7 @@ export default function Rate() {
                   styles.orderDetailText,
                   {marginTop: 3, textAlign: 'right', width: '72%'},
                 ]}>
-                {order?.tariffs[curTarif]?.title}
+                {tariff?.title}
               </Body>
             </View>
 
@@ -203,7 +250,7 @@ export default function Rate() {
                     textAlign: 'right',
                   },
                 ]}>
-                {order?.tariffs[curTarif]?.txtOutput}
+                {tariff?.txtoutput}
               </Body>
             </View>
 
@@ -217,7 +264,7 @@ export default function Rate() {
 
         <View style={{marginHorizontal: 15, paddingTop: 18}}>
           <Body center semiBold size={36}>
-            {order?.tariffs[curTarif]?.price} ₽
+            {tariff?.price} ₽
           </Body>
 
           <Body center size={11} light>
