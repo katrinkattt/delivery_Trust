@@ -28,19 +28,8 @@ export default function CardEditor() {
   const currCard = user?.curCard || 0;
   console.log('currCard', currCard);
 
-  // const cardArr: ICardData[] = [
-  //   // {
-  //   //   id: 1,
-  //   //   select: true,
-  //   //   system: 'MIR',
-  //   //   number: '**** **** **** 4256',
-  //   //   recToken: 'jsdgdb',
-  //   // },
-  // ];
   useEffect(() => {
-    //загрузка карт по сути с бека должна быть
     if (cards !== null || cards?.length > 0) {
-      // dispatch(loadCards({cards: cardArr}));
       setCurrCard({card: currCard});
     } else {
       dispatch(loadCards({cards: []}));

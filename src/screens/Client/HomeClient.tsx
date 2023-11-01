@@ -30,16 +30,10 @@ import {useSelector} from 'react-redux';
 import {getUser} from '../../state/user/selectors';
 import R from '../../res';
 import {useAppDispatch} from '../../hooks/redux';
-import {
-  loadCategory,
-  createOrder,
-  loadTariffs,
-  loadOrder,
-} from '../../state/orders/action';
+import {loadCategory, loadTariffs, loadOrder} from '../../state/orders/action';
 import {loadChat} from '../../state/chat/action';
 import {IOrder} from '../../state/orders/types';
 import {loadUserData} from '../../state/user/action';
-import {sha256} from 'react-native-sha256';
 
 const {width} = Dimensions.get('window');
 

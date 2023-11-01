@@ -57,19 +57,19 @@ export default function PayClient() {
     disp(setNewOrderPaymentType({paymentType: id}));
     // setCheck(!check)
   };
-  const reloadOrders = () => {
-    dispatch(
-      loadOrder({
-        link: `/client/${user.id}`,
-        onSuccess: () => {
-          console.log('good loadOrders');
-        },
-        onError: async e => {
-          console.log('ERR loadOrders =>>', e);
-        },
-      }),
-    );
-  };
+  // const reloadOrders = () => {
+  //   dispatch(
+  //     loadOrder({
+  //       link: `/client/${user.id}`,
+  //       onSuccess: () => {
+  //         console.log('good loadOrders');
+  //       },
+  //       onError: async e => {
+  //         console.log('ERR loadOrders =>>', e);
+  //       },
+  //     }),
+  //   );
+  // };
   const crOrder = () => {
     const price = donut > 0 ? donut : order?.newOrder?.price;
     // @ts-ignore
@@ -80,24 +80,24 @@ export default function PayClient() {
     if (donut > 0) {
       console.log('===>paymentFunc');
 
-      // dispatch(
-      //   paymentFunc({
-      //     data: {
-      //       id: order.currPaymentId,
-      //       type: currMethod,
-      //       total: price,
-      //     },
-      //     onSuccess: () => {
-      //       reloadOrders();
-      //       // @ts-ignore
-      //       // navigation.navigate('TabScreen');
-      //       console.log('paymentFunc OK');
-      //     },
-      //     onError: async e => {
-      //       console.log('Ошибка сервера', e);
-      //     },
-      //   }),
-      // );
+      dispatch(
+        paymentFunc({
+          data: {
+            id: order.currPaymentId,
+            type: currMethod,
+            total: price,
+          },
+          onSuccess: () => {
+            // reloadOrders();
+            // @ts-ignore
+            // navigation.navigate('TabScreen');
+            console.log('paymentFunc OK');
+          },
+          onError: async e => {
+            console.log('Ошибка сервера', e);
+          },
+        }),
+      );
     }
     if (donut == 0) {
       console.log('donut == 0');
