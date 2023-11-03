@@ -24,13 +24,21 @@ import {Space} from '../../components/common/Space';
 import {colors} from '../../theme/themes';
 import {CardModal} from '../../components/CardModal';
 import {useAppDispatch} from '../../hooks/redux';
-import {createOrder, loadOrder, paymentFunc} from '../../state/orders/action';
+import {
+  createOrder,
+  editOrder,
+  loadOrder,
+  paymentConfirm,
+  paymentFunc,
+} from '../../state/orders/action';
+import {useNavigation} from '@react-navigation/native';
 
 interface PeymentProps {
   route: {
     params: {
       id_method?: number;
       price?: number;
+      orderId?: number;
     };
   };
 }
@@ -86,10 +94,12 @@ const PointLoader = ({
 export default function Payment({route}: PeymentProps) {
   const id_method = route.params?.id_method;
   const price = route.params?.price;
+  const orderId = route.params?.orderId || 0;
   const title =
     (id_method === 1 ? 'QR-код' : id_method === 2 ? 'Карта' : 'Криптовалюта') ||
     'Pay';
   const dispatch = useAppDispatch();
+  const navigation = useNavigation();
   const linkOR = 'https://www.youtube.com/watch?v=KLxNkEN-2Uc'; //from back
   const CryptoKey = '18wCxszZc8mZk7smgfv5Gp4eCNACHYq6Q';
   const [payErr, setPayErr] = useState(true);
@@ -103,9 +113,9 @@ export default function Payment({route}: PeymentProps) {
   const [cardData, setCardData] = useState('');
   const [checkTokenHash, setCheckTokenHash] = useState('');
   const [finishToken, setFinishToken] = useState('');
-  const priceInFormat = parseInt(newOrder?.price.replace('.', '')); //price с копейками
-  const generateID = new Date();
-  const orderId = user?.id + generateID.toISOString();
+  const priceInFormat = Math.ceil(newOrder?.price) * 100; //price с копейками
+  // const generateID = new Date();
+  // const orderId = user?.id + generateID.toISOString();
   const [statusPay, setStatusPay] = useState('');
   const [loading, setloading] = useState(false);
 
@@ -129,22 +139,40 @@ export default function Payment({route}: PeymentProps) {
       }),
     );
   };
-  const createOrderBack = () => {
+  const confirmOrderBack = () => {
+    console.log('orderId::', orderId);
     dispatch(
-      createOrder({
-        data: order.newOrder,
+      editOrder({
+        id: orderId,
+        data: {
+          order_id: orderId,
+          payment: 1,
+          payment_id: 1,
+        },
         onSuccess: () => {
+          console.log('succes payment order');
+          setStatusPay('Заказ оплачен');
+
           // @ts-ignore
-          navigation.navigate('TabScreen');
+          // navigation.navigate('TabScreen');
           reloadOrders();
         },
         onError: async e => {
           console.log('Ошибка сервера', e);
-          setStatusPay('Ошибка сервера, попробуйте позже');
+          if (e !== undefined) {
+            setStatusPay('Ошибка сервера, попробуйте позже');
+          }
         },
       }),
     );
   };
+  useEffect(() => {
+    if (statusPay == 'Заказ оплачен') {
+      // @ts-ignore
+      navigation.navigate('HomeClient');
+    }
+  }, [statusPay]);
+
   const reqFinishAuth = async data => {
     const options = {
       method: 'POST',
@@ -157,7 +185,7 @@ export default function Payment({route}: PeymentProps) {
         setloading(false);
         console.log('reqFinishAuth', response.data);
         response.data?.Success
-          ? (setStatusPay('Оплачено'), createOrderBack())
+          ? (setStatusPay('Оплачено'), confirmOrderBack())
           : setStatusPay('Ошибка оплаты');
       })
       .catch(error => console.log('error REQUEST', error));
@@ -356,7 +384,7 @@ export default function Payment({route}: PeymentProps) {
     if (id_method === 2) {
       console.log('card Pay');
       payInit();
-      // Linking.openURL(linkBank);
+      // confirmOrderBack();
     } else {
       checkCrypto();
     }

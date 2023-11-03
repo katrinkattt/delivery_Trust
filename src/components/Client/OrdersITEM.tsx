@@ -25,8 +25,10 @@ export default function OrdersITEM({item}: IProps) {
   const navigation = useNavigation();
 
   const goToDetailOrder = () => {
-    //@ts-ignore
-    navigation.navigate(R.routes.ORDER_DETAIL_MAP, {item: item, user: true});
+    if (item.payment == 1) {
+      //@ts-ignore
+      navigation.navigate(R.routes.ORDER_DETAIL_MAP, {item: item, user: true});
+    }
   };
 
   return (
@@ -36,9 +38,9 @@ export default function OrdersITEM({item}: IProps) {
       onPress={goToDetailOrder}>
       <View style={styles.header}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          {item.active ? (
+          {item.active && item.payment == 1 ? (
             <SoatIcon />
-          ) : item.complete ? (
+          ) : item.complete && item.payment == 1 ? (
             <ApplyIcon />
           ) : (
             <CanceledIcon />
@@ -58,7 +60,11 @@ export default function OrdersITEM({item}: IProps) {
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <Body>{item?.createdAt}</Body>
         <Body color={item.complete || item.active ? '#888' : '#d55'} size={14}>
-          {item.active ? 'В доставке' : item.complete ? 'Доставлен' : 'Отменен'}
+          {item.active && item.payment == 1
+            ? 'В доставке'
+            : item.complete && item.payment == 1
+            ? 'Доставлен'
+            : 'Отменен'}
         </Body>
       </View>
 
@@ -76,7 +82,7 @@ export default function OrdersITEM({item}: IProps) {
           <View>
             <TouchableOpacity>
               <Body light size={12} center>
-                Посмотреть детали
+                {item.payment == 1 ? 'Посмотреть детали' : 'Заказ не оплачен'}
               </Body>
             </TouchableOpacity>
 

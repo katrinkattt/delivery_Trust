@@ -72,11 +72,11 @@ export default function PayClient() {
   // };
   const crOrder = () => {
     const price = donut > 0 ? donut : order?.newOrder?.price;
-    // @ts-ignore
-    navigation.navigate(R.routes.PAYMENT_ORDER, {
-      id_method: currMethod,
-      price: price,
-    });
+    // // @ts-ignore
+    // navigation.navigate(R.routes.PAYMENT_ORDER, {
+    //   id_method: currMethod,
+    //   price: price,
+    // });
     if (donut > 0) {
       console.log('===>paymentFunc');
 
@@ -100,22 +100,28 @@ export default function PayClient() {
       );
     }
     if (donut == 0) {
-      console.log('donut == 0');
+      console.log('order.newOrder', order.newOrder);
 
-      // dispatch(
-      //   createOrder({
-      //     data: order.newOrder,
-      //     onSuccess: () => {
-      //       // @ts-ignore
-      //       // navigation.navigate('TabScreen');
-      //     },
-      //     onError: async e => {
-      //       console.log('Ошибка сервера', e);
-
-      //       setErr('Ошибка сервера, попробуйте позже');
-      //     },
-      //   }),
-      // );
+      dispatch(
+        createOrder({
+          data: order.newOrder,
+          onSuccess: response => {
+            console.log('createOrder response', response);
+            // @ts-ignore
+            navigation.navigate(R.routes.PAYMENT_ORDER, {
+              id_method: currMethod,
+              price: price,
+              orderId: response?.orderId,
+            });
+            // @ts-ignore
+            // navigation.navigate('TabScreen');
+          },
+          onError: async e => {
+            console.log('Ошибка сервера', e);
+            setErr('Ошибка сервера, попробуйте позже');
+          },
+        }),
+      );
     }
   };
 

@@ -8,6 +8,7 @@ import {
   TariffOrder,
   Payment,
   ITariffPrice,
+  IPaymentComfirm,
 } from './types';
 
 export const loadOrder = createAsyncThunk<
@@ -104,6 +105,32 @@ export const createOrder = createAsyncThunk<
     throw e;
   }
 });
+export const paymentConfirm = createAsyncThunk<
+  IPaymentComfirm,
+  {
+    id: number;
+    onSuccess?: (response: IPaymentComfirm) => void;
+    onError?: (e: any) => void;
+  }
+>('payment/put', async arg => {
+  try {
+    const payment_id = arg.id;
+    const {data: response} = await apiClient.put<IPaymentComfirm>(
+      R.consts.API_CONFIRM_PAYMENT + payment_id,
+    );
+    console.log(
+      'API_CONFIRM_PAYMENT + idOrder',
+      R.consts.API_CONFIRM_PAYMENT + payment_id,
+    );
+    console.log('response API_CONFIRM_PAYMENT', response);
+    arg.onSuccess?.(response);
+    return response;
+  } catch (e: any) {
+    arg.onError?.(e.response);
+    throw e;
+  }
+});
+
 export const editOrder = createAsyncThunk<
   IOrder,
   {

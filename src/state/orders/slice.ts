@@ -50,6 +50,7 @@ export const initialOrdersState: OrdersState = {
     doorToDoor: false,
     comment: '',
     paymentType: 1,
+    payment: 0,
     payment_id: 1,
     phone: '',
   },

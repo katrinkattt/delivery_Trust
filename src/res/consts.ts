@@ -28,6 +28,7 @@ export const API_GET_RATING = '/rating';
 // пока так назвала
 export const API_CR_ORDER = '/order';
 export const API_GET_ORDERS = '/orders';
+export const API_CONFIRM_PAYMENT = '/payment/';
 export const API_GET_FREE_ORDERS = '/orders?active=True&courier=None';
 export const API_GET_CATEGORY = '/api/categories';
 export const API_GET_TARIFF = '/api/tariff';

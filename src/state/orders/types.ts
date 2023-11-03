@@ -40,6 +40,10 @@ export type IOrder = {
   courier_id?: number;
   phone?: string;
 };
+export type IPaymentComfirm = {
+  payment_id?: number;
+  paymentID?: number;
+};
 export type TariffOrder = {
   tariffs: Tariff[];
 };
