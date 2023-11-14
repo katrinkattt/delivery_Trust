@@ -8,4 +8,5 @@ export const colors = {
   blue: '#2F80ED',
   lavender: '#AD86F0',
   green: 'rgba(209, 234, 122, 1)',
+  gray: '#999',
 };

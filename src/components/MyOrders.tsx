@@ -20,6 +20,8 @@ const data = [
   {id: 3, name: 'Налоги', active: false},
   {id: 4, name: 'СНИЛС', active: false},
   {id: 5, name: 'Военный билет', active: false},
+  {id: 6, name: 'Коробка', active: false},
+  {id: 7, name: 'Пакет', active: false},
 ];
 
 export default function MyOrders() {
@@ -28,6 +30,11 @@ export default function MyOrders() {
   const [refreshing, setRefreshing] = useState(false);
   const {orders} = useSelector(state => state.order);
   const user = useSelector(state => state.user);
+  const [filter, setFilter] = useState('Все');
+  const FilteredOrder =
+    filter == 'Все'
+      ? orders
+      : orders.filter((obj: IOrder) => obj.category == filter);
 
   const reload = () => {
     dispatch(
@@ -56,15 +63,16 @@ export default function MyOrders() {
         contentContainerStyle={{paddingRight: 35, paddingHorizontal: 16}}>
         {data?.map(item => (
           <TouchableOpacity
+            onPress={() => setFilter(item.name)}
             key={item?.id}
             activeOpacity={0.7}
             style={[
               styles.box,
-              {backgroundColor: item?.active ? '#F1F0FE' : '#F7F9FD'},
+              {backgroundColor: item.name == filter ? '#F1F0FE' : '#F7F9FD'},
             ]}>
             <Body
               medium
-              color={item?.active ? '#937AEA' : '#A1ADBF'}
+              color={item.name == filter ? '#937AEA' : '#A1ADBF'}
               style={styles.text}>
               {item.name}
             </Body>
@@ -80,7 +88,7 @@ export default function MyOrders() {
         showsVerticalScrollIndicator={false}
         style={{marginHorizontal: 15, marginTop: 23}}>
         {orders[0] ? (
-          orders.map((order: IOrder) => (
+          FilteredOrder.map((order: IOrder) => (
             <TouchableOpacity
               onPress={() =>
                 //@ts-ignore
@@ -88,7 +96,7 @@ export default function MyOrders() {
               }
               activeOpacity={0.7}
               style={order?.active ? styles.cardOneBox : styles.cardTwoBox}>
-              <View>
+              <View style={{width: '70%'}}>
                 <Body
                   color="#243757"
                   style={[styles.cardTitle, {marginTop: 12}]}>
@@ -176,7 +184,6 @@ const styles = StyleSheet.create({
   cardOneDescription: {
     fontSize: 12,
     fontWeight: '400',
-    lineHeight: 24,
   },
   clock: {
     marginTop: 7,

@@ -20,6 +20,8 @@ const data = [
   {id: 3, name: 'Налоги', active: false},
   {id: 4, name: 'СНИЛС', active: false},
   {id: 5, name: 'Военный билет', active: false},
+  {id: 6, name: 'Коробка', active: false},
+  {id: 7, name: 'Пакет', active: false},
 ];
 
 export default function AllOrders() {

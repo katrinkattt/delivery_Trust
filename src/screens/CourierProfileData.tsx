@@ -116,6 +116,8 @@ export default function CourierProfileData() {
               longitude: results[0]?.geometry.location.lng,
             },
           };
+          console.log('send.coord', send.coord);
+
           if (send.coord.latitude && send.coord.longitude) {
             setErr('');
             disp(setAddress({address: dataForm}));
@@ -134,6 +136,7 @@ export default function CourierProfileData() {
               createUserAction({
                 data,
                 onSuccess: () => {
+                  console.log('onSuccess createUserAction');
                   //@ts-ignore
                   navigation.navigate('SigningAnAgreement');
                 },

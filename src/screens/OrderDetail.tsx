@@ -1,5 +1,12 @@
 import React, {useState} from 'react';
-import {ScrollView, TouchableOpacity, View, Text, Image} from 'react-native';
+import {
+  ScrollView,
+  TouchableOpacity,
+  View,
+  Text,
+  Image,
+  Linking,
+} from 'react-native';
 import {ScaledSheet} from 'react-native-size-matters/extend';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import notifee from '@notifee/react-native';
@@ -131,6 +138,9 @@ export default function OrderDetail({route}: IProps) {
             },
             onSuccess: () => {
               console.log('good edit order');
+              setTimeout(() => {
+                onDisplayNotification();
+              }, 5000);
             },
             onError: async e => {
               console.log('ERR edit order', e);
@@ -143,9 +153,6 @@ export default function OrderDetail({route}: IProps) {
         navigation.navigate(R.routes.ORDER_REVIEW);
       }
     }
-    setTimeout(() => {
-      onDisplayNotification();
-    }, 5000);
   };
 
   return (
@@ -205,22 +212,28 @@ export default function OrderDetail({route}: IProps) {
           </View>
         </View>
 
-        <TouchableOpacity style={{marginTop: 7}} activeOpacity={0.7}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Messages')}
+          style={{marginTop: 7}}
+          activeOpacity={0.7}>
           <MessageIcon width={28} height={28} />
         </TouchableOpacity>
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
+          onPress={() => Linking.openURL(`tel:${phone}`)} //don't have phone
           style={{marginLeft: 14, marginTop: 7}}
           activeOpacity={0.7}>
           <PhoneIcon width={27} height={27} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
-        <TouchableOpacity
-          style={{marginLeft: 14, marginTop: 7}}
-          onPress={() => setIsOpenDot(!isOpenDot)}
-          activeOpacity={0.7}>
-          <MoreIcon width={25} height={25} />
-        </TouchableOpacity>
+        {user && (
+          <TouchableOpacity
+            style={{marginLeft: 14, marginTop: 7}}
+            onPress={() => setIsOpenDot(!isOpenDot)}
+            activeOpacity={0.7}>
+            <MoreIcon width={25} height={25} />
+          </TouchableOpacity>
+        )}
       </View>
       {isOpenDot &&
         user && ( //пока кнопка не для курьеров

@@ -90,6 +90,19 @@ export default function OrderParametrs() {
       setTypePac(item.name);
     }
   };
+  useEffect(() => {
+    if (!!order.newOrder.category) {
+      if (
+        order.newOrder.category == 'Коробка' ||
+        order.newOrder.category == 'Пакет'
+      ) {
+        setTypePac(order.newOrder.category);
+        pressButton(2);
+      } else {
+        setTypeDoc(order.newOrder.category);
+      }
+    }
+  }, []);
 
   return (
     <View style={{flex: 1}}>

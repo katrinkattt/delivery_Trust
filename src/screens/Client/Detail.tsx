@@ -10,6 +10,8 @@ import {Space} from '../../components/common/Space';
 import Header from '../../components/Header';
 import {useNavigation} from '@react-navigation/native';
 import R from '../../res';
+import {useDispatch} from 'react-redux';
+import {setNewOrderCategory} from '../../state/orders/slice';
 
 interface IProps {
   route: {
@@ -23,8 +25,11 @@ const txt: string =
 
 export default function Detail({route}: IProps) {
   const {item} = route.params;
-  const navigation = useNavigation;
-  const newOrderLink = () => {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const newOrderLink = (title: string) => {
+    dispatch(setNewOrderCategory({category: title}));
+
     //@ts-ignore
     navigation.navigate(R.routes.CLIENT_ORDER_PARAM);
     console.log('dvdbvkjdb');
@@ -66,7 +71,7 @@ export default function Detail({route}: IProps) {
             text="Оформить заказ"
             style={styles.button}
             buttonType={2}
-            onPress={newOrderLink}
+            onPress={() => newOrderLink(item.title)}
           />
         </DropShadow>
       </View>

@@ -24,6 +24,8 @@ const data = [
   {id: 3, name: 'Налоги', active: false},
   {id: 4, name: 'СНИЛС', active: false},
   {id: 5, name: 'Военный билет', active: false},
+  {id: 6, name: 'Коробка', active: false},
+  {id: 7, name: 'Пакет', active: false},
 ];
 
 export default function FindOrder() {
@@ -35,6 +37,11 @@ export default function FindOrder() {
   const user = useSelector(state => state.user);
   const [refreshing, setRefreshing] = useState(false);
   console.log('findOrders in PAGE', findOrders);
+  const [filter, setFilter] = useState('Все');
+  const FilteredOrder =
+    filter == 'Все'
+      ? findOrders
+      : findOrders.filter((obj: IOrder) => obj.category == filter);
 
   const reload = () => {
     dispatch(
@@ -120,14 +127,15 @@ export default function FindOrder() {
         {data?.map(item => (
           <TouchableOpacity
             key={item?.id}
+            onPress={() => setFilter(item.name)}
             activeOpacity={0.7}
             style={[
               styles.box,
-              {backgroundColor: item?.active ? '#F1F0FE' : '#F7F9FD'},
+              {backgroundColor: item.name == filter ? '#F1F0FE' : '#F7F9FD'},
             ]}>
             <Body
               medium
-              color={item?.active ? '#937AEA' : '#A1ADBF'}
+              color={item.name == filter ? '#937AEA' : '#A1ADBF'}
               style={styles.text}>
               {item.name}
             </Body>
@@ -142,7 +150,7 @@ export default function FindOrder() {
         showsVerticalScrollIndicator={false}
         style={{marginHorizontal: 15, marginTop: 23}}>
         {findOrders[0] ? (
-          findOrders.map((order: IOrder) => (
+          FilteredOrder.map((order: IOrder) => (
             <View>
               <TouchableOpacity
                 onPress={() => {

@@ -60,7 +60,7 @@ export const MessageScreen = () => {
   const user = {
     _id: userState.user_id,
     name: userState.full_name,
-    avatar: 10,
+    avatar: 2,
   };
   const item = chats[currentChat];
   const phone = userState.typeInUser ? item?.courierPhone : item?.clientPhone;
@@ -168,7 +168,7 @@ export const MessageScreen = () => {
             />
           )}
           options={{
-            ['File']: async () => {
+            ['Прикрепить фото']: async () => {
               try {
                 handleDocumentSelection();
               } catch (e) {
@@ -179,7 +179,7 @@ export const MessageScreen = () => {
                 }
               }
             },
-            Cancel: () => {
+            ['Отменить']: () => {
               console.log('Cancel');
             },
           }}
@@ -261,7 +261,7 @@ export const MessageScreen = () => {
 
   return (
     <View style={styles.content}>
-      <Header title={item?.name || ''} icon={true} style={styles.header} />
+      <Header title={item?.name || ''} style={styles.header} />
       <Body center light color="rgba(0, 0, 0, 0.44)">
         {item?.name == 'Служба поддержки' ? 'Онлайн' : 'Недавно'}
       </Body>

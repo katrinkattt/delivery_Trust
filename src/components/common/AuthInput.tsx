@@ -141,6 +141,7 @@ interface IProps extends TextProps {
   secureTextEntry?: boolean;
   position?: 'top' | 'center' | 'bottom';
   cardNum?: boolean;
+  visual?: boolean;
 }
 
 const AuthInput: React.FC<IProps> = ({
@@ -155,6 +156,7 @@ const AuthInput: React.FC<IProps> = ({
   hideError,
   // parolInput = false,
   position = '',
+  visual,
   ...attributes
 }) => {
   // const [isFocused, setIsFocused] = useState(false)
@@ -172,7 +174,9 @@ const AuthInput: React.FC<IProps> = ({
   }, []);
 
   const onChangeText = useCallback(async (value: string) => {
-    helpers.setValue(value);
+    if (!visual) {
+      helpers.setValue(value);
+    }
   }, []);
 
   const showError = (submitCount || leftFocus) && meta.error && !hideError;
@@ -190,19 +194,6 @@ const AuthInput: React.FC<IProps> = ({
     },
     containerStyle,
   ];
-
-  // const container2Styles = [
-  //     styles.inputBox2,
-  //     {
-  //         backgroundColor: !isFocused ? '#E8E8F0' : 'transparent',
-  //         borderTopLeftRadius: ['bottom', 'center'].includes(position) ? 0 : 10,
-  //         borderTopRightRadius: ['bottom', 'center'].includes(position) ? 0 : 10,
-  //         borderTopWidth: ['bottom', 'center'].includes(position) ? 0 : 1,
-
-  //         borderBottomLeftRadius: ['top', 'center'].includes(position) ? 0 : 10,
-  //         borderBottomRightRadius: ['top', 'center'].includes(position) ? 0 : 10,
-  //     },
-  // ]
 
   return (
     <View style={containerStyles}>

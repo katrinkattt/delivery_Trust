@@ -33,6 +33,8 @@ export default function OrderReview() {
       }
     } else setIsOpenDonut(true);
   };
+  const [star, setStar] = useState(0);
+  const starArr = [1, 2, 3, 4, 5];
 
   return (
     <View style={{flex: 1}}>
@@ -52,9 +54,22 @@ export default function OrderReview() {
         </Body>
 
         <Body bold semiBold size={16} center style={styles.subscribe}>
-          Вы можете оставить курьеру чаевые за хорошую работу ◕‿◕
+          Вы можете оставить курьеру оценку за хорошую работу ◕‿◕
         </Body>
+        <View style={{flexDirection: 'row'}}>
+          {starArr.map(s => (
+            <TouchableOpacity onPress={() => setStar(s)}>
+              <Body color={star >= s ? colors.green : colors.gray} size={30}>
+                ★
+              </Body>
+            </TouchableOpacity>
+          ))}
+        </View>
 
+        {/* <Body bold semiBold size={16} center style={styles.subscribe}>
+          Вы можете оставить курьеру чаевые за хорошую работу ◕‿◕
+        </Body> */}
+        {/*
         <Button text="ОСТАВИТЬ ЧАЕВЫЕ" onPress={donutSend} buttonType={2} />
         {isOpenDonut && (
           <TextAreaInput
@@ -66,7 +81,7 @@ export default function OrderReview() {
             custom={true}
             keyboardType="numeric"
           />
-        )}
+        )} */}
       </View>
       <TouchableOpacity
         style={styles.bottom}
@@ -75,7 +90,10 @@ export default function OrderReview() {
           navigation.goBack();
         }}>
         <Body semiBold size={16} center>
-          БЕЗ ЧАЕВЫХ
+          {
+            'ГОТОВО'
+            //БЕЗ ЧАЕВЫХ
+          }
         </Body>
       </TouchableOpacity>
     </View>

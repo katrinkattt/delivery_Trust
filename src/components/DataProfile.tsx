@@ -48,6 +48,10 @@ export default function DataProfile() {
         name: response?.name,
         type: response?.type,
       });
+      setShowSuccessW(true);
+      setTimeout(() => {
+        setShowSuccessW(false);
+      }, 1000);
       setLoadStatus('Загружено');
       // axios
       //   .post(API_BASE_URL + '/upload', formData, {
@@ -90,7 +94,8 @@ export default function DataProfile() {
       data.city != user?.city ||
       data.street != user?.street ||
       data.house != user?.house ||
-      data.apartment != user?.apartment
+      data.apartment != user?.apartment ||
+      data.phone != user?.phone
     ) {
       dispatch(
         editData({
@@ -101,7 +106,7 @@ export default function DataProfile() {
             setShowSuccessW(true);
             setTimeout(() => {
               setShowSuccessW(false);
-            }, 500);
+            }, 1000);
             dispatch(
               loadUserData({
                 user_id: user.user_id,
@@ -127,7 +132,8 @@ export default function DataProfile() {
         {showSuccessW && (
           <View style={styles.successWindow}>
             <Body size={17} color={colors.darkBlue} center>
-              ✅ Изменениия успешно сохранены
+              ✅ Изменениия успешно сохранены, вступят в силу через некоторое
+              время
             </Body>
           </View>
         )}
@@ -138,10 +144,11 @@ export default function DataProfile() {
           name="full_name"
         />
         <AuthInput
-          label="E-mail*"
+          label="E-mail без редактирования"
           placeholder={user?.email}
           position="center"
           name="email"
+          visual
         />
         <InputTextMask
           label="Номер телефона*"
@@ -153,11 +160,6 @@ export default function DataProfile() {
           mask="+[0] [000] [000]-[00]-[00]"
           validate={validator(tel)}
         />
-        {/* <AuthInput
-        label="Регион*"
-        placeholder={user?.region || 'Московская область'}
-        position="center"
-      /> */}
         <AuthInput
           label="Город*"
           placeholder={user?.city || 'Москва'}
@@ -179,23 +181,27 @@ export default function DataProfile() {
         <AuthInput
           label="Квартира*"
           placeholder={user?.apartment || ''}
-          position={user.typeInUser ? 'bottom' : 'center'}
+          position="bottom"
           name="apartment"
         />
         {!user.typeInUser && (
-          <View>
-            <SecondAuthInput
-              label="Паспорт*"
-              placeholder="Паспорт.jpeg"
-              position="bottom"
-            />
-            <View style={{marginTop: -50, marginLeft: '70%'}}>
-              <TouchableOpacity onPress={loadPassport}>
-                <Body size={16} color={colors.lavender}>
-                  {loadStatus}
-                </Body>
-              </TouchableOpacity>
-            </View>
+          <View
+            style={{
+              height: 50,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingTop: 10,
+              width: '100%',
+            }}>
+            <Body size={18} color={colors.gray}>
+              Паспорт
+            </Body>
+
+            <TouchableOpacity onPress={loadPassport}>
+              <Body size={16} color={colors.lavender}>
+                {loadStatus}
+              </Body>
+            </TouchableOpacity>
           </View>
         )}
 

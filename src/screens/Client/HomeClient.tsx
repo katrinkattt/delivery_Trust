@@ -34,6 +34,7 @@ import {loadCategory, loadTariffs, loadOrder} from '../../state/orders/action';
 import {loadChat} from '../../state/chat/action';
 import {IOrder} from '../../state/orders/types';
 import {loadUserData} from '../../state/user/action';
+import {setNewOrderCategory} from '../../state/orders/slice';
 
 const {width} = Dimensions.get('window');
 
@@ -81,6 +82,7 @@ export default function HomeClient() {
         },
       }),
     );
+    dispatch(setNewOrderCategory({category: ''}));
     // @ts-ignore
     navigation.navigate(R.routes.CLIENT_ORDER_PARAM);
   };
@@ -94,6 +96,16 @@ export default function HomeClient() {
         },
         onError: async () => {
           console.log('ERR loadOrders');
+        },
+      }),
+    );
+    dispatch(
+      loadCategory({
+        onSuccess: () => {
+          console.log('good loadCategory');
+        },
+        onError: async () => {
+          console.log('ERR loadCategory');
         },
       }),
     );
