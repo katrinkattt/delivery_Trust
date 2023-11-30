@@ -1,7 +1,7 @@
-import React, {useEffect} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React, { useEffect } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '.././screens/Home';
 import Profile from '.././screens/Profile';
 import {
@@ -16,14 +16,14 @@ import {
 } from '.././components/common/Svgs';
 import OrderStack from '../navigation/courierStack/OrdersStack';
 import Messages from '.././screens/Messages';
-import {colors} from '.././theme/themes';
+import { colors } from '.././theme/themes';
 
 import OrdersClientStack from './clientStack/OrdersClientStack';
-import {useDispatch, useSelector} from 'react-redux';
-import {getUser} from '../state/user/selectors';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser } from '../state/user/selectors';
 import HomeClientStack from './clientStack/HomeClientStack';
-import {getOrders} from '../state/orders/selectors';
-import {IOrder} from '../state/orders/types';
+import { getOrders } from '../state/orders/selectors';
+import { IOrder } from '../state/orders/types';
 // import {loadOrders} from '../state/orders/slice';
 // import OrdersData from '../api/OrdersData';
 // import OrdersDataCourier from '../api/OrdersDataCourier';
@@ -59,8 +59,8 @@ export function TabScreen() {
             component={Home}
             options={{
               headerShown: false,
-              tabBarIcon: ({focused}) => (
-                <View style={{alignItems: 'flex-end', marginTop: -7}}>
+              tabBarIcon: ({ focused }) => (
+                <View style={{ alignItems: 'flex-end', marginTop: -7 }}>
                   {focused ? (
                     <HomeActive width={42} height={43} color={'#EEFFED'} />
                   ) : (
@@ -76,11 +76,11 @@ export function TabScreen() {
             component={OrderStack}
             options={{
               headerShown: false,
-              tabBarIcon: ({focused}) => (
-                <View style={{alignItems: 'flex-end', marginTop: -7}}>
+              tabBarIcon: ({ focused }) => (
+                <View style={{ alignItems: 'flex-end', marginTop: -7 }}>
                   {orderList > 0 && (
                     <View
-                      style={[styles.notificationBox, !focused && {right: -7}]}>
+                      style={[styles.notificationBox, !focused && { right: -7 }]}>
                       <Text style={styles.notificationText}>{orderList}</Text>
                     </View>
                   )}
@@ -100,8 +100,8 @@ export function TabScreen() {
             component={Messages}
             options={{
               headerShown: false,
-              tabBarIcon: ({focused}) => (
-                <View style={{alignItems: 'flex-end', marginTop: -7}}>
+              tabBarIcon: ({ focused }) => (
+                <View style={{ alignItems: 'flex-end', marginTop: -7 }}>
                   {focused ? (
                     <MessageActive width={42} height={43} color={'#EEFFED'} />
                   ) : (
@@ -117,8 +117,8 @@ export function TabScreen() {
             component={Profile}
             options={{
               headerShown: false,
-              tabBarIcon: ({focused}) => (
-                <View style={{alignItems: 'flex-end', marginTop: -7}}>
+              tabBarIcon: ({ focused }) => (
+                <View style={{ alignItems: 'flex-end', marginTop: -7 }}>
                   {focused ? (
                     <ProfileActive width={42} height={43} color={'#EEFFED'} />
                   ) : (
@@ -140,8 +140,8 @@ export function TabScreen() {
             component={HomeClientStack}
             options={{
               headerShown: false,
-              tabBarIcon: ({focused}) => (
-                <View style={{alignItems: 'flex-end', marginTop: -7}}>
+              tabBarIcon: ({ focused }) => (
+                <View style={{ alignItems: 'flex-end', marginTop: -7 }}>
                   {focused ? (
                     <HomeActive width={42} height={43} color={'#EEFFED'} />
                   ) : (
@@ -157,13 +157,13 @@ export function TabScreen() {
             component={OrdersClientStack}
             options={{
               headerShown: false,
-              tabBarIcon: ({focused}) => (
-                <View style={{alignItems: 'flex-end', marginTop: -7}}>
+              tabBarIcon: ({ focused }) => (
+                <View style={{ alignItems: 'flex-end', marginTop: -7 }}>
                   {orderList > 0 && (
                     <View
                       style={[
                         styless.notificationBox,
-                        !focused && {right: -7},
+                        !focused && { right: -7 },
                       ]}>
                       <Text style={styless.notificationText}>{orderList}</Text>
                     </View>
@@ -184,8 +184,8 @@ export function TabScreen() {
             component={Messages}
             options={{
               headerShown: false,
-              tabBarIcon: ({focused}) => (
-                <View style={{alignItems: 'flex-end', marginTop: -7}}>
+              tabBarIcon: ({ focused }) => (
+                <View style={{ alignItems: 'flex-end', marginTop: -7 }}>
                   {focused ? (
                     <MessageActive width={42} height={43} color={'#EEFFED'} />
                   ) : (
@@ -201,8 +201,8 @@ export function TabScreen() {
             component={Profile}
             options={{
               headerShown: false,
-              tabBarIcon: ({focused}) => (
-                <View style={{alignItems: 'flex-end', marginTop: -7}}>
+              tabBarIcon: ({ focused }) => (
+                <View style={{ alignItems: 'flex-end', marginTop: -7 }}>
                   {focused ? (
                     <ProfileActive width={42} height={43} color={'#EEFFED'} />
                   ) : (

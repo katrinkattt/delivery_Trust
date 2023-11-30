@@ -346,7 +346,7 @@ export const loadUserData = createAsyncThunk<
     onSuccess?: (response: UserDataAddit) => void;
     onError?: (e: any) => void;
   }
->('orders/free', async arg => {
+>('user_data', async arg => {
   try {
     const id = arg.user_id;
     console.log('API_USER_DATA', R.consts.API_USER_DATA + id);

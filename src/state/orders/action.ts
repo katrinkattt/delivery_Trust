@@ -9,6 +9,7 @@ import {
   Payment,
   ITariffPrice,
   IPaymentComfirm,
+  IDonut,
 } from './types';
 
 export const loadOrder = createAsyncThunk<
@@ -194,6 +195,57 @@ export const loadTariffs = createAsyncThunk<
     console.log('API_GET_TARIFF', response);
 
     arg.onSuccess?.(response);
+    return response;
+  } catch (e: any) {
+    arg.onError?.(e.response);
+    throw e;
+  }
+});
+
+export const orderTip = createAsyncThunk<
+  IOrder,
+  {
+    data: IDonut;
+    onSuccess?: (response: IDonut) => void;
+    onError?: (e: any) => void;
+  }
+>('/order/tip', async arg => {
+  try {
+    console.log('ORDER API_ORDER_TIP', arg.data);
+    
+    const {data: response} = await apiClient.post<IOrder>(
+      R.consts.API_ORDER_TIP,
+      arg.data,
+    );
+    console.log('response API_ORDER_TIP', response);
+
+    arg.onSuccess?.(response);
+
+    return response;
+  } catch (e: any) {
+    arg.onError?.(e.response);
+    throw e;
+  }
+});
+export const orderRate = createAsyncThunk<
+  IOrder,
+  {
+    data: IDonut;
+    onSuccess?: (response: IDonut) => void;
+    onError?: (e: any) => void;
+  }
+>('/order/rate', async arg => {
+  try {
+    console.log('ORDER API_ORDER_RATE', arg.data);
+    
+    const {data: response} = await apiClient.post<IOrder>(
+      R.consts.API_ORDER_RATE,
+      arg.data,
+    );
+    console.log('response API_ORDER_RATE', response);
+
+    arg.onSuccess?.(response);
+
     return response;
   } catch (e: any) {
     arg.onError?.(e.response);

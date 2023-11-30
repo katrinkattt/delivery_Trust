@@ -20,6 +20,7 @@ interface IData {
 export default function ChatItem({item, keyChat}: IData) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  console.log('ChatItem===', item);
 
   const pressChat = () => {
     //@ts-ignore
@@ -57,7 +58,9 @@ export default function ChatItem({item, keyChat}: IData) {
           <Space height={5} />
 
           <Body size={15} light color="rgba(36, 55, 87, 1)">
-            {item.messageLast || 'Сообщений пока нет'}
+            {item.messages[0]?.image
+              ? 'Фото'
+              : item.messages[0]?.text || 'Сообщений пока нет'}
           </Body>
         </View>
 
@@ -83,7 +86,7 @@ export default function ChatItem({item, keyChat}: IData) {
                 : ''}
             </Body>
             <Space height={7} />
-            {item.read ? <ChatRead /> : <ChatUnRead />}
+            {/* {item.read ? <ChatRead /> : <ChatUnRead />} */}
           </View>
         )}
       </TouchableOpacity>

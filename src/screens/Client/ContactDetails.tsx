@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -8,20 +8,20 @@ import {
 } from 'react-native';
 import Header from '../../components/Header';
 import Body from '../../components/common/Body';
-import {ArrowRight, Ellipses} from '../../components/common/Svgs';
+import { ArrowRight, Ellipses } from '../../components/common/Svgs';
 import AuthInput from '../../components/common/AuthInput';
 import CustomCheckbox from '../../components/common/CustomCheckbox';
 import Button from '../../components/common/Button';
-import {useNavigation} from '@react-navigation/native';
-import {Space} from '../../components/common/Space';
+import { useNavigation } from '@react-navigation/native';
+import { Space } from '../../components/common/Space';
 import R from '../../res';
-import {Formik} from 'formik';
-import {ICotactDetailsOrder} from '../../types/data';
-import {validator, tel, req, minLength} from '../../utils/validators';
-import {useDispatch, useSelector} from 'react-redux';
+import { Formik } from 'formik';
+import { ICotactDetailsOrder } from '../../types/data';
+import { validator, tel, req, minLength } from '../../utils/validators';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import {GOOGLE_API_KEY_A, GOOGLE_API_KEY_IOS} from '../../api/googleApi';
-import {FormButton} from '../../components/common/FormButton/FormButton';
+import { GOOGLE_API_KEY_A, GOOGLE_API_KEY_IOS } from '../../api/googleApi';
+import { FormButton } from '../../components/common/FormButton/FormButton';
 import {
   setNewOrderStartCoord,
   setNewOrderFinishCoord,
@@ -31,22 +31,22 @@ import {
   setNewOrderSender,
   setNewOrderAnySender,
 } from '../../state/orders/slice';
-import {addSenders} from '../../state/user/slice';
-import {ModalCustom} from '../../components/ModalCustom';
-import {colors} from '../../theme/themes';
-import {useAppDispatch} from '../../hooks/redux';
-import {editSenders} from '../../state/user/action';
-import {OrderSender} from '../../state/user/types';
+import { addSenders } from '../../state/user/slice';
+import { ModalCustom } from '../../components/ModalCustom';
+import { colors } from '../../theme/themes';
+import { useAppDispatch } from '../../hooks/redux';
+import { editSenders } from '../../state/user/action';
+import { OrderSender } from '../../state/user/types';
 import InputTextMask from '../../components/common/InputTextMask';
-import {tariffPrice} from '../../state/orders/action';
+import { tariffPrice } from '../../state/orders/action';
 
 export default function ContactDetails() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const disp = useAppDispatch();
-  const {loading} = useSelector(state => state.order);
+  const { loading } = useSelector(state => state.order);
   const user = useSelector(state => state.user);
-  const [coordSender, setCoordSender] = useState({latitude: 0, longitude: 0});
+  const [coordSender, setCoordSender] = useState({ latitude: 0, longitude: 0 });
   const [coordRecipient, setCoordRecipient] = useState({
     latitude: 0,
     longitude: 0,
@@ -81,11 +81,10 @@ export default function ContactDetails() {
   const addSender = async (add: ICotactDetailsOrder) => {
     setErr('Определение адреса');
     const strAddress = `${add?.city}+${add?.street}+${add?.house}`;
-    const stringAdd = `г. ${add?.city} ул.${add?.street} д.${add?.house} ${
-      !!add?.apartment ? add?.apartment + 'кв' : ''
-    }`;
+    const stringAdd = `г. ${add?.city} ул.${add?.street} д.${add?.house} ${!!add?.apartment ? add?.apartment + 'кв' : ''
+      }`;
     const {
-      data: {results},
+      data: { results },
     } = await axios.get(
       `https://maps.googleapis.com/maps/api/geocode/json?address=${strAddress}&language=ru&key=${GOOGLE_API_KEY_A}`,
     );
@@ -112,7 +111,7 @@ export default function ContactDetails() {
       console.log('qwertyui ARR', arr);
       setSenders(arr);
       sendSenders(arr);
-      dispatch(addSenders({sender: arr}));
+      dispatch(addSenders({ sender: arr }));
       setModalVisible(false);
       setAddLoading(false);
     } else {
@@ -121,17 +120,16 @@ export default function ContactDetails() {
   };
   //@ts-ignore
   const getCoord = async (add, user: string) => {
-    const strAddress = `${add?.city}+${add?.city}+${add?.house}`;
-    const stringAdd = `г. ${add?.city} ул.${add?.street} д.${add?.house} ${
-      !!add?.apartment ? add?.apartment + 'кв' : ''
-    }`;
+    const strAddress = `${add?.city}+${add?.street}+${add?.house}`;
+    const stringAdd = `г. ${add?.city} ул.${add?.street} д.${add?.house} ${!!add?.apartment ? add?.apartment + 'кв' : ''
+      }`;
     console.log('strAddress', strAddress);
     console.log(
       `https://maps.googleapis.com/maps/api/geocode/json?address=${strAddress}&language=ru&key=${GOOGLE_API_KEY_A}`,
     );
 
     const {
-      data: {results},
+      data: { results },
     } = await axios.get(
       `https://maps.googleapis.com/maps/api/geocode/json?address=${strAddress}&language=ru&key=${GOOGLE_API_KEY_A}`,
     );
@@ -141,10 +139,10 @@ export default function ContactDetails() {
         latitude: results[0]?.geometry.location.lat,
         longitude: results[0]?.geometry.location.lng,
       });
-      dispatch(setNewOrderStartCoord({coord: coordSender}));
-      dispatch(setNewOrderAddress({address: stringAdd}));
+      dispatch(setNewOrderStartCoord({ coord: coordSender }));
+      dispatch(setNewOrderAddress({ address: stringAdd }));
       dispatch(
-        setNewOrderSender({sender: add?.full_name, sender_id: sender_id}),
+        setNewOrderSender({ sender: add?.full_name, sender_id: sender_id }),
       );
     }
     if (user === 'recipient') {
@@ -152,16 +150,16 @@ export default function ContactDetails() {
         latitude: results[0]?.geometry.location.lat,
         longitude: results[0]?.geometry.location.lng,
       });
-      dispatch(setNewOrderFinishCoord({coord: coordRecipient}));
-      dispatch(setNewOrderAddressTo({addressTo: stringAdd}));
-      dispatch(setNewOrderRecipient({recipient: add.fio, phone: add.phone}));
+      dispatch(setNewOrderFinishCoord({ coord: coordRecipient }));
+      dispatch(setNewOrderAddressTo({ addressTo: stringAdd }));
+      dispatch(setNewOrderRecipient({ recipient: add.fio, phone: add.phone }));
     }
   };
 
-  const [data, setData] = useState([{id: 0, fullName: 'Я'}]);
+  const [data, setData] = useState([{ id: 0, fullName: 'Я' }]);
   useEffect(() => {
     if (senders !== null) {
-      const arr = [{id: 0, fullName: 'Я'}, ...senders];
+      const arr = [{ id: 0, fullName: 'Я' }, ...senders];
       setData(arr);
     }
   }, [senders]);
@@ -188,9 +186,9 @@ export default function ContactDetails() {
         startCoordinates: data[num].coord,
       };
       console.log('sender', sender);
-      dispatch(setNewOrderAnySender({sender: sender}));
+      dispatch(setNewOrderAnySender({ sender: sender }));
       dispatch(
-        setNewOrderSender({sender: sender.fullName, sender_id: sender_id}),
+        setNewOrderSender({ sender: sender.fullName, sender_id: sender_id }),
       );
     }
   };
@@ -258,19 +256,19 @@ export default function ContactDetails() {
 
         setSenders([...arr]);
         sendSenders([...arr]);
-        dispatch(addSenders({sender: [...arr]}));
+        dispatch(addSenders({ sender: [...arr] }));
       }
     }
     setModalDelVisible(false);
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <ModalCustom modalVisible={modalVisible}>
-        <View style={{width: 290}}>
+        <View style={{ width: 290 }}>
           <TouchableOpacity
             onPress={() => setModalVisible(false)}
-            style={{alignItems: 'flex-end'}}>
+            style={{ alignItems: 'flex-end' }}>
             <Text
               style={{
                 marginTop: -20,
@@ -284,12 +282,12 @@ export default function ContactDetails() {
             color="#243757"
             bold
             size={16}
-            style={{marginBottom: 20, marginTop: -16, fontWeight: 'bold'}}>
+            style={{ marginBottom: 20, marginTop: -16, fontWeight: 'bold' }}>
             Добавить оттправителя
           </Body>
           <Formik initialValues={initialValuesAdd} onSubmit={addSender}>
             <>
-              <View style={{width: 290, height: 6 * 80, paddingBottom: 20}}>
+              <View style={{ width: 290, height: 6 * 80, paddingBottom: 20 }}>
                 <AuthInput
                   label="Фамилия имя отчество*"
                   placeholder="Введите фамилию имя отчество"
@@ -322,7 +320,7 @@ export default function ContactDetails() {
                   validate={validator(req)}
                 />
                 <AuthInput
-                  containerStyle={[styles.rowInput, {borderRightWidth: 0}]}
+                  containerStyle={[styles.rowInput, { borderRightWidth: 0 }]}
                   label="Дом*"
                   placeholder="Введите номер"
                   position="center"
@@ -337,7 +335,7 @@ export default function ContactDetails() {
                   name="apartment"
                 />
               </View>
-              <Body size={14} color="#444" style={{paddingBottom: 10}}>
+              <Body size={14} color="#444" style={{ paddingBottom: 10 }}>
                 {err}
               </Body>
               <FormButton text="ДОБАВИТЬ" onPress={addLoading} />
@@ -346,10 +344,10 @@ export default function ContactDetails() {
         </View>
       </ModalCustom>
       <ModalCustom modalVisible={modalDelVisible}>
-        <View style={{width: 290}}>
+        <View style={{ width: 290 }}>
           <TouchableOpacity
             onPress={() => setModalDelVisible(false)}
-            style={{alignItems: 'flex-end'}}>
+            style={{ alignItems: 'flex-end' }}>
             <Text
               style={{
                 marginTop: -20,
@@ -363,20 +361,20 @@ export default function ContactDetails() {
             color="#243757"
             bold
             size={16}
-            style={{marginBottom: 20, marginTop: -16, fontWeight: 'bold'}}>
+            style={{ marginBottom: 20, marginTop: -16, fontWeight: 'bold' }}>
             {currSender == delNum
               ? 'Активного отправителя невозможно удалить'
               : 'Удалить отправителя?'}
           </Body>
           <View style={styles.row}>
-            <View style={{width: '50%', padding: 20}}>
+            <View style={{ width: '50%', padding: 20 }}>
               <Button
                 onPress={() => setModalDelVisible(false)}
                 buttonType={1}
                 text="НЕТ"
               />
             </View>
-            <View style={{width: '50%', padding: 20}}>
+            <View style={{ width: '50%', padding: 20 }}>
               <Button
                 onPress={() => senderDel(delNum)}
                 buttonType={2}
@@ -388,14 +386,14 @@ export default function ContactDetails() {
       </ModalCustom>
       <Header title="Контактные данные" />
       <ScrollView>
-        <Body semiBold size={17} style={{paddingLeft: 17}}>
+        <Body semiBold size={17} style={{ paddingLeft: 17 }}>
           Отправитель
         </Body>
         <ScrollView
-          contentContainerStyle={{paddingLeft: 17}}
+          contentContainerStyle={{ paddingLeft: 17 }}
           horizontal
           showsHorizontalScrollIndicator={false}>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{ flexDirection: 'row' }}>
             {data.map((item, num: number) => (
               <TouchableOpacity
                 key={item.id}
@@ -416,12 +414,12 @@ export default function ContactDetails() {
                         ? 'white'
                         : 'black'
                     }
-                    style={{marginRight: 10}}>
+                    style={{ marginRight: 10 }}>
                     {item.fullName}
                   </Body>
                   <Space height={4} />
                 </View>
-                <View style={{marginTop: 3}}>
+                <View style={{ marginTop: 3 }}>
                   <Ellipses
                     color={
                       data[currSender].fullName == item.fullName
@@ -438,19 +436,19 @@ export default function ContactDetails() {
             onPress={() => setModalVisible(true)}
             style={styles.senderItemm}>
             <View>
-              <Body color={'black'} style={{marginRight: 10}}>
+              <Body color={'black'} style={{ marginRight: 10 }}>
                 Добавить нового
               </Body>
               <Space height={4} />
             </View>
-            <View style={{marginTop: 3}}>
+            <View style={{ marginTop: 3 }}>
               <Ellipses color="white" />
             </View>
           </TouchableOpacity>
         </ScrollView>
         <Formik initialValues={initialValues} onSubmit={goOrderParams}>
           <View style={styles.recipientFormContainer}>
-            <Body semiBold size={17} style={{marginBottom: 15}}>
+            <Body semiBold size={17} style={{ marginBottom: 15 }}>
               Получатель
             </Body>
 
@@ -488,7 +486,7 @@ export default function ContactDetails() {
 
             <View style={styles.row}>
               <AuthInput
-                containerStyle={[styles.rowInput, {borderRightWidth: 0}]}
+                containerStyle={[styles.rowInput, { borderRightWidth: 0 }]}
                 label="Дом*"
                 placeholder="Введите номер"
                 position="center"
@@ -506,7 +504,7 @@ export default function ContactDetails() {
 
             <View style={styles.row}>
               <AuthInput
-                containerStyle={[styles.rowInput, {borderRightWidth: 0}]}
+                containerStyle={[styles.rowInput, { borderRightWidth: 0 }]}
                 label="Подъезд*"
                 placeholder="Введите номер"
                 position="center"
@@ -523,11 +521,11 @@ export default function ContactDetails() {
 
             <CustomCheckbox
               label={`Согласие на обработку персональных \nданных`}
-              style={{marginTop: 10}}
+              style={{ marginTop: 10 }}
               onChange={() => setAgre(!agre)}
               val={agre}
             />
-            <View style={{alignItems: 'center', marginVertical: 20}}>
+            <View style={{ alignItems: 'center', marginVertical: 20 }}>
               <FormButton text="ДАЛЕЕ   ➤" onPress={loading} />
             </View>
           </View>

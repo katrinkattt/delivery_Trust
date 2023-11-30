@@ -19,6 +19,7 @@ export type IChatMsg = {
   chatId?: number;
   createdAt?: string;
   text?: string;
+  image?: string | undefined;
   user: {
     avatar?: number | string;
     name?: string;

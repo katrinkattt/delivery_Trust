@@ -7,6 +7,7 @@ import {
   TariffOrder,
   CategoryOrder,
   ITariffPrice,
+  IDonut,
 } from './types';
 import {
   loadOrder,
@@ -16,6 +17,8 @@ import {
   loadCategory,
   loadTariffs,
   tariffPrice,
+  orderTip,
+  orderRate
 } from './action';
 
 export const initialOrdersState: OrdersState = {
@@ -27,6 +30,7 @@ export const initialOrdersState: OrdersState = {
   tariffs: [],
   currTariff: {},
   donut: 0,
+  donutId: 0,
   currPaymentId: 0,
   newOrder: {
     id: 0,
@@ -251,6 +255,29 @@ const ordersSlice = createSlice({
         state.loading = true;
       }),
       builder.addCase(loadCategory.rejected.type, state => {
+        state.loading = false;
+      });
+      builder.addCase(orderTip.fulfilled.type,
+        (state, action: PayloadAction<IDonut>)=> {
+          console.log(' TIP RESP ===>',action.payload);
+          state.loading = false;
+          state.donutId = action.payload.orderId ||  action.payload.order_id || 0
+        }),
+      builder.addCase(orderTip.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(orderTip.rejected.type, state => {
+        state.loading = false;
+      });
+      builder.addCase(orderRate.fulfilled.type,
+        (state, action: PayloadAction<IDonut>)=> {
+          console.log(' TIP RESP',action.payload);
+          state.loading = false;
+        }),
+      builder.addCase(orderRate.pending.type, state => {
+        state.loading = true;
+      }),
+      builder.addCase(orderRate.rejected.type, state => {
         state.loading = false;
       });
   },

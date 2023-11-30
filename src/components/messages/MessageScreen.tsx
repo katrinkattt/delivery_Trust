@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -15,18 +15,20 @@ import {
   Actions,
   Send,
 } from 'react-native-gifted-chat';
-import {useNavigation} from '@react-navigation/native';
-import {IChatData} from '../../screens/Messages';
+import { useNavigation } from '@react-navigation/native';
+import { IChatData } from '../../screens/Messages';
 import Body from '../common/Body';
 import Header from '../Header';
-import {colors} from '../../theme/themes';
-import {useSelector} from 'react-redux';
-import {getUser} from '../../state/user/selectors';
+import { colors } from '../../theme/themes';
+import { useSelector } from 'react-redux';
+import { getUser } from '../../state/user/selectors';
 import socket from '../../socket';
 import R from '../../res';
-import {useAppDispatch} from '../../hooks/redux';
+import { useAppDispatch } from '../../hooks/redux';
 import axios from 'axios';
-import {API_BASE_URL} from '../../res/consts';
+import { API_BASE_URL } from '../../res/consts';
+// import moment from 'moment';
+import moment from 'moment-with-locales-es6';
 const addDocImg = '../../assets/addDoc.png';
 const phoneImg = '../../assets/phone-call-svgrepo-com.png';
 
@@ -37,12 +39,13 @@ interface IProps {
     };
   };
 }
+moment.locale('ru');
 //@ts-ignore
 const customtInputToolbar = props => {
   return (
     <InputToolbar
       {...props}
-      primaryStyle={{color: colors.black}}
+      primaryStyle={{ color: colors.black }}
       containerStyle={{
         padding: 4,
         backgroundColor: Platform.OS === 'ios' ? colors.white : colors.darkBlue,
@@ -55,20 +58,22 @@ export const MessageScreen = () => {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const userState = useSelector(getUser);
-  const {chats} = useSelector(state => state.chats);
-  const {currentChat} = useSelector(state => state.chats);
+  const { chats } = useSelector(state => state.chats);
+  const { currentChat } = useSelector(state => state.chats);
   const user = {
     _id: userState.user_id,
     name: userState.full_name,
-    avatar: 2,
+    avatar: userState?.typeInUser ? 1 : 2,
   };
   const item = chats[currentChat];
   const phone = userState.typeInUser ? item?.courierPhone : item?.clientPhone;
   console.log('phone', phone);
   console.log('chat in page', item);
-  const generateID = () => Math.random().toString(36).substring(2, 10);
+  // const generateID = () => Math.random().toString(36).substring(2, 10);
 
+  const [photoMSG, setPhotoMSG] = useState('');
   const messages = item?.messages;
+
   console.log('mesages in curr chat', messages);
   useEffect(() => {
     socket.emit('join_chat', {
@@ -79,39 +84,53 @@ export const MessageScreen = () => {
 
   const onSend = useCallback((messages = []) => {
     console.log('messages in onSend', messages);
+    if (messages[0]?.text !== '') {
+      socket.emit('send_message', {
+        chat_id: item?.chatId,
+        room_id: item?.chatId,
+        user_id: user?._id,
+        user_name: user?.name,
+        user_avatar: user.avatar,
+        text: messages[0]?.text,
+        createdAt: messages[0]?.createdAt,
+        user: { avatar: user.avatar, name: user?.name, id: user?._id },
+      });
+    }
 
-    socket.emit('send_message', {
-      chat_id: item?.chatId,
-      room_id: item?.chatId,
-      user_id: user?._id,
-      user_name: user?.name,
-      user_avatar: user.avatar,
-      text: messages[0]?.text,
-      createdAt: messages[0]?.createdAt,
-      user: {avatar: user.avatar, name: user?.name, id: user?._id},
-    });
   }, []);
 
-  const onSendImg = useCallback((url: string) => {
+  const onSendImg = useCallback((url: string, messages = []) => {
     console.log('messages IMG in onSend', messages);
-    socket.emit('send_message', {
-      chat_id: item?.chatId,
-      room_id: item?.chatId,
-      user_id: user?._id,
-      user_name: user?.name,
-      user_avatar: user.avatar,
-      text: '',
-      user: {avatar: user.avatar, name: user?.name, id: user?._id},
-      file: url,
-      image: url,
-    });
+    console.log('photoMSG in onSendImg===>', photoMSG);
+    if (url) {
+      socket.emit('send_message', {
+        chat_id: item?.chatId,
+        room_id: item?.chatId,
+        user_id: user?._id,
+        user_name: user?.name,
+        user_avatar: user.avatar,
+        text: messages[0]?.text || '',
+        user: { avatar: user.avatar, name: user?.name, id: user?._id },
+        file: url,
+        image: url,
+      });
+      setPhotoMSG('')
+    }
+
   }, []);
 
-  const renderSend = props => (
-    <Send {...props}>
-      <Text style={{fontSize: 26, color: '#aaa'}}>➤</Text>
-    </Send>
-  );
+  const renderSend = props => {
+    console.log('prop renderSend:::', props);
+
+    return (
+      <Send {...props}>
+        {!props?.text ? (<TouchableOpacity onPress={() => onSendImg(photoMSG, [])} >
+          <Text style={{ fontSize: 26, color: '#aaa' }}>➤</Text>
+        </TouchableOpacity>) : <Text style={{ fontSize: 26, color: '#aaa' }}>➤</Text>}
+      </Send>
+    )
+  };
+
   const handleDocumentSelection = useCallback(async () => {
     // const createdAt = new Date();
     try {
@@ -146,7 +165,7 @@ export const MessageScreen = () => {
           if (response.status == 200) {
             const data = response.data;
             console.log('URL загруженного изображения: ${data.imageUrl}', data);
-            onSendImg(data.file_url);
+            setPhotoMSG(data.file_url)
           } else {
             console.log('Ошибка при загрузке изображения: ${response.status}');
           }
@@ -158,13 +177,13 @@ export const MessageScreen = () => {
 
   const renderActions = props => {
     return (
-      <View style={{flexDirection: 'row'}}>
+      <View style={{ flexDirection: 'row' }}>
         <Actions
           {...props}
           icon={() => (
             <Image
               source={require(addDocImg)}
-              style={{width: 18, resizeMode: 'contain', marginTop: -10}}
+              style={{ width: 18, resizeMode: 'contain', marginTop: -10 }}
             />
           )}
           options={{
@@ -202,37 +221,6 @@ export const MessageScreen = () => {
       </View>
     );
   };
-
-  // const CustomAudioComponent = props => {
-  //   return (
-  //     <TouchableOpacity
-  //       onPress={() => {
-  //         console.log('PRESS AUDIO LISTEN');
-
-  //         const sound = new Sound(props?.currentMessage?.audio, error => {
-  //           if (error) {
-  //             console.log('Failed to load the sound', error);
-  //             return;
-  //           }
-  //           // if Звук успешно загружен, можно воспроизводить
-  //           sound.play();
-  //         });
-  //       }}>
-  //       <View
-  //         style={{
-  //           flexDirection: 'row',
-  //           alignItems: 'center',
-  //           paddingHorizontal: 6,
-  //         }}>
-  //         <Text style={{color: '#fff', fontSize: 26}}>ᐉ</Text>
-  //         <Text style={{marginVertical: 8}}>
-  //           {props?.currentMessage?.duration} sec
-  //         </Text>
-  //       </View>
-  //     </TouchableOpacity>
-  //   );
-  // };
-
   const renderCustomView = props => {
     if (props?.currentMessage?.file_type) {
       return (
@@ -248,8 +236,8 @@ export const MessageScreen = () => {
             borderRadius: 10,
           }}>
           {/* <Link */}
-          <Image source={{uri: props.currentMessage.attachment.url}} />
-          <Text style={{color: '#fff', padding: 10}}>
+          <Image source={{ uri: props.currentMessage.attachment.url }} />
+          <Text style={{ color: '#fff', padding: 10 }}>
             {props?.currentMessage.name}
           </Text>
         </TouchableOpacity>
@@ -258,21 +246,26 @@ export const MessageScreen = () => {
       return <View />;
     }
   };
+  const opponentMsg = messages.filter(item => item.user._id !== user._id)
+  const onlineTime = opponentMsg[0] ? opponentMsg[0].createdAt : false;
+  const onlineStatus = !!onlineTime ? moment(onlineTime).format('LT') + ' '
+    + moment(onlineTime).calendar() : 'Недавно';
 
   return (
     <View style={styles.content}>
       <Header title={item?.name || ''} style={styles.header} />
+      <View style={styles.avatarContainer} />
       <Body center light color="rgba(0, 0, 0, 0.44)">
-        {item?.name == 'Служба поддержки' ? 'Онлайн' : 'Недавно'}
+        {item?.name == 'Служба поддержки' ? 'Онлайн' : 'В сети ' + onlineStatus}
       </Body>
-      <View style={{paddingHorizontal: 30}}>
+      <View style={{ paddingHorizontal: 30 }}>
         <TouchableOpacity
           onPress={() =>
             userState.typeInUser
               ? //@ts-ignore
-                navigation.navigate('ClientOrderStack')
+              navigation.navigate('ClientOrderStack')
               : //@ts-ignore
-                navigation.navigate('OrderStack')
+              navigation.navigate('OrderStack')
           }
           style={{
             paddingVertical: 20,
@@ -292,15 +285,15 @@ export const MessageScreen = () => {
         minInputToolbarHeight={33}
         maxInputLength={32}
         renderInputToolbar={customtInputToolbar}
-        placeholder="Сообщение"
+        placeholder={!!photoMSG ? "Фото загружено" : "Сообщение"}
         alwaysShowSend={true}
         isKeyboardInternallyHandled={true}
-        showUserAvatar={true}
-        showAvatarForEveryMessage={true}
+        showUserAvatar={false}
+        showAvatarForEveryMessage={false}
         messagesContainerStyle={styles.messeg}
         renderAvatarOnTop={true}
         messages={messages}
-        onSend={messages => onSend(messages)}
+        onSend={messages => { photoMSG !== '' ? onSendImg(photoMSG, messages) : onSend(messages) }}
         user={{
           _id: user._id,
           name: user.name,
@@ -315,6 +308,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
     paddingBottom: Platform.OS === 'ios' ? 24 : 0,
+  },
+  avatarContainer: {
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    backgroundColor: colors.lavender,
+    position: 'absolute',
+    marginTop: 50,
+    right: 20
   },
   hashtag: {
     borderWidth: 1,

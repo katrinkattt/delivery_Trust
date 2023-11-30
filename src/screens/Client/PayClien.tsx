@@ -79,25 +79,13 @@ export default function PayClient() {
     // });
     if (donut > 0) {
       console.log('===>paymentFunc');
-
-      dispatch(
-        paymentFunc({
-          data: {
-            id: order.currPaymentId,
-            type: currMethod,
-            total: price,
-          },
-          onSuccess: () => {
-            // reloadOrders();
-            // @ts-ignore
-            // navigation.navigate('TabScreen');
-            console.log('paymentFunc OK');
-          },
-          onError: async e => {
-            console.log('Ошибка сервера', e);
-          },
-        }),
-      );
+      // create tea
+      // @ts-ignore
+      navigation.navigate(R.routes.PAYMENT_ORDER, {
+        id_method: currMethod,
+        price: price,
+        orderId: 12344,
+      });
     }
     if (donut == 0) {
       console.log('order.newOrder', order.newOrder);

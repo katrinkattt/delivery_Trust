@@ -34,6 +34,8 @@ export const API_GET_CATEGORY = '/api/categories';
 export const API_GET_TARIFF = '/api/tariff';
 export const API_TARIFF_PRICE = '/api/tariff';
 export const API_PAYMENT = '/payment';
+export const API_ORDER_TIP = '/order/tip';
+export const API_ORDER_RATE = '/order/rate';
 
 //chat
 export const API_GET_CHAT_H = '/get_chat_history/';
@@ -45,3 +47,5 @@ export const IS_IOS = !IS_ANDROID;
 
 export const SCREEN_WIDTH = Dimensions.get('window').width;
 export const SCREEN_HEIGHT = Dimensions.get('window').height;
+
+export const DEFAULT_AVATAR = 'https://cdn-icons-png.flaticon.com/512/1946/1946429.png'

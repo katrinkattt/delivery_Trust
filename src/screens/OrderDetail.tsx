@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   ScrollView,
   TouchableOpacity,
@@ -7,13 +7,13 @@ import {
   Image,
   Linking,
 } from 'react-native';
-import {ScaledSheet} from 'react-native-size-matters/extend';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import { ScaledSheet } from 'react-native-size-matters/extend';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import notifee from '@notifee/react-native';
 import Body from '../components/common/Body';
 import BackButton from '../components/common/BackButton';
-import {useDispatch, useSelector} from 'react-redux';
-import {setCompletlyOrders, setCurrPaymentId} from '../state/orders/slice';
+import { useDispatch, useSelector } from 'react-redux';
+import { setCompletlyOrders, setCurrPaymentId } from '../state/orders/slice';
 import {
   FlagIcon,
   MessageIcon,
@@ -22,17 +22,17 @@ import {
   PhoneIcon,
   Flag,
 } from '../components/common/Svgs';
-import {colors} from '../theme/themes';
+import { colors } from '../theme/themes';
 import Button from '../components/common/Button';
-import {OrderMap} from '../components/OrderMap';
-import {Slider} from 'react-native-awesome-slider';
-import {useSharedValue} from 'react-native-reanimated';
-import {IOrder} from '../state/orders/types';
-import {ModalCustom} from '../components/ModalCustom';
-import {useNavigation} from '@react-navigation/native';
+import { OrderMap } from '../components/OrderMap';
+import { Slider } from 'react-native-awesome-slider';
+import { useSharedValue } from 'react-native-reanimated';
+import { IOrder } from '../state/orders/types';
+import { ModalCustom } from '../components/ModalCustom';
+import { useNavigation } from '@react-navigation/native';
 import R from '../res';
-import {useAppDispatch} from '../hooks/redux';
-import {editOrder, loadOrder} from '../state/orders/action';
+import { useAppDispatch } from '../hooks/redux';
+import { editOrder, loadOrder } from '../state/orders/action';
 
 interface IProps {
   route: {
@@ -42,11 +42,11 @@ interface IProps {
     };
   };
 }
-export default function OrderDetail({route}: IProps) {
+export default function OrderDetail({ route }: IProps) {
   const disp = useDispatch();
   const dispatch = useAppDispatch();
-  const {item} = route.params;
-  const {user} = route.params;
+  const { item } = route.params;
+  const { user } = route.params;
   const safeAreaInsets = useSafeAreaInsets();
   const navigation = useNavigation();
   const [order, setOrder] = useState(false);
@@ -58,7 +58,7 @@ export default function OrderDetail({route}: IProps) {
   const [isOpenDot, setIsOpenDot] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [delOrder, setDelOrder] = useState(false);
-  const {id} = useSelector(state => state.user);
+  const { id } = useSelector(state => state.user);
   console.log('item', item);
 
   async function onDisplayNotification() {
@@ -69,9 +69,7 @@ export default function OrderDetail({route}: IProps) {
       id: 'defaul',
       name: 'Default Channel',
     });
-    const strBody = user
-      ? `Заказ  ${item?.category} закрыт`
-      : `Заказ  ${item?.category} закрыт, дождитесь подтверждения заказчика`;
+    const strBody = `Заказ  ${item?.category} закрыт, дождитесь подтверждения заказчика`;
     // Display a notification
     await notifee.displayNotification({
       id: 'default',
@@ -125,46 +123,48 @@ export default function OrderDetail({route}: IProps) {
 
   const confirmDelivery = () => {
     if (item.active) {
-      disp(setCurrPaymentId({id: item.payment}));
+      disp(setCurrPaymentId({ id: item.payment }));
       setOrder(false);
       if (user) {
-        dispatch(
-          editOrder({
-            id: item?.id || 0,
-            data: {
-              order_id: item?.id,
-              complete: true,
-              active: false,
-            },
-            onSuccess: () => {
-              console.log('good edit order');
-              setTimeout(() => {
-                onDisplayNotification();
-              }, 5000);
-            },
-            onError: async e => {
-              console.log('ERR edit order', e);
-            },
-          }),
-        );
+        // dispatch(
+        //   editOrder({
+        //     id: item?.id || 0,
+        //     data: {
+        //       order_id: item?.id,
+        //       complete: true,
+        //       active: false,
+        //     },
+        //     onSuccess: () => {
+        //       console.log('good edit order');
+        //       setTimeout(() => {
+        //         if(!user){
+        //           onDisplayNotification();
+        //         }
+        //       }, 5000);
+        //     },
+        //     onError: async e => {
+        //       console.log('ERR edit order', e);
+        //     },
+        //   }),
+        // );
         reload();
         navigation.goBack();
         //@ts-ignore
-        navigation.navigate(R.routes.ORDER_REVIEW);
+        navigation.navigate(R.routes.ORDER_REVIEW, { item: item });
       }
     }
   };
 
   return (
-    <View style={[styles.container, {marginTop: safeAreaInsets.top + 23}]}>
+    <View style={[styles.container, { marginTop: safeAreaInsets.top + 23 }]}>
       <ModalCustom
         modalVisible={modalVisible}
         err={delOrder}
         text="Доставка отменена">
-        <View style={{width: 250}}>
+        <View style={{ width: 250 }}>
           <TouchableOpacity
             onPress={() => setModalVisible(!modalVisible)}
-            style={{alignItems: 'flex-end'}}>
+            style={{ alignItems: 'flex-end' }}>
             <Text
               style={{
                 marginTop: -20,
@@ -174,14 +174,14 @@ export default function OrderDetail({route}: IProps) {
               ×
             </Text>
           </TouchableOpacity>
-          {!delOrder && (
-            <Body color="#243757" bold style={{marginBottom: 20}}>
+          {/* {!delOrder && (
+            <Body color="#243757" bold style={{ marginBottom: 20 }}>
               Изименить адрес доставки
             </Body>
-          )}
+          )} */}
           {!delOrder && (
             <>
-              <Body color="#243757" bold style={{marginBottom: 20}}>
+              <Body color="#243757" bold style={{ marginBottom: 20 }}>
                 Вы уверены, что хотите отменить доставку?
               </Body>
               <Button
@@ -196,7 +196,7 @@ export default function OrderDetail({route}: IProps) {
       <View style={styles.header}>
         <BackButton />
 
-        <View style={{marginLeft: 17, width: 210}}>
+        <View style={{ marginLeft: 17, width: 210 }}>
           <Body color="#243757" style={styles.title}>
             {item?.category}
           </Body>
@@ -211,10 +211,11 @@ export default function OrderDetail({route}: IProps) {
             </Body>
           </View>
         </View>
-
         <TouchableOpacity
-          onPress={() => navigation.navigate('Messages')}
-          style={{marginTop: 7}}
+          onPress={() =>
+            //@ts-ignore
+            navigation.navigate('Messages')}
+          style={{ marginTop: 7 }}
           activeOpacity={0.7}>
           <MessageIcon width={28} height={28} />
         </TouchableOpacity>
@@ -228,7 +229,7 @@ export default function OrderDetail({route}: IProps) {
 
         {user && (
           <TouchableOpacity
-            style={{marginLeft: 14, marginTop: 7}}
+            style={{ marginLeft: 14, marginTop: 7 }}
             onPress={() => setIsOpenDot(!isOpenDot)}
             activeOpacity={0.7}>
             <MoreIcon width={25} height={25} />
@@ -239,7 +240,7 @@ export default function OrderDetail({route}: IProps) {
         user && ( //пока кнопка не для курьеров
           <View style={styles.dotMenu}>
             <TouchableOpacity
-              onPress={() => setModalVisible(true)}
+              // onPress={() => setModalVisible(true)}
               style={[
                 styles.dotMenuItem,
                 {
@@ -248,7 +249,7 @@ export default function OrderDetail({route}: IProps) {
                 },
               ]}>
               <Body center>
-                {item?.active ? 'Изменить адрес' : 'Заказ завершен'}
+                {item?.active ? 'Заказ в процесе' : 'Заказ завершен'}
               </Body>
             </TouchableOpacity>
             {item?.active && (
@@ -270,19 +271,18 @@ export default function OrderDetail({route}: IProps) {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: 130}}>
+        contentContainerStyle={{ paddingBottom: 130 }}>
         {(item?.complete || item.active) && user ? (
-          <View style={{marginBottom: 20}}>
+          <View style={{ marginBottom: 20 }}>
             <Body center bold semiBold>
               {item?.activeMinute
                 ? item.activeMinute < 90
                   ? `Еще ${item.activeMinute} минут`
-                  : `Еще ${item.activeMinute / 60} ${
-                      item?.activeMinute / 60 > 4 ? 'часов' : 'часа'
-                    }`
+                  : `Еще ${item.activeMinute / 60} ${item?.activeMinute / 60 > 4 ? 'часов' : 'часа'
+                  }`
                 : 'Заказ доставлен'}
             </Body>
-            <View style={{position: 'absolute', right: 0, bottom: 15}}>
+            <View style={{ position: 'absolute', right: 0, bottom: 15 }}>
               <Flag />
             </View>
             <Slider
@@ -311,22 +311,22 @@ export default function OrderDetail({route}: IProps) {
             />
           </View>
         ) : user ? (
-          <View style={{marginBottom: 20}}>
+          <View style={{ marginBottom: 20 }}>
             <Body center bold semiBold>
               Заказ отменен
             </Body>
           </View>
         ) : (
-          <View style={{marginBottom: 20, paddingLeft: 40}}>
-            <View style={{flexDirection: 'row'}}>
+          <View style={{ marginBottom: 20, paddingLeft: 40 }}>
+            <View style={{ flexDirection: 'row' }}>
               <Body>Время заказа</Body>
-              <Body bold style={{fontWeight: 'bold', paddingLeft: 40}}>
+              <Body bold style={{ fontWeight: 'bold', paddingLeft: 40 }}>
                 {item?.createdAt}
               </Body>
             </View>
-            <View style={{flexDirection: 'row'}}>
+            <View style={{ flexDirection: 'row' }}>
               <Body>Осталось времени</Body>
-              <Body bold style={{fontWeight: 'bold', paddingLeft: 26}}>
+              <Body bold style={{ fontWeight: 'bold', paddingLeft: 26 }}>
                 {item?.activeMinute
                   ? item.activeMinute < 90
                     ? `Еще ${item.activeMinute} минут`
@@ -341,12 +341,12 @@ export default function OrderDetail({route}: IProps) {
         <View style={styles.orderDetailBox}>
           {!order && (
             <View>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <OrderIconActive width={25} height={25} />
 
                 <Body
                   color="#243757"
-                  style={[styles.orderDetailText, {marginLeft: 14}]}>
+                  style={[styles.orderDetailText, { marginLeft: 14 }]}>
                   Забрать посылку
                 </Body>
               </View>
@@ -359,18 +359,18 @@ export default function OrderDetail({route}: IProps) {
 
               <Body
                 color="#243757"
-                style={[styles.orderDetailText, {marginTop: 3}]}>
+                style={[styles.orderDetailText, { marginTop: 3 }]}>
                 {item?.address}
               </Body>
             </View>
           )}
-          <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
-            <View style={!order ? {marginTop: 30} : {marginTop: 9}}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+            <View style={!order ? { marginTop: 30 } : { marginTop: 9 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <OrderIconActive width={25} height={25} />
                 <Body
                   color="#243757"
-                  style={[styles.orderDetailText, {marginLeft: 14}]}>
+                  style={[styles.orderDetailText, { marginLeft: 14 }]}>
                   Доставить посылку
                 </Body>
               </View>
@@ -383,13 +383,13 @@ export default function OrderDetail({route}: IProps) {
 
               <Body
                 color="#243757"
-                style={[styles.orderDetailText, {marginTop: 3}]}>
+                style={[styles.orderDetailText, { marginTop: 3 }]}>
                 {item?.addressTo}
               </Body>
             </View>
 
             {order && (
-              <View style={{marginBottom: 30}}>
+              <View style={{ marginBottom: 30 }}>
                 <FlagIcon width={20} height={20} />
               </View>
             )}
@@ -397,12 +397,12 @@ export default function OrderDetail({route}: IProps) {
           <View style={styles.commRow} />
           <Body
             color="#243757"
-            style={[styles.orderDetailText, {marginTop: 3}]}>
+            style={[styles.orderDetailText, { marginTop: 3 }]}>
             Комментарий: {item?.comment}
           </Body>
         </View>
 
-        <View style={{marginTop: 16}}>
+        <View style={{ marginTop: 16 }}>
           {user && (
             <Button
               onPress={confirmDelivery}
@@ -411,8 +411,8 @@ export default function OrderDetail({route}: IProps) {
                 item.active
                   ? 'ПОДТВЕРДИТЬ ДОСТАВКУ'
                   : item?.complete
-                  ? 'ЗАБРАЛ ПОСЫЛКУ'
-                  : 'ЗАКАЗ ОТМЕНЕН'
+                    ? 'ЗАБРАЛ ПОСЫЛКУ'
+                    : 'ЗАКАЗ ОТМЕНЕН'
               }
             />
           )}
@@ -423,7 +423,7 @@ export default function OrderDetail({route}: IProps) {
 }
 
 const styles = ScaledSheet.create({
-  map: {height: 300, width: 300},
+  map: { height: 300, width: 300 },
   container: {
     marginHorizontal: 15,
   },
@@ -431,6 +431,7 @@ const styles = ScaledSheet.create({
     height: '12%',
     flexDirection: 'row',
     justifyContent: 'center',
+    marginLeft: -20,
   },
   title: {
     fontSize: 20,

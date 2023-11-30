@@ -44,6 +44,7 @@ export type UserState = {
   curCard?: number;
   cards?: ICard[];
   senders?: OrderSender[];
+  avatar?: string;
 };
 
 export type ICard = {
@@ -78,6 +79,7 @@ export type EditData = {
   entrance?: string;
   houseCode?: string;
   coord?: {latitude: number; longitude: number};
+  avatar?: string;
 };
 export type ChangePass = {
   oldPassword?: string;
@@ -97,6 +99,7 @@ export type UserDataAddit = {
     house?: string;
     apartment?: string;
     region?: string;
+    avatar?: string;
   };
   email?: string;
   phone?: string;

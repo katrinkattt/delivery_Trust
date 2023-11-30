@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {ScaledSheet} from 'react-native-size-matters/extend';
 import {
   Dimensions,
@@ -9,6 +9,8 @@ import {
   Platform,
   Text,
 } from 'react-native';
+import DocumentPicker from 'react-native-document-picker';
+import axios from 'axios';
 import FastImage from 'react-native-fast-image';
 import notifee, {EventType} from '@notifee/react-native';
 import {useNavigation} from '@react-navigation/native';
@@ -27,7 +29,8 @@ import {IOrder} from '../state/orders/types';
 import {useAppDispatch} from '../hooks/redux';
 import {loadOrder} from '../state/orders/action';
 import {loadChat} from '../state/chat/action';
-import {loadUserData} from '../state/user/action';
+import {editData, loadUserData} from '../state/user/action';
+import { API_BASE_URL, DEFAULT_AVATAR } from '../res/consts';
 const {width} = Dimensions.get('window');
 const userImg = require('../assets/user.png');
 const header = require('../assets/header.png');
@@ -44,6 +47,9 @@ export default function Home() {
   const order = useSelector(state => state.order);
   const activeOrder = order.orders.filter((obj: IOrder) => obj.active);
   const orderCount = activeOrder.length;
+  const [avatarURL, setAvatarURL] = useState(DEFAULT_AVATAR);
+
+
   async function handleChange(e: string) {
     setText(e);
   }
@@ -54,6 +60,69 @@ export default function Home() {
   //     navigation.navigate('ProfileType');
   //   }
   // }, 5000);
+  const sendAvatar = (ava: string)=> {
+    dispatch(
+    editData({
+      id: user.user_id,
+      data: {avatar:ava},
+      onSuccess: () => {
+        
+      },
+      onError: async e => {
+        console.log('ERR EDIT', e);
+      },
+    }),
+  );
+}
+  const handleDocumentSelection = useCallback(async () => {
+    try {
+      const response = await DocumentPicker.pickSingle({
+        presentationStyle: 'fullScreen',
+        type: [DocumentPicker.types.images],
+        mode: 'import',
+        copyTo: 'documentDirectory',
+      });
+      console.log('FULL response', response);
+      const formData = new FormData();
+      formData.append('image', {
+        uri:
+          Platform.OS === 'android'
+            ? response?.fileCopyUri
+            : response?.fileCopyUri.replace('file://', ''),
+        name: response?.name,
+        type: response?.type,
+      });
+      axios
+        .post(API_BASE_URL + '/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(response => {
+          console.log('response', response);
+
+          if (response.status == 200) {
+            const data = response.data;
+            console.log('URL загруженного изображения: ${data.imageUrl}', data);
+            setAvatarURL(data?.file_url)
+            setTimeout(()=>sendAvatar(data?.file_url) , 500)
+          } else {
+            console.log('Ошибка при загрузке изображения: ${response.status}');
+          }
+        });
+    } catch (err) {
+      console.warn(err);
+    }
+  }, []);
+
+  useEffect(()=> {
+    if( user?.avatar){
+      setAvatarURL(user?.avatar)
+    }
+    else{
+    setAvatarURL(DEFAULT_AVATAR)
+    }
+  },[])
 
   useEffect(() => {
     dispatch(
@@ -112,8 +181,9 @@ export default function Home() {
         <View style={[styles.userBox, {top: 18 + safeAreaInsets.top}]}>
           <View style={{flexDirection: 'column'}}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <FastImage source={userImg} style={styles.image} />
-
+              <TouchableOpacity onPress={()=> handleDocumentSelection()}>
+                <FastImage source={{ uri:avatarURL}} style={styles.image} />
+              </TouchableOpacity>
               <View style={{marginLeft: 14}}>
                 <Text
                   numberOfLines={1}
@@ -206,8 +276,11 @@ export default function Home() {
         <DropShadow style={styles.orderBox}>
           <TouchableOpacity
             onPress={() => {
+              console.log('click');
+
               //@ts-ignore
-              navigation.navigate(R.routes.OREDERS);
+              // navigation.navigate(R.routes.OREDERS);
+              navigation.navigate('Orders');
             }}>
             <View style={styles.orderBoxContainer}>
               <View>
@@ -272,8 +345,12 @@ const styles = ScaledSheet.create({
     position: 'absolute',
   },
   image: {
-    width: '51@vs',
-    height: '51@vs',
+    width: 56,
+    height: 56,
+    marginTop: '20@vs',
+    borderRadius: 25,
+    borderWidth: 2,
+    borderColor: colors.ligther
   },
   headerImage: {
     width: '100%',

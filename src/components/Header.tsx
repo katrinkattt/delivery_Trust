@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { TouchableOpacity, View, ViewStyle } from 'react-native'
 import Body from './common/Body'
 // import MyOrders from './MyOrders'

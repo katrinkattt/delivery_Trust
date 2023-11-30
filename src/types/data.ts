@@ -116,6 +116,7 @@ export interface ILogin {
   accessToken?: string;
   refreshToken?: string;
   id?: number;
+  avatar?: string;
   userType?: number;
   userData?: UserLoginData;
   userId?: number;

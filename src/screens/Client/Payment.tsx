@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from 'react';
-import {TouchableOpacity, View, Linking} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { TouchableOpacity, View, Linking, Platform } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Header from '../../components/Header';
 import Body from '../../components/common/Body';
 import Button from '../../components/common/Button';
-import {CopyIcon} from '../../../assets/icons/CopyIcon';
-import {ModalCustom} from '../../components/ModalCustom';
-import {useDispatch, useSelector} from 'react-redux';
+import { CopyIcon } from '../../../assets/icons/CopyIcon';
+import { ModalCustom } from '../../components/ModalCustom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   TerminalKey,
   PasswordTerm,
@@ -17,13 +17,13 @@ import {
   ThreDS_PAY,
   FinishAuthorize_PAY,
 } from '../../api/TinkoffAPI';
-import {sha256} from 'react-native-sha256';
-import {RSA} from 'react-native-rsa-native';
+import { sha256 } from 'react-native-sha256';
+import { RSA } from 'react-native-rsa-native';
 import axios from 'axios';
-import {Space} from '../../components/common/Space';
-import {colors} from '../../theme/themes';
-import {CardModal} from '../../components/CardModal';
-import {useAppDispatch} from '../../hooks/redux';
+import { Space } from '../../components/common/Space';
+import { colors } from '../../theme/themes';
+import { CardModal } from '../../components/CardModal';
+import { useAppDispatch } from '../../hooks/redux';
 import {
   createOrder,
   editOrder,
@@ -31,7 +31,7 @@ import {
   paymentConfirm,
   paymentFunc,
 } from '../../state/orders/action';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 interface PeymentProps {
   route: {
@@ -75,7 +75,7 @@ const PointLoader = ({
   }, []);
 
   return (
-    <View style={{flexDirection: 'row', height: 40, width: 80}}>
+    <View style={{ flexDirection: 'row', height: 40, width: 80 }}>
       {arr.map(item => (
         <View
           style={{
@@ -91,7 +91,7 @@ const PointLoader = ({
   );
 };
 
-export default function Payment({route}: PeymentProps) {
+export default function Payment({ route }: PeymentProps) {
   const id_method = route.params?.id_method;
   const price = route.params?.price;
   const orderId = route.params?.orderId || 0;
@@ -206,9 +206,8 @@ export default function Payment({route}: PeymentProps) {
       Amount: priceInFormat,
       deviceChannel: 'APP',
     };
-    const finishKey = `${priceInFormat}${data.CardData}${
-      user?.email
-    }${paymentId}${true}cards${TerminalKey}`;
+    const finishKey = `${priceInFormat}${data.CardData}${user?.email
+      }${paymentId}${true}cards${TerminalKey}`;
 
     sha256(finishKey).then(hash => {
       setFinishToken(hash);
@@ -257,12 +256,32 @@ export default function Payment({route}: PeymentProps) {
     publicKey: string,
     paymentId: number,
   ) => {
-    // const keyPub = `-----BEGIN RSA PUBLIC KEY------/r/n${publicKey}/r/n-----END RSA PUBLIC KEY-----/r/n`;
-    // RSA.generate()
-    //   .then(() => {
+
+    const keyPub = Platform.OS === 'android' ? publicKey : '-----BEGIN RSA PUBLIC KEY------' + publicKey + '-----END RSA PUBLIC KEY-----/r/n';
+
+    //FIX LIB ДЛЯ ПЕРЕДАЧИ СОБСТВЕННОГО КЛЮЧА FOR ANDROID
+    //https://github.com/amitaymolko/react-native-rsa-native/issues/62#issuecomment-1141884771
+    // node_modules/react-native-rsa-native/android/src/main/java/com/RNRSA/RSA.java
+
+    //   private PublicKey pkcs1ToPublicKey(String publicKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+    //     Reader keyReader = null;
+    //     try {
+    //         // keyReader = new StringReader(publicKey);
+    //         // PEMParser pemParser = new PEMParser(keyReader);
+    //         // SubjectPublicKeyInfo subjectPublicKeyInfo = (SubjectPublicKeyInfo) pemParser.readObject();
+    //         // X509EncodedKeySpec spec = new X509EncodedKeySpec(subjectPublicKeyInfo.getEncoded());
+    //         X509EncodedKeySpec spec = new X509EncodedKeySpec(Base64.decode(publicKey, Base64.DEFAULT));
+    //         return KeyFactory.getInstance("RSA").generatePublic(spec);
+    //            } finally {
+    //         // if (keyReader != null) {
+    //         //     keyReader.close();
+    //         // }
+    //     }
+    // }
+
     console.log('encryptData publiс_KEY====>', publicKey); // the public key
     try {
-      RSA.encrypt(data, publicKey)
+      RSA.encrypt(data, keyPub)
         .then(encodedMessage => {
           console.log(`THE ENCODED DATA!!! ${encodedMessage}`);
           setCardData(encodedMessage);
@@ -280,20 +299,19 @@ export default function Payment({route}: PeymentProps) {
             request3DS(data3DS);
           });
         })
-        // })
         .catch(e => console.log('err', e));
     } catch {
       setStatusPay('Ошибка оплаты');
     }
   };
+
   const Check3ds = async (paymentId: number) => {
     setStatusPay('3DS проверка...');
     const card = `PAN=${currCard?.number.replaceAll(
       ' ',
       '',
-    )};ExpDate=${currCard?.dateEnd.replace('/', '')};CardHolder=${
-      currCard?.name
-    };CVV=${currCard?.cvv}`;
+    )};ExpDate=${currCard?.dateEnd.replace('/', '')};CardHolder=${currCard?.name
+      };CVV=${currCard?.cvv}`;
 
     console.log(card, '//CARD');
     console.log(cardData, '//card DATA crypt');
@@ -404,7 +422,7 @@ export default function Payment({route}: PeymentProps) {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <Header title={title} />
       <ModalCustom
         modalVisible={visibleStatus}
@@ -424,7 +442,7 @@ export default function Payment({route}: PeymentProps) {
             renderContent={() => (
               <>
                 <Body
-                  style={{marginRight: 10}}
+                  style={{ marginRight: 10 }}
                   semiBold
                   color="rgba(255, 255, 255, 1)"
                   size={15}>
@@ -442,7 +460,7 @@ export default function Payment({route}: PeymentProps) {
             <QRCode value={linkOR} size={230} />
           </TouchableOpacity>
         )}
-        <Body bold semiBold size={36} style={{marginTop: 20}}>
+        <Body bold semiBold size={36} style={{ marginTop: 20 }}>
           {price} ₽
         </Body>
         <Body size={11}>Стоимость с учетом НДС</Body>

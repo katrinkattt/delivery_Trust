@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {ScaledSheet} from 'react-native-size-matters/extend';
 import {
   Dimensions,
@@ -17,11 +17,12 @@ import DropShadow from 'react-native-drop-shadow';
 import {useSharedValue} from 'react-native-reanimated';
 import {Slider} from 'react-native-awesome-slider';
 import CategoryData from '../../api/ClientHomeData';
-
+import axios from 'axios';
+import DocumentPicker from 'react-native-document-picker';
 const userImg = require('../../assets/use.png');
 const header = require('../../assets/head.png');
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-
+import { API_BASE_URL , DEFAULT_AVATAR} from '../../res/consts';
 import Body from '../../components/common/Body';
 import Button from '../../components/common/Button';
 import HomeClientItems from '../../components/HomeClientItems';
@@ -33,7 +34,7 @@ import {useAppDispatch} from '../../hooks/redux';
 import {loadCategory, loadTariffs, loadOrder} from '../../state/orders/action';
 import {loadChat} from '../../state/chat/action';
 import {IOrder} from '../../state/orders/types';
-import {loadUserData} from '../../state/user/action';
+import {editData, loadUserData} from '../../state/user/action';
 import {setNewOrderCategory} from '../../state/orders/slice';
 
 const {width} = Dimensions.get('window');
@@ -52,14 +53,83 @@ export default function HomeClient() {
   const order = useSelector(state => state.order);
   const activeOrder = order.orders.filter((obj: IOrder) => obj.active);
   const lastOrder = activeOrder.length > 0 ? activeOrder.length - 1 : -1;
-  console.log('activeOrder', activeOrder);
-
+  
   const time = (activeOrder[lastOrder]?.typeTarif * 60) | 60;
   let curTime = (time - activeOrder[lastOrder]?.activeMinute) | 1;
   const progress = useSharedValue(curTime);
   const min = useSharedValue(0);
   const max = useSharedValue(time);
   const user = useSelector(getUser);
+  const [avatarURL, setAvatarURL] = useState(DEFAULT_AVATAR);
+
+  const handleDocumentSelection = useCallback(async () => {
+    // const createdAt = new Date();
+    try {
+      const response = await DocumentPicker.pickSingle({
+        presentationStyle: 'fullScreen',
+        type: [DocumentPicker.types.images],
+        mode: 'import',
+        copyTo: 'documentDirectory',
+      });
+      console.log('FULL response', response);
+      // let str = response?.type;
+      // if (str?.match(imgRegex)) {
+      const formData = new FormData();
+      formData.append('image', {
+        uri:
+          Platform.OS === 'android'
+            ? response?.fileCopyUri
+            : response?.fileCopyUri.replace('file://', ''),
+        name: response?.name,
+        type: response?.type,
+      });
+      axios
+        .post(API_BASE_URL + '/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(response => {
+          console.log('response', response);
+
+          if (response.status == 200) {
+            const data = response.data;
+            console.log('URL загруженного изображения: ${data.imageUrl}', data);
+            setAvatarURL(data?.file_url)
+            setTimeout(()=>sendAvatar(data?.file_url) , 500)
+          } else {
+            console.log('Ошибка при загрузке изображения: ${response.status}');
+          }
+        });
+    } catch (err) {
+      console.warn(err);
+    }
+  }, []);
+
+  useEffect(()=> {
+    if( user?.avatar){
+      console.log('user?.avatar>>>>>', user?.avatar);
+      setAvatarURL(user?.avatar)
+    }
+    else{
+    setAvatarURL(DEFAULT_AVATAR)
+    }
+  },[])
+
+  const sendAvatar = (ava: string)=> {
+      dispatch(
+      editData({
+        id: user.user_id,
+        data: {avatar:ava},
+        onSuccess: () => {
+          
+        },
+        onError: async e => {
+          console.log('ERR EDIT', e);
+        },
+      }),
+    );
+  }
 
   const pressNewOreder = () => {
     dispatch(
@@ -157,8 +227,9 @@ export default function HomeClient() {
         <View style={[styles.userBox, {top: 18 + safeAreaInsets.top}]}>
           <View style={{flexDirection: 'column'}}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <FastImage source={userImg} style={styles.image} />
-
+              <TouchableOpacity onPress={()=> handleDocumentSelection()}>
+                <FastImage source={{ uri:avatarURL}} style={styles.image} />
+              </TouchableOpacity>
               <View style={{marginLeft: 24}}>
                 <Text
                   numberOfLines={1}
@@ -197,7 +268,8 @@ export default function HomeClient() {
               onPress={() => {
                 console.log('click');
                 //@ts-ignore
-                navigation.navigate(R.routes.CLIENT_OREDERS);
+                // navigation.navigate(R.routes.CLIENT_OREDERS);
+                navigation.navigate('ClientOrderStack');
               }}>
               <View>
                 <Body color="#243757" bold style={styles.currentOrdersText}>
@@ -307,9 +379,12 @@ const styles = ScaledSheet.create({
     position: 'absolute',
   },
   image: {
-    width: '51@vs',
-    height: '51@vs',
+    width: 56,
+    height: 56,
     marginTop: '20@vs',
+    borderRadius: 25,
+    borderWidth: 2,
+    borderColor: colors.ligther
   },
   headerImage: {
     width: '100%',

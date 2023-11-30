@@ -61,6 +61,7 @@ export const initialStateUser: UserState = {
   cards: [],
   curCard: 0,
   senders: [],
+  avatar: '',
 };
 
 const userSlice = createSlice({
@@ -213,6 +214,7 @@ const userSlice = createSlice({
         state.house = action.payload?.userData?.house;
         state.full_name = action.payload.userData?.fullName;
         state.user_id = action.payload?.userData?.userId || 0;
+        state.avatar = action.payload?.avatar;
       },
     ),
       builder.addCase(loginAction.pending.type, state => {
@@ -278,6 +280,7 @@ const userSlice = createSlice({
         state.street = action.payload.userData.street;
         state.house = action.payload.userData.house;
         state.apartment = action.payload.userData.apartment;
+        state.avatar = action.payload?.userData.avatar;
       },
     ),
       builder.addCase(loadUserData.pending.type, state => {

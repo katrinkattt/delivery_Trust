@@ -25,10 +25,10 @@ export default function OrdersITEM({item}: IProps) {
   const navigation = useNavigation();
 
   const goToDetailOrder = () => {
-    if (item.payment == 1) {
+    // if (item.payment == 1) {
       //@ts-ignore
       navigation.navigate(R.routes.ORDER_DETAIL_MAP, {item: item, user: true});
-    }
+    // }
   };
 
   return (

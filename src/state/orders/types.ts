@@ -4,6 +4,7 @@ export type OrdersState = {
   newOrder: IOrder;
   loading: boolean;
   donut: number;
+  donutId: number;
   currPaymentId: number;
   categoryDoc: Category[];
   categoryPack: Category[];
@@ -90,3 +91,10 @@ export type ITariffPriceResp = {
   title?: string;
   txtoutput?: string;
 };
+
+export type IDonut = {
+  order_id?: number;
+  orderId?: number;
+  rate?: number;
+  tip?: number
+}

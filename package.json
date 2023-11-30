@@ -37,6 +37,7 @@
     "humps": "^2.0.1",
     "jetifier": "^2.0.0",
     "moment": "^2.29.4",
+    "moment-with-locales-es6": "^1.0.1",
     "raven-js": "^3.27.2",
     "react": "18.2.0",
     "react-dom": "18.1.0",
