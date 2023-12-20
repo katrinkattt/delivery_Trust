@@ -39,6 +39,7 @@ interface PeymentProps {
       id_method?: number;
       price?: number;
       orderId?: number;
+      donut?: boolean;
     };
   };
 }
@@ -93,8 +94,9 @@ const PointLoader = ({
 
 export default function Payment({ route }: PeymentProps) {
   const id_method = route.params?.id_method;
-  const price = route.params?.price;
+  const price = route.params?.price || 0;
   const orderId = route.params?.orderId || 0;
+  const isDonut = route.params?.donut
   const title =
     (id_method === 1 ? 'QR-код' : id_method === 2 ? 'Карта' : 'Криптовалюта') ||
     'Pay';
@@ -113,7 +115,7 @@ export default function Payment({ route }: PeymentProps) {
   const [cardData, setCardData] = useState('');
   const [checkTokenHash, setCheckTokenHash] = useState('');
   const [finishToken, setFinishToken] = useState('');
-  const priceInFormat = Math.ceil(newOrder?.price) * 100; //price с копейками
+  const priceInFormat = newOrder?.price ? Math.ceil(newOrder?.price) * 100 : price * 100; //price с копейками
   // const generateID = new Date();
   // const orderId = user?.id + generateID.toISOString();
   const [statusPay, setStatusPay] = useState('');
@@ -141,30 +143,34 @@ export default function Payment({ route }: PeymentProps) {
   };
   const confirmOrderBack = () => {
     console.log('orderId::', orderId);
-    dispatch(
-      editOrder({
-        id: orderId,
-        data: {
-          order_id: orderId,
-          payment: 1,
-          payment_id: 1,
-        },
-        onSuccess: () => {
-          console.log('succes payment order');
-          setStatusPay('Заказ оплачен');
+    if (!isDonut) {
+      dispatch(
+        editOrder({
+          id: orderId,
+          data: {
+            order_id: orderId,
+            payment: 1,
+            payment_id: 1,
+          },
+          onSuccess: () => {
+            console.log('succes payment order');
+            setStatusPay('Заказ оплачен');
 
-          // @ts-ignore
-          // navigation.navigate('TabScreen');
-          reloadOrders();
-        },
-        onError: async e => {
-          console.log('Ошибка сервера', e);
-          if (e !== undefined) {
-            setStatusPay('Ошибка сервера, попробуйте позже');
-          }
-        },
-      }),
-    );
+            // @ts-ignore
+            // navigation.navigate('TabScreen');
+            reloadOrders();
+          },
+          onError: async e => {
+            console.log('Ошибка сервера', e);
+            if (e !== undefined) {
+              setStatusPay('Ошибка сервера, попробуйте позже');
+            }
+          },
+        }),
+      );
+
+    }
+    else { setStatusPay('Заказ оплачен'); }
   };
   useEffect(() => {
     if (statusPay == 'Заказ оплачен') {
@@ -261,6 +267,7 @@ export default function Payment({ route }: PeymentProps) {
 
     //FIX LIB ДЛЯ ПЕРЕДАЧИ СОБСТВЕННОГО КЛЮЧА FOR ANDROID
     //https://github.com/amitaymolko/react-native-rsa-native/issues/62#issuecomment-1141884771
+    //IN FILE
     // node_modules/react-native-rsa-native/android/src/main/java/com/RNRSA/RSA.java
 
     //   private PublicKey pkcs1ToPublicKey(String publicKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
@@ -354,6 +361,8 @@ export default function Payment({ route }: PeymentProps) {
           ],
         },
       };
+      console.log('DATA PAYMENTTTT', data);
+
       const reqestInint = () => {
         console.log('reqestInint');
         const options = {

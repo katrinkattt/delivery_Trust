@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   ScrollView,
@@ -8,16 +8,16 @@ import {
 } from 'react-native';
 import Header from '../../components/Header';
 import Body from '../../components/common/Body';
-import {Ellipses} from '../../components/common/Svgs';
+import { Ellipses } from '../../components/common/Svgs';
 
-import {Space} from '../../components/common/Space';
+import { Space } from '../../components/common/Space';
 import Button from '../../components/common/Button';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import R from '../../res';
-import {useAppDispatch} from '../../hooks/redux';
-import {createOrder, paymentFunc, loadOrder} from '../../state/orders/action';
-import {setNewOrderPaymentType} from '../../state/orders/slice';
-import {useDispatch, useSelector} from 'react-redux';
+import { useAppDispatch } from '../../hooks/redux';
+import { createOrder, paymentFunc, loadOrder } from '../../state/orders/action';
+import { setNewOrderPaymentType } from '../../state/orders/slice';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function PayClient() {
   const [currMethod, setCurrMethod] = useState(1);
@@ -35,26 +35,26 @@ export default function PayClient() {
     : ' добавить';
 
   const [data, setData] = useState([
-    {id: 1, title: 'По QR-коду', select: false},
+    { id: 1, title: 'По QR-коду', select: false },
     {
       id: 2,
       title: '**** **** **** ' + cardNum,
       select: true,
     },
-    {id: 3, title: 'Криптовалюты', select: true},
+    { id: 3, title: 'Криптовалюты', select: true },
   ]);
 
   const pressButton = (id: number) => {
     const newData = data.map(i => {
       if (i.id === id) {
-        return {...i, select: (i.select = false)};
+        return { ...i, select: (i.select = false) };
       } else {
-        return {...i, select: (i.select = true)};
+        return { ...i, select: (i.select = true) };
       }
     });
     setData(newData);
     setCurrMethod(id);
-    disp(setNewOrderPaymentType({paymentType: id}));
+    disp(setNewOrderPaymentType({ paymentType: id }));
     // setCheck(!check)
   };
   // const reloadOrders = () => {
@@ -84,7 +84,8 @@ export default function PayClient() {
       navigation.navigate(R.routes.PAYMENT_ORDER, {
         id_method: currMethod,
         price: price,
-        orderId: 12344,
+        orderId: order?.donutId,
+        donut: true
       });
     }
     if (donut == 0) {
@@ -114,12 +115,12 @@ export default function PayClient() {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <Header title="Способ оплаты" />
 
-      <ScrollView style={{paddingBottom: 60}}>
-        <View style={{marginHorizontal: 15}}>
-          <View style={{flexDirection: 'column'}}>
+      <ScrollView style={{ paddingBottom: 60 }}>
+        <View style={{ marginHorizontal: 15 }}>
+          <View style={{ flexDirection: 'column' }}>
             {data.map(item => (
               <TouchableOpacity
                 key={item.id}
@@ -127,7 +128,7 @@ export default function PayClient() {
                   item.select ? styles.senderSecondItem : styles.senderItem
                 }
                 onPress={() => pressButton(item.id)}>
-                <View style={{marginTop: 3}}>
+                <View style={{ marginTop: 3 }}>
                   <Ellipses
                     color={item.select ? 'rgba(160, 172, 190, 1)' : 'white'}
                   />
@@ -137,7 +138,7 @@ export default function PayClient() {
                 <View>
                   <Body
                     color={item.select ? 'black' : 'white'}
-                    style={{marginRight: 10}}>
+                    style={{ marginRight: 10 }}>
                     {item.title}
                   </Body>
                 </View>

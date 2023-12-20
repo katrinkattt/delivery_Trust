@@ -281,8 +281,7 @@ export const editSenders = createAsyncThunk<
   }
 });
 // /changepassword/
-export const changePass = createAsyncThunk<
-  EditData,
+export const changePass = createAsyncThunk<ChangePass,
   {
     id: number;
     data: ChangePass;
@@ -290,9 +289,7 @@ export const changePass = createAsyncThunk<
     onError?: (e: any) => void;
   }
 >('user_changepass/put', async arg => {
-  console.log('R.consts.ChangePass + id,', R.consts.API_USER_DATA + arg.id);
   console.log('ChangePass put- DATA:', arg.data);
-
   try {
     const id = arg.id;
     const {data: response} = await apiClient.put<ChangePass>(
@@ -383,3 +380,23 @@ export const ClientDataAction = createAsyncThunk<
     throw e;
   }
 });
+
+
+// export const loguotUser = createAsyncThunk<[],
+//   {
+//     onSuccess?: (response: []) => void;
+//     onError?: (e: any) => void;
+//   }
+// >('loguotUser', async arg => {
+//   try {
+//     const {data: response} = await apiClient.get<[]>(
+//       R.consts.API_GET_FREE_ORDERS,
+//     );
+//     arg.onSuccess?.(response);
+//     console.log('response in GET_FREE_ORDERS', response);
+//     return response;
+//   } catch (e: any) {
+//     arg.onError?.(e.response);
+//     throw e;
+//   }
+// });

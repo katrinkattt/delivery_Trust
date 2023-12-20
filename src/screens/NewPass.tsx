@@ -1,28 +1,28 @@
-import React, {useEffect, useState} from 'react';
-import {useSelector} from 'react-redux';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Formik} from 'formik';
-import {AppleLogo, FacebookLogo, GoogleLogo} from '../components/common/Svgs';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Formik } from 'formik';
+import { AppleLogo, FacebookLogo, GoogleLogo } from '../components/common/Svgs';
 import Body from '../components/common/Body';
 import Button from '../components/common/Button';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import AuthInput from '../components/common/AuthInput';
 import Header from '../components/Header';
-import {requir, validator, email} from '../utils/validators';
-import {IResetPass} from '../types/data';
+import { requir, validator, email } from '../utils/validators';
+import { IResetPass } from '../types/data';
 import R from '../res';
-import {useDispatch} from 'react-redux';
-import {resetPassAction} from '../state/user/action';
+import { useDispatch } from 'react-redux';
+import { resetPassAction } from '../state/user/action';
 import useAppSelector from '../hooks/useAppSelector';
-import {getUser} from '../state/user/selectors';
-import {FormButton} from '../components/common/FormButton/FormButton';
+import { getUser } from '../state/user/selectors';
+import { FormButton } from '../components/common/FormButton/FormButton';
 
 export default function NewPass() {
   const dispatch = useDispatch();
   const safeAreaInsets = useSafeAreaInsets();
   const navigation = useNavigation();
-  const {loading} = useAppSelector(getUser);
+  const { loading } = useAppSelector(getUser);
   const [error, setError] = useState('');
   const user = useSelector(state => state.user);
   // useEffect(() => {
@@ -45,7 +45,7 @@ export default function NewPass() {
           },
           onSuccess: () => {
             //@ts-ignore
-            navigation.navigate('TabScreen');
+            navigation.navigate('Login');
           },
           onError: async () => {
             setError('Ошибка отправки попробуйте еще');

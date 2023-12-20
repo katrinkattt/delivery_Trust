@@ -62,24 +62,37 @@ export const initialStateUser: UserState = {
   curCard: 0,
   senders: [],
   avatar: '',
+  notifyNerbay: false,
+  notifyLate: false,
+  notifyGetOrder: false,
 };
 
 const userSlice = createSlice({
   name: 'user',
   initialState: initialStateUser,
   reducers: {
-    logout: state => {
-      state.access_token = '';
-      state.refresh_token = '';
-      state.role = 0;
-      state.email = '';
-      state.user_id = 0;
+    logout: (state) => {
+      console.log('LOGUUOT IN SLISE');
+      state = {...initialStateUser}
       return state;
     },
     setCode: (state, action) => {
       const {code} = action.payload;
       state.code = code;
       return state;
+    },
+    setNotify: (state, action) => {
+      const {param, value} = action.payload
+      if( param == 'late'){
+        state.notifyLate = true
+      }
+      else if(param == 'nerbay'){
+        state.notifyNerbay = value
+      }
+      else {
+        state.notifyGetOrder = value
+      }
+      return state
     },
     setEmail: (state, action) => {
       const {email} = action.payload;
@@ -201,7 +214,7 @@ const userSlice = createSlice({
     builder.addCase(
       loginAction.fulfilled.type,
       (state, action: PayloadAction<ILogin>) => {
-        console.log('loginAction IN SLISE:action.payload', action.payload);
+        console.log('loginAction IN SLISE:action.payload ====>', action.payload);
         state.loading = false;
         state.access_token = action.payload.accessToken;
         state.refresh_token = action.payload.refreshToken;
@@ -328,7 +341,6 @@ const userSlice = createSlice({
       builder.addCase(editData.rejected.type, state => {
         state.loading = false;
       });
-    //
     builder.addCase(
       changePass.fulfilled.type,
       (state, action: PayloadAction<ChangePass>) => {
@@ -342,14 +354,11 @@ const userSlice = createSlice({
       builder.addCase(changePass.rejected.type, state => {
         state.loading = false;
       });
-    //
     builder.addCase(
       editSenders.fulfilled.type,
       (state, action: PayloadAction<OrderSender[]>) => {
         state.loading = false;
         console.log('editSenders.fulfilled.type==>', action.payload);
-
-        // state.senders = action.payload;
       },
     ),
       builder.addCase(editSenders.pending.type, state => {
@@ -377,5 +386,6 @@ export const {
   setCurrCard,
   addSenders,
   logout,
+  setNotify,
 } = userSlice.actions;
 export const userReducer = persistReducer(persistConfig, userSlice.reducer);

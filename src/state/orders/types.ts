@@ -4,7 +4,7 @@ export type OrdersState = {
   newOrder: IOrder;
   loading: boolean;
   donut: number;
-  donutId: number;
+  donutId: number | string;
   currPaymentId: number;
   categoryDoc: Category[];
   categoryPack: Category[];
@@ -95,6 +95,7 @@ export type ITariffPriceResp = {
 export type IDonut = {
   order_id?: number;
   orderId?: number;
+  paymentId?: string;
   rate?: number;
   tip?: number
 }

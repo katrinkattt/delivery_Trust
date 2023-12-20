@@ -147,10 +147,13 @@ export default function OrderDetail({ route }: IProps) {
         //     },
         //   }),
         // );
-        reload();
-        navigation.goBack();
-        //@ts-ignore
-        navigation.navigate(R.routes.ORDER_REVIEW, { item: item });
+        if (item.courierId) {
+          reload();
+          navigation.goBack();
+          //@ts-ignore
+          navigation.navigate(R.routes.ORDER_REVIEW, { item: item });
+
+        }
       }
     }
   };
@@ -249,7 +252,7 @@ export default function OrderDetail({ route }: IProps) {
                 },
               ]}>
               <Body center>
-                {item?.active ? 'Заказ в процесе' : 'Заказ завершен'}
+                {item?.active ? 'Заказ в процессе' : 'Заказ завершен'}
               </Body>
             </TouchableOpacity>
             {item?.active && (
@@ -409,7 +412,7 @@ export default function OrderDetail({ route }: IProps) {
               buttonType={user ? 1 : 3}
               text={
                 item.active
-                  ? 'ПОДТВЕРДИТЬ ДОСТАВКУ'
+                  ? item.courierId ? 'ПОДТВЕРДИТЬ ДОСТАВКУ' : 'ЗАКАЗ ЕЩЕ В ОБРАБОТКЕ'
                   : item?.complete
                     ? 'ЗАБРАЛ ПОСЫЛКУ'
                     : 'ЗАКАЗ ОТМЕНЕН'

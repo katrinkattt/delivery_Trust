@@ -60,6 +60,7 @@ export const MessageScreen = () => {
   const userState = useSelector(getUser);
   const { chats } = useSelector(state => state.chats);
   const { currentChat } = useSelector(state => state.chats);
+  const { typeInUser } = useSelector(getUser);
   const user = {
     _id: userState.user_id,
     name: userState.full_name,
@@ -254,7 +255,13 @@ export const MessageScreen = () => {
   return (
     <View style={styles.content}>
       <Header title={item?.name || ''} style={styles.header} />
-      <View style={styles.avatarContainer} />
+      <View style={styles.avatarContainer} >
+        <Image
+          source={{ uri: typeInUser ? item.courierAvatar : item.clientAvatar }}
+          style={styles.image}
+        />
+      </View>
+
       <Body center light color="rgba(0, 0, 0, 0.44)">
         {item?.name == 'Служба поддержки' ? 'Онлайн' : 'В сети ' + onlineStatus}
       </Body>
@@ -291,13 +298,18 @@ export const MessageScreen = () => {
         showUserAvatar={false}
         showAvatarForEveryMessage={false}
         messagesContainerStyle={styles.messeg}
-        renderAvatarOnTop={true}
+        renderAvatar={() => (
+          <View style={[styles.image, { backgroundColor: colors.lavender }]}>
+            <Image
+              source={{ uri: item.courierAvatar }}
+              style={styles.image}
+            />
+          </View>
+        )}
         messages={messages}
         onSend={messages => { photoMSG !== '' ? onSendImg(photoMSG, messages) : onSend(messages) }}
         user={{
           _id: user._id,
-          name: user.name,
-          avatar: user.avatar,
         }}
       />
     </View>
@@ -317,6 +329,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     marginTop: 50,
     right: 20
+  },
+  image: {
+    height: 40,
+    width: 40,
+    borderRadius: 20,
   },
   hashtag: {
     borderWidth: 1,

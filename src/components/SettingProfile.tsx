@@ -1,18 +1,20 @@
-import React, {useState} from 'react';
-import {ImageBackground, StyleSheet, Text, View} from 'react-native';
-import {s, vs} from 'react-native-size-matters';
+import React, { useState } from 'react';
+import { ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { s, vs } from 'react-native-size-matters';
 import AuthSelect from './common/AuthSelect';
 import Body from './common/Body';
 import ToggleSwitch from 'toggle-switch-react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {useNavigation} from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
 const backImage = require('../assets/bank.png');
 import R from '../res';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Button from './common/Button';
-import {ModalCustom} from './ModalCustom';
-import {colors} from '../theme/themes';
-import {logout} from '../state/user/slice';
+import { ModalCustom } from './ModalCustom';
+import { colors } from '../theme/themes';
+import { logout } from '../state/user/slice';
+import { setNotify } from '../state/user/slice';
+
 
 // interface IData {
 //     id: number
@@ -28,10 +30,14 @@ export default function SettingProfile() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
+  const { notifyNerbay,
+    notifyLate,
+    notifyGetOrder } = user
+
   const [data, setData] = useState([
-    {id: 1, title: 'Курьер подходит к дому', chosen: false},
-    {id: 2, title: 'Курьер опаздывает', chosen: false},
-    {id: 3, title: 'Курьер взял мой заказ', chosen: false},
+    { id: 1, title: 'Курьер подходит к дому', chosen: notifyNerbay, param: 'nerbay' },
+    { id: 2, title: 'Курьер опаздывает', chosen: notifyLate, param: 'late' },
+    { id: 3, title: 'Курьер взял мой заказ', chosen: notifyGetOrder, param: 'getOrder' },
   ]);
   const exampleCard = {
     system: 'Добавить карту',
@@ -42,12 +48,14 @@ export default function SettingProfile() {
       ? exampleCard
       : user.cards[user.curCard];
 
-  console.log(currentCard, 'currentCard');
+  console.log(notifyNerbay, 'notify');
 
-  const pressButton = (id: number) => {
+  const pressButton = (param: string, value: boolean) => {
+    console.log('param', param);
+    dispatch(setNotify({ param: param, value: !value }))
     const newData = data.map(i => {
-      if (i.id === id) {
-        return {...i, chosen: !i.chosen};
+      if (i.param === param) {
+        return { ...i, chosen: !i.chosen };
       } else {
         return i;
       }
@@ -77,7 +85,7 @@ export default function SettingProfile() {
   return (
     <View style={styles.card}>
       <ModalCustom modalVisible={modalVisible}>
-        <View style={{width: 290}}>
+        <View style={{ width: 290 }}>
           {/* <TouchableOpacity
             onPress={() => setModalVisible(false)}
             style={{alignItems: 'flex-end', height: 30}}>
@@ -94,18 +102,18 @@ export default function SettingProfile() {
             color="#243757"
             bold
             size={16}
-            style={{marginBottom: 20, marginTop: 0, fontWeight: 'bold'}}>
+            style={{ marginBottom: 20, marginTop: 0, fontWeight: 'bold' }}>
             Вы действительно хотите выйти?
           </Body>
-          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-            <View style={{width: '50%', paddingHorizontal: 10}}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+            <View style={{ width: '50%', paddingHorizontal: 10 }}>
               <Button
                 onPress={() => setModalVisible(false)}
                 buttonType={2}
                 text="ОТМЕНИТЬ"
               />
             </View>
-            <View style={{width: '50%', paddingHorizontal: 10}}>
+            <View style={{ width: '50%', paddingHorizontal: 10 }}>
               <Button onPress={logOut} buttonType={1} text="ВЫЙТИ" />
             </View>
           </View>
@@ -154,11 +162,11 @@ export default function SettingProfile() {
               offColor="#E8E8F0"
               labelStyle={styles.swipe}
               size="medium"
-              onToggle={() => pressButton(item.id)}
+              onToggle={() => pressButton(item.param, item.chosen)}
             />
           </View>
         ))}
-      <View style={{width: '100%', position: 'absolute', bottom: 0}}>
+      <View style={{ width: '100%', position: 'absolute', bottom: 0 }}>
         <Button
           onPress={() => setModalVisible(true)}
           buttonType={1}

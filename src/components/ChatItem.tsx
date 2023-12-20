@@ -1,32 +1,34 @@
 import React from 'react';
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import Body from './common/Body';
-import {IChatData} from '../screens/Messages';
-import {Space} from './common/Space';
-import {ChatRead, ChatUnRead} from './common/Svgs';
-import {useNavigation} from '@react-navigation/native';
+import { IChatData } from '../screens/Messages';
+import { Space } from './common/Space';
+import { ChatRead, ChatUnRead } from './common/Svgs';
+import { useNavigation } from '@react-navigation/native';
 import R from '../res';
-import {setCurrentChat} from '../state/chat/slice';
-import {useDispatch} from 'react-redux';
-import {IChatState} from '../state/chat/types';
+import { setCurrentChat } from '../state/chat/slice';
+import { useDispatch, useSelector } from 'react-redux';
+import { IChatState } from '../state/chat/types';
 import moment from 'moment';
+import { getUser } from '../state/user/selectors';
 
 interface IData {
   item: IChatState;
   keyChat: number;
 }
 
-export default function ChatItem({item, keyChat}: IData) {
+export default function ChatItem({ item, keyChat }: IData) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   console.log('ChatItem===', item);
+  const user = useSelector(getUser);
 
   const pressChat = () => {
     //@ts-ignore
     navigation.navigate(R.routes.MESSAGE_SCREEN);
     console.log('keyChat', keyChat);
-    dispatch(setCurrentChat({num: keyChat}));
+    dispatch(setCurrentChat({ num: keyChat }));
   };
   return (
     <>
@@ -36,14 +38,14 @@ export default function ChatItem({item, keyChat}: IData) {
         onPress={pressChat}>
         {item.name ? (
           <View
-            style={{
+            style={[{
               backgroundColor: 'rgba(209, 234, 122, 1)',
-              padding: 14,
-              borderRadius: 100,
-            }}>
+              padding: 0,
+              justifyContent: 'center'
+            }, styles.image]}>
             <Image
-              source={item.image}
-              style={item.messenger ? styles.imageMessenger : styles.image}
+              source={{ uri: user?.typeInUser ? item.courierAvatar : item.clientAvatar }}
+              style={styles.image}
             />
           </View>
         ) : (
@@ -65,7 +67,7 @@ export default function ChatItem({item, keyChat}: IData) {
         </View>
 
         {item.messenger ? (
-          <View style={{position: 'absolute', right: 15, top: '50%'}}>
+          <View style={{ position: 'absolute', right: 15, top: '50%' }}>
             <Body>
               {item.messages[0]
                 ? moment(new Date(item.messages[0].createdAt)).format('LT')
@@ -79,7 +81,7 @@ export default function ChatItem({item, keyChat}: IData) {
             </View>
           </View>
         ) : (
-          <View style={{position: 'absolute', right: 15, top: '50%'}}>
+          <View style={{ position: 'absolute', right: 15, top: '50%' }}>
             <Body>
               {item.messages[0]
                 ? moment(new Date(item.messages[0].createdAt)).format('LT')
@@ -120,8 +122,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(249, 252, 238, 1)',
   },
   image: {
-    width: 39,
-    height: 39,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
   imageMessenger: {
     width: 25,

@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import {ScaledSheet} from 'react-native-size-matters/extend';
+import React, { useState, useEffect, useCallback } from 'react';
+import { ScaledSheet } from 'react-native-size-matters/extend';
 import {
   Dimensions,
   TextInput,
@@ -8,36 +8,37 @@ import {
   Platform,
   FlatList,
   Text,
+  ScrollView, RefreshControl,
 } from 'react-native';
-import notifee, {EventType} from '@notifee/react-native';
+import notifee, { EventType } from '@notifee/react-native';
 import FastImage from 'react-native-fast-image';
-import {FlagIcon, SearchIcon} from '../../components/common/Svgs';
-import {colors} from '../../theme/themes';
+import { FlagIcon, SearchIcon } from '../../components/common/Svgs';
+import { colors } from '../../theme/themes';
 import DropShadow from 'react-native-drop-shadow';
-import {useSharedValue} from 'react-native-reanimated';
-import {Slider} from 'react-native-awesome-slider';
+import { useSharedValue } from 'react-native-reanimated';
+import { Slider } from 'react-native-awesome-slider';
 import CategoryData from '../../api/ClientHomeData';
 import axios from 'axios';
 import DocumentPicker from 'react-native-document-picker';
 const userImg = require('../../assets/use.png');
 const header = require('../../assets/head.png');
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import { API_BASE_URL , DEFAULT_AVATAR} from '../../res/consts';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { API_BASE_URL, DEFAULT_AVATAR } from '../../res/consts';
 import Body from '../../components/common/Body';
 import Button from '../../components/common/Button';
 import HomeClientItems from '../../components/HomeClientItems';
-import {useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
-import {getUser} from '../../state/user/selectors';
+import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { getUser } from '../../state/user/selectors';
 import R from '../../res';
-import {useAppDispatch} from '../../hooks/redux';
-import {loadCategory, loadTariffs, loadOrder} from '../../state/orders/action';
-import {loadChat} from '../../state/chat/action';
-import {IOrder} from '../../state/orders/types';
-import {editData, loadUserData} from '../../state/user/action';
-import {setNewOrderCategory} from '../../state/orders/slice';
+import { useAppDispatch } from '../../hooks/redux';
+import { loadCategory, loadTariffs, loadOrder } from '../../state/orders/action';
+import { loadChat } from '../../state/chat/action';
+import { IOrder } from '../../state/orders/types';
+import { editData, loadUserData } from '../../state/user/action';
+import { setNewOrderCategory } from '../../state/orders/slice';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 export default interface IData {
   id?: number;
@@ -53,14 +54,16 @@ export default function HomeClient() {
   const order = useSelector(state => state.order);
   const activeOrder = order.orders.filter((obj: IOrder) => obj.active);
   const lastOrder = activeOrder.length > 0 ? activeOrder.length - 1 : -1;
-  
+
   const time = (activeOrder[lastOrder]?.typeTarif * 60) | 60;
   let curTime = (time - activeOrder[lastOrder]?.activeMinute) | 1;
   const progress = useSharedValue(curTime);
   const min = useSharedValue(0);
   const max = useSharedValue(time);
   const user = useSelector(getUser);
-  const [avatarURL, setAvatarURL] = useState(DEFAULT_AVATAR);
+  const { loading } = user
+  const ava = user?.avatar ? user.avatar : DEFAULT_AVATAR
+  const [avatarURL, setAvatarURL] = useState(ava);
 
   const handleDocumentSelection = useCallback(async () => {
     // const createdAt = new Date();
@@ -96,7 +99,7 @@ export default function HomeClient() {
             const data = response.data;
             console.log('URL загруженного изображения: ${data.imageUrl}', data);
             setAvatarURL(data?.file_url)
-            setTimeout(()=>sendAvatar(data?.file_url) , 500)
+            setTimeout(() => sendAvatar(data?.file_url), 500)
           } else {
             console.log('Ошибка при загрузке изображения: ${response.status}');
           }
@@ -106,23 +109,23 @@ export default function HomeClient() {
     }
   }, []);
 
-  useEffect(()=> {
-    if( user?.avatar){
+  useEffect(() => {
+    if (user?.avatar) {
       console.log('user?.avatar>>>>>', user?.avatar);
       setAvatarURL(user?.avatar)
     }
-    else{
-    setAvatarURL(DEFAULT_AVATAR)
+    else {
+      setAvatarURL(DEFAULT_AVATAR)
     }
-  },[])
+  }, [loading])
 
-  const sendAvatar = (ava: string)=> {
-      dispatch(
+  const sendAvatar = (ava: string) => {
+    dispatch(
       editData({
         id: user.user_id,
-        data: {avatar:ava},
+        data: { avatar: ava },
         onSuccess: () => {
-          
+
         },
         onError: async e => {
           console.log('ERR EDIT', e);
@@ -152,7 +155,7 @@ export default function HomeClient() {
         },
       }),
     );
-    dispatch(setNewOrderCategory({category: ''}));
+    dispatch(setNewOrderCategory({ category: '' }));
     // @ts-ignore
     navigation.navigate(R.routes.CLIENT_ORDER_PARAM);
   };
@@ -184,6 +187,13 @@ export default function HomeClient() {
         user_id: user.user_id,
         onSuccess: () => {
           console.log('good loadDataUser');
+          if (user?.avatar) {
+            console.log('user?.avatar>>>>>', user?.avatar);
+            setAvatarURL(user?.avatar)
+          }
+          else {
+            setAvatarURL(DEFAULT_AVATAR)
+          }
         },
         onError: async e => {
           console.log('ERR loadDataUser', e);
@@ -201,7 +211,7 @@ export default function HomeClient() {
         },
       }),
     );
-    return notifee.onForegroundEvent(({type, detail}) => {
+    return notifee.onForegroundEvent(({ type, detail }) => {
       switch (type) {
         case EventType.DISMISSED:
           console.log('User dismissed notification', detail.notification);
@@ -214,23 +224,46 @@ export default function HomeClient() {
       }
     });
   }, []);
+  const [refreshing, setRefreshing] = useState(false)
+  const reload = () => {
+    dispatch(
+      loadUserData({
+        user_id: user.user_id,
+        onSuccess: () => {
+          console.log('good loadDataUser');
+          setAvatarURL(user?.avatar)
+          setRefreshing(false)
+        },
+        onError: async e => {
+          console.log('ERR loadDataUser', e);
+          setRefreshing(false)
+        },
+      }),
+    );
+  }
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    reload();
+  }, []);
 
   async function handleChange(e: string) {
     setText(e);
   }
 
   return (
-    <View>
-      <View style={{alignItems: 'center'}}>
+    <View><ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
+      <View style={{ alignItems: 'center' }}>
         <FastImage source={header} style={styles.headerImage} />
-
-        <View style={[styles.userBox, {top: 18 + safeAreaInsets.top}]}>
-          <View style={{flexDirection: 'column'}}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <TouchableOpacity onPress={()=> handleDocumentSelection()}>
-                <FastImage source={{ uri:avatarURL}} style={styles.image} />
+        <View style={[styles.userBox, { top: 18 + safeAreaInsets.top }]}>
+          <View style={{ flexDirection: 'column' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <TouchableOpacity onPress={() => handleDocumentSelection()}>
+                <FastImage source={{ uri: avatarURL }} style={styles.image} />
               </TouchableOpacity>
-              <View style={{marginLeft: 24}}>
+              <View style={{ marginLeft: 24 }}>
                 <Text
                   numberOfLines={1}
                   style={{
@@ -247,11 +280,11 @@ export default function HomeClient() {
               text="dvvf"
               onPress={() => navigation.navigate(R.routes.CLIENT_OREDERS)}
             /> */}
-            <View style={{marginLeft: 76, marginTop: -20}}>
+            <View style={{ marginLeft: 76, marginTop: -20 }}>
               <TouchableOpacity
                 onPress={() => setTips(!tips)}
                 activeOpacity={0.7}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Body color="white" style={styles.title}>
                     {user?.city}, {user?.street}, {user?.house}
                   </Body>
@@ -261,7 +294,7 @@ export default function HomeClient() {
           </View>
         </View>
       </View>
-      <View style={{paddingHorizontal: 16, marginTop: -88}}>
+      <View style={{ paddingHorizontal: 16, marginTop: -88 }}>
         <DropShadow style={styles.orderBox}>
           <View style={styles.orderBoxContainer}>
             <TouchableOpacity
@@ -286,7 +319,7 @@ export default function HomeClient() {
                 <Body color="#A1ADBF" style={styles.openOrdersText}>
                   Посмотреть детали
                 </Body>
-                <View style={{position: 'absolute', right: 0, top: 8}}>
+                <View style={{ position: 'absolute', right: 0, top: 8 }}>
                   <FlagIcon width={24} height={24} color="#A0ACBE" />
                 </View>
               </View>
@@ -326,10 +359,10 @@ export default function HomeClient() {
         numColumns={2}
         keyExtractor={item => item.id.toString()}
         //@ts-ignore
-        renderItem={({item}) => <HomeClientItems data={item} />}
-        ListFooterComponent={() => <View style={{paddingBottom: 300}} />}
+        renderItem={({ item }) => <HomeClientItems data={item} />}
+        ListFooterComponent={() => <View style={{ paddingBottom: 300 }} />}
         ListHeaderComponent={() => (
-          <View style={{marginHorizontal: 20}}>
+          <View style={{ marginHorizontal: 20 }}>
             <Button
               buttonType={2}
               text="Новый заказ"
@@ -363,6 +396,7 @@ export default function HomeClient() {
           </View>
         )}
       />
+    </ScrollView>
     </View>
   );
 }
@@ -410,7 +444,7 @@ const styles = ScaledSheet.create({
   orderBox: {
     elevation: 8,
     shadowColor: '#5D60DF',
-    shadowOffset: {width: 0, height: 12},
+    shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 0.24,
     shadowRadius: 40,
     marginBottom: '10@vs',
@@ -494,7 +528,7 @@ const styles = ScaledSheet.create({
     width: width,
     position: 'absolute',
     bottom: 20,
-    transform: [{scaleX: 1}, {scaleY: 5}],
+    transform: [{ scaleX: 1 }, { scaleY: 5 }],
     borderRadius: '40@s',
   },
   tabbar: {

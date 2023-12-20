@@ -1,31 +1,31 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Formik} from 'formik';
-import {useSelector} from 'react-redux';
-import {AppleLogo, FacebookLogo, GoogleLogo} from '../components/common/Svgs';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Formik } from 'formik';
+import { useSelector } from 'react-redux';
+import { AppleLogo, FacebookLogo, GoogleLogo } from '../components/common/Svgs';
 import Body from '../components/common/Body';
 import Button from '../components/common/Button';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import AuthInput from '../components/common/AuthInput';
 import Header from '../components/Header';
-import {requir, validator, email} from '../utils/validators';
-import {ILogin} from '../types/data';
+import { requir, validator, email } from '../utils/validators';
+import { ILogin } from '../types/data';
 import R from '../res';
-import {useDispatch} from 'react-redux';
-import {loginAction, resetPassCodeAction} from '../state/user/action';
+import { useDispatch } from 'react-redux';
+import { loginAction, resetPassCodeAction } from '../state/user/action';
 import useAppSelector from '../hooks/useAppSelector';
-import {getUser} from '../state/user/selectors';
-import {FormButton} from '../components/common/FormButton/FormButton';
-import {setEmail} from '../state/user/slice';
-import {useAppDispatch} from '../hooks/redux';
+import { getUser } from '../state/user/selectors';
+import { FormButton } from '../components/common/FormButton/FormButton';
+import { setEmail } from '../state/user/slice';
+import { useAppDispatch } from '../hooks/redux';
 
 export default function Login() {
   const disp = useDispatch();
   const dispatch = useAppDispatch();
   const safeAreaInsets = useSafeAreaInsets();
   const navigation = useNavigation();
-  const {loading} = useAppSelector(getUser);
+  const { loading } = useAppSelector(getUser);
   const [error, setError] = useState('');
   const [emailRecov, setEmailRecov] = useState('');
   const [title, setTitle] = useState('Войти');
@@ -56,7 +56,7 @@ export default function Login() {
         loginAction({
           data,
           onSuccess: () => {
-            disp(setEmail({email: data.email}));
+            disp(setEmail({ email: data.email }));
             console.log('user?.role', user?.role); // @ts-ignore
             navigation.navigate('TabScreen');
           },
@@ -72,12 +72,15 @@ export default function Login() {
       };
       dispatch(
         resetPassCodeAction({
-          data: {email: data.email},
+          data: { email: data.email },
           onSuccess: () => {
             //@ts-ignore
             navigation.navigate(R.routes.CONFIRM_EMAIL, {
               data: dataRec,
             });
+            setTimeout(() => {
+              setRecov(false)
+            }, 1000)
           },
           onError: async () => {
             setError('Укажите существующую почту');
@@ -91,6 +94,7 @@ export default function Login() {
     setRecov(true);
     setError('');
   };
+  console.log('Login');
 
   return (
     <Formik initialValues={initialValues} onSubmit={submit}>
@@ -119,13 +123,13 @@ export default function Login() {
         {recov ? (
           <TouchableOpacity
             onPress={() => setRecov(false)}
-            style={{alignSelf: 'flex-end'}}>
+            style={{ alignSelf: 'flex-end' }}>
             <Body style={styles.resetPassword} color="rgba(47, 128, 237, 1)">
               Отменить
             </Body>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity onPress={recovery} style={{alignSelf: 'flex-end'}}>
+          <TouchableOpacity onPress={recovery} style={{ alignSelf: 'flex-end' }}>
             <Body style={styles.resetPassword} color="rgba(47, 128, 237, 1)">
               Восстановить пароль
             </Body>

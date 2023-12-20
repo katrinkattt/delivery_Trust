@@ -14,6 +14,8 @@ export type IChatState = {
   read?: boolean;
   messenger?: boolean;
   messages: IChatMsg[];
+  courierAvatar?: string;
+  clientAvatar?: string;
 };
 export type IChatMsg = {
   chatId?: number;

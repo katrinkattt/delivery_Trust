@@ -1,13 +1,13 @@
-import React, {useEffect} from 'react';
-import {StatusBar} from 'react-native';
-import {createStackNavigator} from '@react-navigation/stack';
-import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { StatusBar } from 'react-native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import notifee from '@notifee/react-native';
 
-import {colors} from '.././theme/themes';
+import { colors } from '.././theme/themes';
 import AuthNavigator from '.././screens/AuthNavigator';
 import OrderDetail from '.././screens/OrderDetail';
-import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import Login from '.././screens/Login';
 import Register from '.././screens/Register';
 import ResetPasswordEmail from '.././screens/ResetPasswordEmail';
@@ -22,14 +22,13 @@ import ClientRegistrArgumet from '.././screens/Client/RegistrArgument';
 import Detail from '.././screens/Client/Detail';
 import RatingCourier from '../screens/RatingCourier';
 import CardEditor from '../screens/CardEditor';
-import {MessageScreen} from '../components/messages/MessageScreen';
+import { MessageScreen } from '../components/messages/MessageScreen';
 import R from '../res';
-import {TabScreen} from './Tabs';
-import {useDispatch, useSelector} from 'react-redux';
-import {getUser} from '../state/user/selectors';
+import { TabScreen } from './Tabs';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser } from '../state/user/selectors';
 import socket from '../socket';
-import {setLastMsg, addMsgChat} from '../state/chat/slice';
-import {loadCards} from '../state/user/slice';
+import { setLastMsg, addMsgChat } from '../state/chat/slice';
 
 const Stack = createStackNavigator();
 
@@ -40,7 +39,7 @@ export const Navigation = () => {
   console.log('STATE==>', state);
   const theme = {
     ...DefaultTheme,
-    colors: {...DefaultTheme.colors, background: colors.white},
+    colors: { ...DefaultTheme.colors, background: colors.white },
   };
   async function onDisplayNotification(text: string) {
     await notifee.requestPermission();
@@ -73,7 +72,7 @@ export const Navigation = () => {
     socket.on('receive_message', data => {
       console.log('receive_message =>DATA:', data);
       if (data) {
-        dispatch(setLastMsg({msg: data.text}));
+        dispatch(setLastMsg({ msg: data.text }));
         const msg = {
           chatId: data.chat_id,
           text: data.text,
@@ -88,7 +87,7 @@ export const Navigation = () => {
           image: data.image,
           file: data.file,
         };
-        dispatch(addMsgChat({msg: msg}));
+        dispatch(addMsgChat({ msg: msg }));
         console.log('data.user_id ', data.user_i, 'user.user_id', user.user_id);
 
         if (data.user_id !== user.user_id) {
@@ -110,9 +109,9 @@ export const Navigation = () => {
         <BottomSheetModalProvider>
           <Stack.Navigator
             initialRouteName={
-              user?.access_token ? 'TabScreen' : 'AuthNavigator'
+              user?.refresh_token == null ? 'AuthNavigator' : 'TabScreen'
             }
-            screenOptions={{headerShown: false}}>
+            screenOptions={{ headerShown: false }}>
             <Stack.Screen name="AuthNavigator" component={AuthNavigator} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Register" component={Register} />

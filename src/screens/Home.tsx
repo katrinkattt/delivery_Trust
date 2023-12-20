@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import {ScaledSheet} from 'react-native-size-matters/extend';
+import React, { useState, useEffect, useCallback } from 'react';
+import { ScaledSheet } from 'react-native-size-matters/extend';
 import {
   Dimensions,
   ScrollView,
@@ -8,30 +8,31 @@ import {
   View,
   Platform,
   Text,
+  RefreshControl,
 } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import axios from 'axios';
 import FastImage from 'react-native-fast-image';
-import notifee, {EventType} from '@notifee/react-native';
-import {useNavigation} from '@react-navigation/native';
-import {EyeActive, OrderIcon, SearchIcon} from '../components/common/Svgs';
-import {colors} from '../theme/themes';
+import notifee, { EventType } from '@notifee/react-native';
+import { useNavigation } from '@react-navigation/native';
+import { EyeActive, OrderIcon, SearchIcon } from '../components/common/Svgs';
+import { colors } from '../theme/themes';
 import DropShadow from 'react-native-drop-shadow';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CourierRating from '../components/CourierRating';
 import Body from '../components/common/Body';
 import HomeSlider from '../components/HomeSlider';
 import sliderData from '../api/SliderData';
 import R from '../res';
-import {useSelector} from 'react-redux';
-import {getUser} from '../state/user/selectors';
-import {IOrder} from '../state/orders/types';
-import {useAppDispatch} from '../hooks/redux';
-import {loadOrder} from '../state/orders/action';
-import {loadChat} from '../state/chat/action';
-import {editData, loadUserData} from '../state/user/action';
+import { useSelector } from 'react-redux';
+import { getUser } from '../state/user/selectors';
+import { IOrder } from '../state/orders/types';
+import { useAppDispatch } from '../hooks/redux';
+import { loadOrder } from '../state/orders/action';
+import { loadChat } from '../state/chat/action';
+import { editData, loadUserData } from '../state/user/action';
 import { API_BASE_URL, DEFAULT_AVATAR } from '../res/consts';
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const userImg = require('../assets/user.png');
 const header = require('../assets/header.png');
 
@@ -47,7 +48,9 @@ export default function Home() {
   const order = useSelector(state => state.order);
   const activeOrder = order.orders.filter((obj: IOrder) => obj.active);
   const orderCount = activeOrder.length;
-  const [avatarURL, setAvatarURL] = useState(DEFAULT_AVATAR);
+  const { loading } = user
+  const ava = user?.avatar ? user.avatar : DEFAULT_AVATAR
+  const [avatarURL, setAvatarURL] = useState(ava);
 
 
   async function handleChange(e: string) {
@@ -60,20 +63,20 @@ export default function Home() {
   //     navigation.navigate('ProfileType');
   //   }
   // }, 5000);
-  const sendAvatar = (ava: string)=> {
+  const sendAvatar = (ava: string) => {
     dispatch(
-    editData({
-      id: user.user_id,
-      data: {avatar:ava},
-      onSuccess: () => {
-        
-      },
-      onError: async e => {
-        console.log('ERR EDIT', e);
-      },
-    }),
-  );
-}
+      editData({
+        id: user.user_id,
+        data: { avatar: ava },
+        onSuccess: () => {
+
+        },
+        onError: async e => {
+          console.log('ERR EDIT', e);
+        },
+      }),
+    );
+  }
   const handleDocumentSelection = useCallback(async () => {
     try {
       const response = await DocumentPicker.pickSingle({
@@ -105,7 +108,7 @@ export default function Home() {
             const data = response.data;
             console.log('URL загруженного изображения: ${data.imageUrl}', data);
             setAvatarURL(data?.file_url)
-            setTimeout(()=>sendAvatar(data?.file_url) , 500)
+            setTimeout(() => sendAvatar(data?.file_url), 500)
           } else {
             console.log('Ошибка при загрузке изображения: ${response.status}');
           }
@@ -115,14 +118,14 @@ export default function Home() {
     }
   }, []);
 
-  useEffect(()=> {
-    if( user?.avatar){
+  useEffect(() => {
+    if (user?.avatar) {
       setAvatarURL(user?.avatar)
     }
-    else{
-    setAvatarURL(DEFAULT_AVATAR)
+    else {
+      setAvatarURL(DEFAULT_AVATAR)
     }
-  },[])
+  }, [loading])
 
   useEffect(() => {
     dispatch(
@@ -141,6 +144,13 @@ export default function Home() {
         user_id: user.user_id,
         onSuccess: () => {
           console.log('good loadDataUser');
+          if (user?.avatar) {
+            console.log('user?.avatar>>>>>', user?.avatar);
+            setAvatarURL(user?.avatar)
+          }
+          else {
+            setAvatarURL(DEFAULT_AVATAR)
+          }
         },
         onError: async e => {
           console.log('ERR loadDataUser', e);
@@ -158,7 +168,7 @@ export default function Home() {
         },
       }),
     );
-    return notifee.onForegroundEvent(({type, detail}) => {
+    return notifee.onForegroundEvent(({ type, detail }) => {
       switch (type) {
         case EventType.DISMISSED:
           console.log('User dismissed notification', detail.notification);
@@ -171,20 +181,44 @@ export default function Home() {
       }
     });
   }, []);
+  const [refreshing, setRefreshing] = useState(false)
+  const reload = () => {
+    dispatch(
+      loadUserData({
+        user_id: user.user_id,
+        onSuccess: () => {
+          console.log('good loadDataUser');
+          setAvatarURL(user?.avatar)
+          setRefreshing(false)
+        },
+        onError: async e => {
+          console.log('ERR loadDataUser', e);
+          setRefreshing(false)
+        },
+      }),
+    );
+  }
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    reload();
+  }, []);
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{paddingBottom: 100}}>
-      <View style={{alignItems: 'center'}}>
+      contentContainerStyle={{ paddingBottom: 100 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
+      <View style={{ alignItems: 'center' }}>
         <FastImage source={header} style={styles.headerImage} />
-        <View style={[styles.userBox, {top: 18 + safeAreaInsets.top}]}>
-          <View style={{flexDirection: 'column'}}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <TouchableOpacity onPress={()=> handleDocumentSelection()}>
-                <FastImage source={{ uri:avatarURL}} style={styles.image} />
+        <View style={[styles.userBox, { top: 18 + safeAreaInsets.top }]}>
+          <View style={{ flexDirection: 'column' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <TouchableOpacity onPress={() => handleDocumentSelection()}>
+                <FastImage source={{ uri: avatarURL }} style={styles.image} />
               </TouchableOpacity>
-              <View style={{marginLeft: 14}}>
+              <View style={{ marginLeft: 14 }}>
                 <Text
                   numberOfLines={1}
                   style={{
@@ -198,11 +232,11 @@ export default function Home() {
               </View>
             </View>
 
-            <View style={{paddingLeft: 60, marginTop: -10}}>
+            <View style={{ paddingLeft: 60, marginTop: -10 }}>
               <TouchableOpacity
                 onPress={() => setTips(!tips)}
                 activeOpacity={0.7}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Body color="#243757" style={styles.title}>
                     Чаевые за сегодня
                   </Body>
@@ -217,7 +251,7 @@ export default function Home() {
                 ) : (
                   <Body
                     color="#243757"
-                    style={[styles.priceOne, {fontSize: 10}]}>
+                    style={[styles.priceOne, { fontSize: 10 }]}>
                     ＊＊＊＊＊＊
                   </Body>
                 )}
@@ -225,11 +259,11 @@ export default function Home() {
             </View>
           </View>
 
-          <View style={{marginLeft: 41, justifyContent: 'flex-end'}}>
+          <View style={{ marginLeft: 41, justifyContent: 'flex-end' }}>
             <TouchableOpacity
               onPress={() => setOverallBalance(!overallBalance)}
               activeOpacity={0.7}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Body color="#243757" style={styles.title}>
                   Общий баланс
                 </Body>
@@ -241,7 +275,7 @@ export default function Home() {
                   {user?.ballance} ₽
                 </Body>
               ) : (
-                <Body color="#243757" style={[styles.priceTwo, {fontSize: 14}]}>
+                <Body color="#243757" style={[styles.priceTwo, { fontSize: 14 }]}>
                   ＊＊＊＊＊＊
                 </Body>
               )}
@@ -250,7 +284,7 @@ export default function Home() {
             <TouchableOpacity
               onPress={() => setFines(!fines)}
               activeOpacity={0.7}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Body color="#243757" style={styles.title}>
                   Штрафы
                 </Body>
@@ -263,7 +297,7 @@ export default function Home() {
                   {user?.fines} ₽
                 </Body>
               ) : (
-                <Body color="#243757" style={[styles.priceOne, {fontSize: 10}]}>
+                <Body color="#243757" style={[styles.priceOne, { fontSize: 10 }]}>
                   ＊＊＊＊＊＊
                 </Body>
               )}
@@ -272,7 +306,7 @@ export default function Home() {
         </View>
       </View>
 
-      <View style={{paddingHorizontal: 16, marginTop: -58}}>
+      <View style={{ paddingHorizontal: 16, marginTop: -58 }}>
         <DropShadow style={styles.orderBox}>
           <TouchableOpacity
             onPress={() => {
@@ -292,7 +326,7 @@ export default function Home() {
                 </Body>
               </View>
 
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <OrderIcon width={24} height={24} color="#A0ACBE" />
 
                 <Body color="#243757" style={styles.count}>
@@ -320,14 +354,14 @@ export default function Home() {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{paddingRight: 15}}
-        style={{flexDirection: 'row', paddingLeft: 15, marginTop: 17}}>
+        contentContainerStyle={{ paddingRight: 15 }}
+        style={{ flexDirection: 'row', paddingLeft: 15, marginTop: 17 }}>
         {sliderData.map(item => (
           <HomeSlider item={item} key={item.id} />
         ))}
       </ScrollView>
 
-      <View style={{alignItems: 'center', marginTop: 26}}>
+      <View style={{ alignItems: 'center', marginTop: 26 }}>
         <CourierRating />
       </View>
     </ScrollView>
@@ -376,7 +410,7 @@ const styles = ScaledSheet.create({
   orderBox: {
     elevation: 8,
     shadowColor: '#5D60DF',
-    shadowOffset: {width: 0, height: 12},
+    shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 0.24,
     shadowRadius: 40,
   },

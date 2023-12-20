@@ -18,7 +18,7 @@ export default function OrderReview({ route }) {
   const navigation = useNavigation();
   const { item } = route.params
   const [isOpenDonut, setIsOpenDonut] = useState(false);
-  const [don, setDon] = useState(0);
+  const [don, setDon] = useState('');
   const disp = useDispatch();
   const dispatch = useAppDispatch()
   const [isBackRating, setIsBackRating] = useState(true)
@@ -51,7 +51,7 @@ export default function OrderReview({ route }) {
   const completeOrder = (id: number) => {
     dispatch(
       editOrder({
-        id: id || 0,
+        id: id,
         data: {
           order_id: id,
           complete: true,
@@ -76,30 +76,40 @@ export default function OrderReview({ route }) {
       setIsBackRating(false)
     }
     else {
-      if (don >= 10) {
+      if (parseFloat(don) >= 10) {
+        const tip = parseFloat(don)
 
-
-        disp(setDonut({ donut: don }));
+        disp(setDonut({ donut: tip }));
+        dispatch(
+          orderRate({
+            data: { rate: star, order_id: item.id },
+            onSuccess: () => {
+            },
+            onError: async e => {
+              console.log('ERR order rate =>>', e);
+            },
+          }),
+        );
         dispatch(
           orderTip({
-            data: { tip: don, order_id: item.id },
+            data: { tip: tip, order_id: item.id },
             onSuccess: () => {
               //@ts-ignore
               navigation.navigate(R.routes.CLIENT_ORDER_PAY);
-              // completeOrder(item?.id)
+              completeOrder(item.id)
             },
             onError: async e => {
               console.log('ERR orderTip =>>', e);
             },
           }),
-        )
+        );
       }
-      else if (don == 0) {
+      else if (don == '0' || don == '') {
         dispatch(
           orderRate({
             data: { rate: star, order_id: item.id },
             onSuccess: () => {
-              // completeOrder(item?.id)
+              completeOrder(item.id)
               navigation.goBack();
             },
             onError: async e => {

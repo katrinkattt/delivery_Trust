@@ -45,6 +45,9 @@ export type UserState = {
   cards?: ICard[];
   senders?: OrderSender[];
   avatar?: string;
+  notifyNerbay: boolean;
+  notifyLate: boolean;
+  notifyGetOrder: boolean;
 };
 
 export type ICard = {

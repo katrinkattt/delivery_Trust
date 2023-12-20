@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -6,30 +6,30 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import Body from './common/Body';
-import {CheckIcon, Hourglass} from './common/Svgs';
-import {useNavigation} from '@react-navigation/native';
+import { Hourglass } from './common/Svgs';
+import { useNavigation } from '@react-navigation/native';
 import R from '../res';
-import {IOrder} from '../state/orders/types';
-import {useAppDispatch} from '../hooks/redux';
-import {loadOrder} from '../state/orders/action';
+import { IOrder } from '../state/orders/types';
+import { useAppDispatch } from '../hooks/redux';
+import { loadOrder } from '../state/orders/action';
 const data = [
-  {id: 1, name: 'Все', active: true},
-  {id: 2, name: 'Паспорт', active: false},
-  {id: 3, name: 'Договор', active: false},
-  {id: 8, name: 'Налоги', active: false},
-  {id: 4, name: 'СНИЛС', active: false},
-  {id: 5, name: 'Военный билет', active: false},
-  {id: 6, name: 'Коробка', active: false},
-  {id: 7, name: 'Пакет', active: false},
+  { id: 1, name: 'Все', active: true },
+  { id: 2, name: 'Паспорт', active: false },
+  { id: 3, name: 'Договор', active: false },
+  { id: 8, name: 'Налоги', active: false },
+  { id: 4, name: 'СНИЛС', active: false },
+  { id: 5, name: 'Военный билет', active: false },
+  { id: 6, name: 'Коробка', active: false },
+  { id: 7, name: 'Пакет', active: false },
 ];
 
 export default function MyOrders() {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const [refreshing, setRefreshing] = useState(false);
-  const {orders} = useSelector(state => state.order);
+  const { orders } = useSelector(state => state.order);
   const user = useSelector(state => state.user);
   const [filter, setFilter] = useState('Все');
   const FilteredOrder =
@@ -61,7 +61,7 @@ export default function MyOrders() {
       <ScrollView
         showsHorizontalScrollIndicator={false}
         horizontal
-        contentContainerStyle={{paddingRight: 35, paddingHorizontal: 16}}>
+        contentContainerStyle={{ paddingRight: 35, paddingHorizontal: 16 }}>
         {data?.map(item => (
           <TouchableOpacity
             onPress={() => setFilter(item.name)}
@@ -69,7 +69,7 @@ export default function MyOrders() {
             activeOpacity={0.7}
             style={[
               styles.box,
-              {backgroundColor: item.name == filter ? '#F1F0FE' : '#F7F9FD'},
+              { backgroundColor: item.name == filter ? '#F1F0FE' : '#F7F9FD' },
             ]}>
             <Body
               medium
@@ -85,22 +85,22 @@ export default function MyOrders() {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-        contentContainerStyle={{paddingBottom: 100}}
+        contentContainerStyle={{ paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
-        style={{marginHorizontal: 15, marginTop: 23}}>
+        style={{ marginHorizontal: 15, marginTop: 23 }}>
         {orders[0] ? (
           FilteredOrder.map((order: IOrder) => (
             <TouchableOpacity
               onPress={() =>
                 //@ts-ignore
-                navigation.navigate(R.routes.ORDER_DETAIL_MAP, {item: order})
+                navigation.navigate(R.routes.ORDER_DETAIL_MAP, { item: order })
               }
               activeOpacity={0.7}
               style={order?.active ? styles.cardOneBox : styles.cardTwoBox}>
-              <View style={{width: '70%'}}>
+              <View style={{ width: '70%' }}>
                 <Body
                   color="#243757"
-                  style={[styles.cardTitle, {marginTop: 12}]}>
+                  style={[styles.cardTitle, { marginTop: 12 }]}>
                   {order?.category}
                 </Body>
 
@@ -119,7 +119,7 @@ export default function MyOrders() {
                   </Body>
                 </View>
               ) : (
-                <View style={{marginRight: 18, marginTop: 15}}>
+                <View style={{ marginRight: 18, marginTop: 15 }}>
                   <Body color="#243757" style={styles.price}>
                     {order?.price} ₽
                   </Body>

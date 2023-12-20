@@ -1,39 +1,45 @@
-import React, {useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {s, vs} from 'react-native-size-matters';
+import React, { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { s, vs } from 'react-native-size-matters';
 import AuthInput from './common/AuthInput';
-import Button from './common/Button';
-import {validator, requir} from '../utils/validators';
-import {Formik} from 'formik';
-import {IChangePass} from '../types/data';
-import {useAppDispatch} from '../hooks/redux';
-import {FormButton} from './common/FormButton/FormButton';
-import {useSelector} from 'react-redux';
+import { validator, requir } from '../utils/validators';
+import { Formik } from 'formik';
+import { IChangePass } from '../types/data';
+import { useAppDispatch } from '../hooks/redux';
+import { FormButton } from './common/FormButton/FormButton';
+import { useSelector } from 'react-redux';
 import Body from './common/Body';
-import {colors} from '../theme/themes';
-import {changePass} from '../state/user/action';
+import { colors } from '../theme/themes';
+import { changePass } from '../state/user/action';
 
 export default function ParolProfile() {
-  const {loading, user_id} = useSelector(state => state.user);
-  const [err, setErr] = useState('');
+  const { loading, user_id } = useSelector(state => state.user);
   const dispatch = useAppDispatch();
+  const [err, setErr] = useState('');
+  const [showSuccessW, setShowSuccessW] = useState(false);
+
   const initialValues: IChangePass = {
     oldPasword: '',
     newPassword: '',
     repeatNewPassword: '',
   };
+
   const submitChagePass = (data: IChangePass) => {
     if (data.newPassword !== data.repeatNewPassword) {
       setErr('Пароли не совпадают');
     } else {
       setErr('');
-      console.log('submitChagePass');
+      console.log('submitChagePass', data);
       dispatch(
         changePass({
           id: user_id,
-          data: {...data},
+          data: { ...data },
           onSuccess: () => {
             console.log('pass changed');
+            setShowSuccessW(true);
+            setTimeout(() => {
+              setShowSuccessW(false);
+            }, 2000);
           },
           onError: async e => {
             if (e.data.message) {
@@ -49,6 +55,14 @@ export default function ParolProfile() {
     <Formik initialValues={initialValues} onSubmit={submitChagePass}>
       {() => (
         <View style={styles.card}>
+          {showSuccessW && (
+            <View style={styles.successWindow}>
+              <Body size={17} color={colors.darkBlue} center>
+                ✅ Изменениия успешно сохранены, вступят в силу через некоторое
+                время
+              </Body>
+            </View>
+          )}
           <AuthInput
             label="Старый пароль*"
             placeholder="Введите пароль"
@@ -90,7 +104,18 @@ const styles = StyleSheet.create({
     borderColor: '#E8E8F0',
     paddingVertical: vs(10),
   },
-  input: {
-    // backgroundColor: 'red',
+  successWindow: {
+    position: 'absolute',
+    marginTop: '40%',
+    backgroundColor: '#fff',
+    width: '70%',
+    height: 50,
+    zIndex: 3,
+    alignSelf: 'center',
+    padding: 8,
+    paddingTop: 16,
+    borderColor: colors.green,
+    borderWidth: 2,
+    borderRadius: 8,
   },
 });

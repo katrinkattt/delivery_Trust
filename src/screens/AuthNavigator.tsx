@@ -1,14 +1,14 @@
-import React, {useState} from 'react';
-import {Dimensions, Image, StyleSheet, View} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Logo} from '../components/common/Svgs';
+import React, { useState } from 'react';
+import { Dimensions, Image, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Logo } from '../components/common/Svgs';
 import Body from '../components/common/Body';
-import {colors} from '../theme/themes';
+import { colors } from '../theme/themes';
 import Button from '../components/common/Button';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 const image = require('../assets/auth-container-image.png');
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default function AuthNavigator() {
   const safeAreaInsets = useSafeAreaInsets();
@@ -43,11 +43,11 @@ export default function AuthNavigator() {
   };
 
   return (
-    <View style={[styles.container, {paddingTop: safeAreaInsets.top + 33}]}>
+    <View style={[styles.container, { paddingTop: safeAreaInsets.top + 33 }]}>
       <Logo width={53} height={58} />
 
       <Body
-        style={{marginTop: 14, paddingHorizontal: 20}}
+        style={{ marginTop: 14, paddingHorizontal: 20 }}
         center
         bold
         size={36}

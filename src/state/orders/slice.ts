@@ -205,6 +205,7 @@ const ordersSlice = createSlice({
       editOrder.fulfilled.type,
       (state, action: PayloadAction<IOrder[]>) => {
         state.loading = false;
+        state.donutId = 0;
       },
     ),
       builder.addCase(editOrder.pending.type, state => {
@@ -261,7 +262,7 @@ const ordersSlice = createSlice({
         (state, action: PayloadAction<IDonut>)=> {
           console.log(' TIP RESP ===>',action.payload);
           state.loading = false;
-          state.donutId = action.payload.orderId ||  action.payload.order_id || 0
+          state.donutId = action.payload.paymentId || 0
         }),
       builder.addCase(orderTip.pending.type, state => {
         state.loading = true;

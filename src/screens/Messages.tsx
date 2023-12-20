@@ -1,24 +1,23 @@
-import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 import {
-  FlatList,
   StyleSheet,
   View,
   ImageSourcePropType,
   TouchableOpacity,
   TextInput,
   RefreshControl,
+  ScrollView
 } from 'react-native';
 import Header from '../components/Header';
-import {Space} from '../components/common/Space';
+import { Space } from '../components/common/Space';
 import ChatItem from '../components/ChatItem';
-import {SearchIcon} from '../components/common/Svgs';
+import { SearchIcon } from '../components/common/Svgs';
 import Body from '../components/common/Body';
-import {colors} from '../theme/themes';
-import {useSelector} from 'react-redux';
-import {ScrollView} from 'react-native-gesture-handler';
-import {getUser} from '../state/user/selectors';
-import {loadChat} from '../state/chat/action';
-import {useAppDispatch} from '../hooks/redux';
+import { colors } from '../theme/themes';
+import { useSelector } from 'react-redux';
+import { getUser } from '../state/user/selectors';
+import { loadChat } from '../state/chat/action';
+import { useAppDispatch } from '../hooks/redux';
 
 export interface IChatData {
   id?: string | number;
@@ -28,11 +27,13 @@ export interface IChatData {
   read?: boolean;
   messenger?: boolean;
   messages?: IMsg[];
+  clientAvatar?: string;
+  courierAvatar?: string;
 }
 export interface IMsg {
   createdAt?: string;
   text?: string | undefined;
-  user?: {avatar: number; name: string; _id: number};
+  user?: { avatar: number; name: string; _id: number };
   _id?: number;
 }
 
@@ -40,7 +41,7 @@ export default function Messages() {
   const [text, setText] = useState<string>('');
   const dispatch = useAppDispatch();
   const user = useSelector(getUser);
-  const {chats} = useSelector(state => state.chats);
+  const { chats } = useSelector(state => state.chats);
   async function handleChange(e: string) {
     setText(e);
   }
@@ -71,8 +72,8 @@ export default function Messages() {
   }, []);
 
   return (
-    <View style={{flex: 1}}>
-      <Header title="Чат" style={{paddingRight: 40, marginBottom: 0}} />
+    <View style={{ flex: 1 }}>
+      <Header title="Чат" style={{ paddingRight: 40, marginBottom: 0 }} />
       <Space height={27} />
       <View style={styles.inputBox}>
         <TouchableOpacity activeOpacity={0.8}>
@@ -90,7 +91,9 @@ export default function Messages() {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-        showsVerticalScrollIndicator={false}>
+        contentContainerStyle={{ paddingBottom: 50 }}
+        showsVerticalScrollIndicator={false}
+      >
         {chatRooms?.length > 0 ? (
           chatRooms.map((item, keyChat) => (
             <ChatItem item={item} keyChat={keyChat} key={item.chatId} />
