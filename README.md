@@ -31,6 +31,27 @@ npm run android
 # OR using Yarn
 yarn android
 ```
+ШИФРОВАНИЕ ДЛЯ АНДРОД
+   ПОСЛЕ УСТАНОВОК/ОБНОВЛЕНИЯ БИБЛИОТЕК:
+    Гайд -  https://github.com/amitaymolko/react-native-rsa-native/issues/62#issuecomment-1141884771 - FIX LIB ДЛЯ ПЕРЕДАЧИ СОБСТВЕННОГО КЛЮЧА FOR ANDROID
+    ИЛИ в файле / IN FILE:
+     node_modules/react-native-rsa-native/android/src/main/java/com/RNRSA/RSA.java
+      заменить строки
+    //   private PublicKey pkcs1ToPublicKey(String publicKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+    //     Reader keyReader = null;
+    //     try {
+    //         // keyReader = new StringReader(publicKey);
+    //         // PEMParser pemParser = new PEMParser(keyReader);
+    //         // SubjectPublicKeyInfo subjectPublicKeyInfo = (SubjectPublicKeyInfo) pemParser.readObject();
+    //         // X509EncodedKeySpec spec = new X509EncodedKeySpec(subjectPublicKeyInfo.getEncoded());
+    //         X509EncodedKeySpec spec = new X509EncodedKeySpec(Base64.decode(publicKey, Base64.DEFAULT));
+    //         return KeyFactory.getInstance("RSA").generatePublic(spec);
+    //            } finally {
+    //         // if (keyReader != null) {
+    //         //     keyReader.close();
+    //         // }
+    //     }
+    // }
 
 ### For iOS
 
